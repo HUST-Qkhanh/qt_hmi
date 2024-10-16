@@ -1,0 +1,14 @@
+
+<RCC>
+<qresource>
+<file>RosQML2.qmlproject</file>
+<file>RosQML2/Constants.qml</file>
+<file>RosQML2/DirectoryFontLoader.qml</file>
+<file>RosQML2/EventListModel.qml</file>
+<file>RosQML2/EventListSimulator.qml</file>
+<file>RosQML2/qmldir</file>
+<file>RosQML2Content/App.qml</file>
+<file>RosQML2Content/Screen01.ui.qml</file>
+<file>qtquickcontrols2.conf</file>
+</qresource>
+</RCC>
