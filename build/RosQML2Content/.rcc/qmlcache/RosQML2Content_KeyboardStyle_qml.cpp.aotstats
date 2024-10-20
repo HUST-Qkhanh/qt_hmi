@@ -1,0 +1,36 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 39,
+                        "durationMicroseconds": 396,
+                        "errorMessage": "",
+                        "functionName": "scaleHint",
+                        "line": 35
+                    },
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 51,
+                        "durationMicroseconds": 2863,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: QVariant -> QColor stored as QVariant",
+                        "functionName": "fullScreenInputSelectionColor",
+                        "line": 494
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 54,
+                        "durationMicroseconds": 198,
+                        "errorMessage": "",
+                        "functionName": "fullScreenInputSelectedTextColor",
+                        "line": 504
+                    }
+                ],
+                "filepath": "/home/khanh/mav_ws/src/qt_hmi/build/RosQML2Content/KeyboardStyle.qml"
+            }
+        ],
+        "moduleId": "RosQML2Content(RosQML2Content)"
+    }
+]

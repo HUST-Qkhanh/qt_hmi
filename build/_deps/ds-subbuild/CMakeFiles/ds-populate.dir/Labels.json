@@ -1,0 +1,52 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/CMakeFiles/ds-populate-Debug"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/CMakeFiles/ds-populate-(CONFIG).rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/CMakeFiles/CMakeFiles/ds-populate-complete.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/ds-populate-prefix/src/ds-populate-stamp/CMakeFiles/ds-populate-build.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/ds-populate-prefix/src/ds-populate-stamp/CMakeFiles/ds-populate-configure.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/ds-populate-prefix/src/ds-populate-stamp/CMakeFiles/ds-populate-download.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/ds-populate-prefix/src/ds-populate-stamp/CMakeFiles/ds-populate-install.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/ds-populate-prefix/src/ds-populate-stamp/CMakeFiles/ds-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/ds-populate-prefix/src/ds-populate-stamp/CMakeFiles/ds-populate-patch.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/ds-populate-prefix/src/ds-populate-stamp/CMakeFiles/ds-populate-test.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/ds-populate-prefix/src/ds-populate-stamp/CMakeFiles/ds-populate-update.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/CMakeFiles/ds-populate-Release"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-subbuild/CMakeFiles/ds-populate-RelWithDebInfo"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"ds-populate"
+		],
+		"name" : "ds-populate"
+	}
+}

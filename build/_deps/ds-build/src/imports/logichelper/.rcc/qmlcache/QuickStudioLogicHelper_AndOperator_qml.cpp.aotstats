@@ -1,0 +1,20 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 27,
+                        "durationMicroseconds": 439,
+                        "errorMessage": "",
+                        "functionName": "output",
+                        "line": 95
+                    }
+                ],
+                "filepath": "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/logichelper/AndOperator.qml"
+            }
+        ],
+        "moduleId": "QtQuick.Studio.LogicHelper(QuickStudioLogicHelper)"
+    }
+]

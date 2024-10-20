@@ -1,0 +1,20 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 26,
+                        "durationMicroseconds": 184,
+                        "errorMessage": "Cannot load property modelName from (component in /home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/ChildListModel.qml)::modelName with type QString.",
+                        "functionName": "onJsonObjectChanged",
+                        "line": 50
+                    }
+                ],
+                "filepath": "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/ChildListModel.qml"
+            }
+        ],
+        "moduleId": "QtQuick.Studio.Utils(QuickStudioUtils)"
+    }
+]

@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/RosQML2Content">
+    <file alias="qmldir">/home/khanh/mav_ws/src/qt_hmi/build/qml/RosQML2Content/qmldir</file>
+  </qresource>
+</RCC>
+

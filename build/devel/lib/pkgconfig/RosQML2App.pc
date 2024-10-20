@@ -1,0 +1,8 @@
+prefix=/home/khanh/mav_ws/src/qt_hmi/build/devel
+
+Name: RosQML2App
+Description: Description of RosQML2App
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: roscpp std_msgs std_stamped_msgs

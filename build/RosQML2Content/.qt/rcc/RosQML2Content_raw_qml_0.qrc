@@ -1,0 +1,50 @@
+<RCC>
+  <qresource prefix="/qt/qml/RosQML2Content/">
+    <file alias="Screen02.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/Screen02.qml</file>
+    <file alias="Screen03.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/Screen03.qml</file>
+    <file alias="KeyboardStyle.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/KeyboardStyle.qml</file>
+    <file alias="App.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/App.qml</file>
+    <file alias="component_test_2.ui.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/component_test_2.ui.qml</file>
+    <file alias="component_test.ui.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/component_test.ui.qml</file>
+    <file alias="Screen01.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/Screen01.qml</file>
+    <file alias="Mission.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/Mission.qml</file>
+    <file alias="asset/minimize.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/minimize.svg</file>
+    <file alias="asset/zoom.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/zoom.svg</file>
+    <file alias="asset/mute.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/mute.svg</file>
+    <file alias="asset/battery-full (1).svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/battery-full (1).svg</file>
+    <file alias="asset/setup.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/setup.svg</file>
+    <file alias="asset/batt_200.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/batt_200.svg</file>
+    <file alias="asset/batt_bolder.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/batt_bolder.svg</file>
+    <file alias="asset/Setting.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/Setting.svg</file>
+    <file alias="asset/battery-svgrepo-com.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/battery-svgrepo-com.svg</file>
+    <file alias="asset/charge (1).svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/charge (1).svg</file>
+    <file alias="asset/svg_2.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/svg_2.svg</file>
+    <file alias="asset/battery-svgrepo-com (1).svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/battery-svgrepo-com (1).svg</file>
+    <file alias="asset/circle.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/circle.svg</file>
+    <file alias="asset/dart-mission-goal-success-svgrepo-com.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/dart-mission-goal-success-svgrepo-com.svg</file>
+    <file alias="asset/battery-full.png">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/battery-full.png</file>
+    <file alias="asset/tv.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/tv.svg</file>
+    <file alias="asset/close.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/close.svg</file>
+    <file alias="asset/low-battery-svgrepo-com.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/low-battery-svgrepo-com.svg</file>
+    <file alias="asset/svg.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/svg.svg</file>
+    <file alias="asset/batt_20.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/batt_20.svg</file>
+    <file alias="asset/charge.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/charge.svg</file>
+    <file alias="asset/Vector 48 (Stroke).svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/Vector 48 (Stroke).svg</file>
+    <file alias="asset/sound.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/sound.svg</file>
+    <file alias="asset/battery-full.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/battery-full.svg</file>
+    <file alias="asset/batt_inside.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/asset/batt_inside.svg</file>
+    <file alias="images/charge (1).svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/charge (1).svg</file>
+    <file alias="images/sound.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/sound.svg</file>
+    <file alias="images/tv.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/tv.svg</file>
+    <file alias="images/low-battery-svgrepo-com.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/low-battery-svgrepo-com.svg</file>
+    <file alias="images/battery-svgrepo-com.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/battery-svgrepo-com.svg</file>
+    <file alias="images/batt_20.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/batt_20.svg</file>
+    <file alias="images/battery-full.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/battery-full.svg</file>
+    <file alias="images/Setting.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/Setting.svg</file>
+    <file alias="images/setup.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/setup.svg</file>
+    <file alias="images/Vector 48 (Stroke).svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/Vector 48 (Stroke).svg</file>
+    <file alias="images/charge.svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/charge.svg</file>
+    <file alias="images/battery-svgrepo-com (1).svg">/home/khanh/mav_ws/src/qt_hmi/RosQML2Content/images/battery-svgrepo-com (1).svg</file>
+  </qresource>
+</RCC>
+

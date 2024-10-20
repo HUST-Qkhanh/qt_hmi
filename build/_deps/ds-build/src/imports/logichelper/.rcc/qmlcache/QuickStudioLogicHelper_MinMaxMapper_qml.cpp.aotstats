@@ -1,0 +1,44 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 33,
+                        "durationMicroseconds": 445,
+                        "errorMessage": "",
+                        "functionName": "belowMinimum",
+                        "line": 96
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 33,
+                        "durationMicroseconds": 341,
+                        "errorMessage": "",
+                        "functionName": "aboveMaximum",
+                        "line": 101
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 31,
+                        "durationMicroseconds": 319,
+                        "errorMessage": "",
+                        "functionName": "outOfRange",
+                        "line": 107
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 27,
+                        "durationMicroseconds": 568,
+                        "errorMessage": "",
+                        "functionName": "output",
+                        "line": 113
+                    }
+                ],
+                "filepath": "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/logichelper/MinMaxMapper.qml"
+            }
+        ],
+        "moduleId": "QtQuick.Studio.LogicHelper(QuickStudioLogicHelper)"
+    }
+]

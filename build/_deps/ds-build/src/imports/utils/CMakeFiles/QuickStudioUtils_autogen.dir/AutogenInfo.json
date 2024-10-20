@@ -1,0 +1,183 @@
+{
+	"BUILD_DIR" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen",
+	"CMAKE_BINARY_DIR" : "/home/khanh/mav_ws/src/qt_hmi/build",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-src/src/imports/utils",
+	"CMAKE_EXECUTABLE" : "/opt/cmake/bin/cmake",
+	"CMAKE_LIST_FILES" : 
+	[
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-src/src/imports/utils/CMakeLists.txt",
+		"/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6Core/Qt6CoreConfigureFileTemplate.in",
+		"/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6Core/Qt6CoreResourceInit.in.cpp",
+		"/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6Qml/Qt6QmlPluginTemplate.cpp.in",
+		"/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6Qml/Qt6QmlModuleDirMappingTemplate.qrc.in",
+		"/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6Core/Qt6CoreConfigureFileTemplate.in",
+		"/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6Core/Qt6CoreResourceInit.in.cpp",
+		"/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6Qml/Qt6qmldirTemplate.cmake.in"
+	],
+	"CMAKE_SOURCE_DIR" : "/home/khanh/mav_ws/src/qt_hmi",
+	"DEP_FILE" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "QuickStudioUtils_autogen/timestamp",
+	"HEADERS" : 
+	[
+		[
+			"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-src/src/imports/utils/quickstudiocsvtablemodel_p.h",
+			"MU",
+			"EWIEGA46WW/moc_quickstudiocsvtablemodel_p.cpp",
+			null
+		],
+		[
+			"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-src/src/imports/utils/quickstudiofilereader_p.h",
+			"MU",
+			"EWIEGA46WW/moc_quickstudiofilereader_p.cpp",
+			null
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/include",
+	"INCLUDE_DIR_Debug" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/include_Debug",
+	"INCLUDE_DIR_RelWithDebInfo" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/include_RelWithDebInfo",
+	"INCLUDE_DIR_Release" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/include_Release",
+	"MOC_COMPILATION_FILE" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/mocs_compilation.cpp",
+	"MOC_COMPILATION_FILE_Debug" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/mocs_compilation_Debug.cpp",
+	"MOC_COMPILATION_FILE_RelWithDebInfo" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/mocs_compilation_RelWithDebInfo.cpp",
+	"MOC_COMPILATION_FILE_Release" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/mocs_compilation_Release.cpp",
+	"MOC_DEFINITIONS" : 
+	[
+		"QT_CORE_LIB",
+		"QT_GUI_LIB",
+		"QT_NETWORK_LIB",
+		"QT_NO_DEBUG",
+		"QT_QMLINTEGRATION_LIB",
+		"QT_QML_LIB"
+	],
+	"MOC_DEFINITIONS_Debug" : 
+	[
+		"QT_CORE_LIB",
+		"QT_GUI_LIB",
+		"QT_NETWORK_LIB",
+		"QT_QMLINTEGRATION_LIB",
+		"QT_QML_LIB"
+	],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-src/src/imports/utils",
+		"/home/khanh/Qt/6.8.0/gcc_64/include/QtQml/6.8.0",
+		"/home/khanh/Qt/6.8.0/gcc_64/include/QtQml/6.8.0/QtQml",
+		"/home/khanh/Qt/6.8.0/gcc_64/include/QtCore/6.8.0",
+		"/home/khanh/Qt/6.8.0/gcc_64/include/QtCore/6.8.0/QtCore",
+		"/home/khanh/Qt/6.8.0/gcc_64/include/QtCore",
+		"/home/khanh/Qt/6.8.0/gcc_64/include",
+		"/home/khanh/Qt/6.8.0/gcc_64/mkspecs/linux-g++",
+		"/home/khanh/Qt/6.8.0/gcc_64/include/QtQml",
+		"/home/khanh/Qt/6.8.0/gcc_64/include/QtQmlIntegration",
+		"/home/khanh/Qt/6.8.0/gcc_64/include/QtNetwork",
+		"/home/khanh/Qt/6.8.0/gcc_64/include/QtGui",
+		"/usr/include",
+		"/usr/include/c++/11",
+		"/usr/include/x86_64-linux-gnu/c++/11",
+		"/usr/include/c++/11/backward",
+		"/usr/lib/gcc/x86_64-linux-gnu/11/include",
+		"/usr/local/include",
+		"/usr/include/x86_64-linux-gnu"
+	],
+	"MOC_MACRO_NAMES" : 
+	[
+		"Q_OBJECT",
+		"Q_GADGET",
+		"Q_NAMESPACE",
+		"Q_NAMESPACE_EXPORT",
+		"Q_GADGET_EXPORT",
+		"Q_ENUM_NS"
+	],
+	"MOC_OPTIONS" : [ "--output-json" ],
+	"MOC_PATH_PREFIX" : false,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"/usr/bin/c++",
+		"-dM",
+		"-E",
+		"-c",
+		"/opt/cmake/share/cmake-3.21/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/moc_predefs.h",
+	"MOC_PREDEFS_FILE_Debug" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/moc_predefs_Debug.h",
+	"MOC_PREDEFS_FILE_RelWithDebInfo" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/moc_predefs_RelWithDebInfo.h",
+	"MOC_PREDEFS_FILE_Release" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/moc_predefs_Release.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : 
+	[
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.qt/rcc/qrc_QuickStudioUtils_raw_qml_0.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.qt/rcc/qrc_QuickStudioUtils_raw_qml_0_init.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.qt/rcc/qrc_qmake_QtQuick_Studio_Utils.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.qt/rcc/qrc_qmake_QtQuick_Studio_Utils_init.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.rcc/qmlcache/QuickStudioUtils_ChildListModel_qml.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.rcc/qmlcache/QuickStudioUtils_JsonBackend_qml.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.rcc/qmlcache/QuickStudioUtils_JsonListModel_qml.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.rcc/qmlcache/QuickStudioUtils_qmlcache_loader.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_autogen/mocs_compilation_Debug.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_autogen/mocs_compilation_RelWithDebInfo.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_autogen/mocs_compilation_Release.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_init_autogen/mocs_compilation_Debug.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_init_autogen/mocs_compilation_RelWithDebInfo.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_init_autogen/mocs_compilation_Release.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/quickstudioutils_qmltyperegistrations.cpp"
+	],
+	"MULTI_CONFIG" : true,
+	"PARALLEL" : 4,
+	"PARSE_CACHE_FILE" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/CMakeFiles/QuickStudioUtils_autogen.dir/ParseCache.txt",
+	"PARSE_CACHE_FILE_Debug" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/CMakeFiles/QuickStudioUtils_autogen.dir/ParseCache_Debug.txt",
+	"PARSE_CACHE_FILE_RelWithDebInfo" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/CMakeFiles/QuickStudioUtils_autogen.dir/ParseCache_RelWithDebInfo.txt",
+	"PARSE_CACHE_FILE_Release" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/CMakeFiles/QuickStudioUtils_autogen.dir/ParseCache_Release.txt",
+	"QT_MOC_EXECUTABLE" : "/home/khanh/Qt/6.8.0/gcc_64/libexec/moc",
+	"QT_UIC_EXECUTABLE" : "/home/khanh/Qt/6.8.0/gcc_64/libexec/uic",
+	"QT_VERSION_MAJOR" : 6,
+	"QT_VERSION_MINOR" : 8,
+	"SETTINGS_FILE" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/CMakeFiles/QuickStudioUtils_autogen.dir/AutogenUsed.txt",
+	"SETTINGS_FILE_Debug" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/CMakeFiles/QuickStudioUtils_autogen.dir/AutogenUsed_Debug.txt",
+	"SETTINGS_FILE_RelWithDebInfo" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/CMakeFiles/QuickStudioUtils_autogen.dir/AutogenUsed_RelWithDebInfo.txt",
+	"SETTINGS_FILE_Release" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/CMakeFiles/QuickStudioUtils_autogen.dir/AutogenUsed_Release.txt",
+	"SOURCES" : 
+	[
+		[
+			"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-src/src/imports/utils/quickstudiocsvtablemodel.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-src/src/imports/utils/quickstudiofilereader.cpp",
+			"MU",
+			null
+		]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [],
+	"UIC_SKIP" : 
+	[
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.qt/rcc/qrc_QuickStudioUtils_raw_qml_0.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.qt/rcc/qrc_QuickStudioUtils_raw_qml_0_init.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.qt/rcc/qrc_qmake_QtQuick_Studio_Utils.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.qt/rcc/qrc_qmake_QtQuick_Studio_Utils_init.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.rcc/qmlcache/QuickStudioUtils_ChildListModel_qml.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.rcc/qmlcache/QuickStudioUtils_JsonBackend_qml.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.rcc/qmlcache/QuickStudioUtils_JsonListModel_qml.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/.rcc/qmlcache/QuickStudioUtils_qmlcache_loader.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_autogen/mocs_compilation_Debug.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_autogen/mocs_compilation_RelWithDebInfo.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_autogen/mocs_compilation_Release.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_init_autogen/mocs_compilation_Debug.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_init_autogen/mocs_compilation_RelWithDebInfo.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtilsplugin_init_autogen/mocs_compilation_Release.cpp",
+		"/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/quickstudioutils_qmltyperegistrations.cpp"
+	],
+	"UIC_UI_FILES" : [],
+	"VERBOSITY" : 0
+}

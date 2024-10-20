@@ -1,0 +1,52 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/CMakeFiles/json-populate-Debug"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/CMakeFiles/json-populate-(CONFIG).rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/CMakeFiles/CMakeFiles/json-populate-complete.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/CMakeFiles/json-populate-build.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/CMakeFiles/json-populate-configure.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/CMakeFiles/json-populate-download.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/CMakeFiles/json-populate-install.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/CMakeFiles/json-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/CMakeFiles/json-populate-patch.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/CMakeFiles/json-populate-test.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/CMakeFiles/json-populate-update.rule"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/CMakeFiles/json-populate-Release"
+		},
+		{
+			"file" : "/home/khanh/mav_ws/src/qt_hmi/build/_deps/json-subbuild/CMakeFiles/json-populate-RelWithDebInfo"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"json-populate"
+		],
+		"name" : "json-populate"
+	}
+}

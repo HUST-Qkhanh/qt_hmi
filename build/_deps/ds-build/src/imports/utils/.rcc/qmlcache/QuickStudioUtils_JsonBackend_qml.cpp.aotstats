@@ -1,0 +1,44 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 5,
+                        "durationMicroseconds": 5495,
+                        "errorMessage": "Cannot generate efficient code for call to untyped JavaScript function",
+                        "functionName": "updateJSON",
+                        "line": 52
+                    },
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 5,
+                        "durationMicroseconds": 27,
+                        "errorMessage": "Functions without type annotations won't be compiled",
+                        "functionName": "parseJSONString",
+                        "line": 68
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 19,
+                        "durationMicroseconds": 291,
+                        "errorMessage": "",
+                        "functionName": "filePath",
+                        "line": 46
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 27,
+                        "durationMicroseconds": 246,
+                        "errorMessage": "",
+                        "functionName": "onContentChanged",
+                        "line": 47
+                    }
+                ],
+                "filepath": "/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/JsonBackend.qml"
+            }
+        ],
+        "moduleId": "QtQuick.Studio.Utils(QuickStudioUtils)"
+    }
+]

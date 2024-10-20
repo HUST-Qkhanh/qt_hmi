@@ -1,0 +1,2 @@
+/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/designeffects/.qsb/shaders/dropShadowClip.frag.qsb: \
+  /home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-src/src/imports/designeffects/shaders/dropShadowClip.frag

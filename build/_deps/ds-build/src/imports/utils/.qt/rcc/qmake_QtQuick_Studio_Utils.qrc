@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/QtQuick/Studio/Utils">
+    <file alias="qmldir">/home/khanh/mav_ws/src/qt_hmi/build/qml/QtQuick/Studio/Utils/qmldir</file>
+  </qresource>
+</RCC>
+

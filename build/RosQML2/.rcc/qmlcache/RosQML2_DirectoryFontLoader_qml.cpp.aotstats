@@ -1,0 +1,52 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 33,
+                        "durationMicroseconds": 22933,
+                        "errorMessage": "",
+                        "functionName": "fontDirectory",
+                        "line": 10
+                    },
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 5,
+                        "durationMicroseconds": 25,
+                        "errorMessage": "Functions without type annotations won't be compiled",
+                        "functionName": "loadFont",
+                        "line": 13
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 17,
+                        "durationMicroseconds": 226,
+                        "errorMessage": "",
+                        "functionName": "folder",
+                        "line": 21
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 22,
+                        "durationMicroseconds": 306,
+                        "errorMessage": "",
+                        "functionName": "nameFilters",
+                        "line": 22
+                    },
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 26,
+                        "durationMicroseconds": 567,
+                        "errorMessage": "method loadFont cannot be resolved.",
+                        "functionName": "onStatusChanged",
+                        "line": 25
+                    }
+                ],
+                "filepath": "/home/khanh/mav_ws/src/qt_hmi/build/RosQML2/DirectoryFontLoader.qml"
+            }
+        ],
+        "moduleId": "RosQML2(RosQML2)"
+    }
+]

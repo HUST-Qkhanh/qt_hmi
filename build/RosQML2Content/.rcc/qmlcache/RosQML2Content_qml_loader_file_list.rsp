@@ -1,0 +1,12 @@
+--resource
+/home/khanh/mav_ws/src/qt_hmi/build/RosQML2Content/.qt/rcc/qmake_RosQML2Content.qrc
+--resource
+/home/khanh/mav_ws/src/qt_hmi/build/RosQML2Content/.qt/rcc/RosQML2Content_raw_qml_0.qrc
+/qt/qml/RosQML2Content/Screen02.qml
+/qt/qml/RosQML2Content/Screen03.qml
+/qt/qml/RosQML2Content/KeyboardStyle.qml
+/qt/qml/RosQML2Content/App.qml
+/qt/qml/RosQML2Content/component_test_2.ui.qml
+/qt/qml/RosQML2Content/component_test.ui.qml
+/qt/qml/RosQML2Content/Screen01.qml
+/qt/qml/RosQML2Content/Mission.qml

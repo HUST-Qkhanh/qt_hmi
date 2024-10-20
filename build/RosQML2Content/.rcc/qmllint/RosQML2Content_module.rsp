@@ -1,0 +1,12 @@
+-I
+/home/khanh/mav_ws/src/qt_hmi/build/qml
+-I
+/home/khanh/mav_ws/src/qt_hmi/build/qml
+-I
+/home/khanh/Qt/6.8.0/gcc_64/qml
+--resource
+/home/khanh/mav_ws/src/qt_hmi/build/RosQML2Content/.qt/rcc/qmake_RosQML2Content.qrc
+--resource
+/home/khanh/mav_ws/src/qt_hmi/build/RosQML2Content/.qt/rcc/RosQML2Content_raw_qml_0.qrc
+--module
+RosQML2Content

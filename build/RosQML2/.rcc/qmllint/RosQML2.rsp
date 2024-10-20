@@ -1,0 +1,15 @@
+--bare
+-I
+/home/khanh/mav_ws/src/qt_hmi/build/qml
+-I
+/home/khanh/mav_ws/src/qt_hmi/build/qml
+-I
+/home/khanh/Qt/6.8.0/gcc_64/qml
+--resource
+/home/khanh/mav_ws/src/qt_hmi/build/RosQML2/.qt/rcc/qmake_RosQML2.qrc
+--resource
+/home/khanh/mav_ws/src/qt_hmi/build/RosQML2/.qt/rcc/RosQML2_raw_qml_0.qrc
+/home/khanh/mav_ws/src/qt_hmi/RosQML2/EventListModel.qml
+/home/khanh/mav_ws/src/qt_hmi/RosQML2/Constants.qml
+/home/khanh/mav_ws/src/qt_hmi/RosQML2/EventListSimulator.qml
+/home/khanh/mav_ws/src/qt_hmi/RosQML2/DirectoryFontLoader.qml

@@ -1,0 +1,2 @@
+/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/include_Debug/EWIEGA46WW/moc_quickstudiocsvtablemodel_p.cpp.json
+/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/utils/QuickStudioUtils_autogen/include_Debug/EWIEGA46WW/moc_quickstudiofilereader_p.cpp.json

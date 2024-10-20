@@ -1,0 +1,2 @@
+/home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-build/src/imports/designeffects/.qsb/shaders/innerShadowClip.frag.qsb: \
+  /home/khanh/mav_ws/src/qt_hmi/build/_deps/ds-src/src/imports/designeffects/shaders/innerShadowClip.frag

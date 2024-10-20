@@ -1,0 +1,28 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 12,
+                        "durationMicroseconds": 59,
+                        "errorMessage": "Cannot retrieve a non-object type by ID: mainScreen",
+                        "functionName": "width",
+                        "line": 8
+                    },
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 13,
+                        "durationMicroseconds": 24,
+                        "errorMessage": "Cannot retrieve a non-object type by ID: mainScreen",
+                        "functionName": "height",
+                        "line": 9
+                    }
+                ],
+                "filepath": "/home/khanh/mav_ws/src/qt_hmi/build/RosQML2Content/App.qml"
+            }
+        ],
+        "moduleId": "RosQML2Content(RosQML2Content)"
+    }
+]
