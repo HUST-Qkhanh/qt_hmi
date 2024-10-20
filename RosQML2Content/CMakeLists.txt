@@ -7,7 +7,7 @@ qt_add_library(RosQML2Content STATIC)
 qt6_add_qml_module(RosQML2Content
     URI "RosQML2Content"
     VERSION 1.0
-    RESOURCE_PREFIX "/qt/qml"
+    RESOURCE_PREFIX "/"
     QML_FILES
         "Screen02.qml"
         "Screen03.qml"

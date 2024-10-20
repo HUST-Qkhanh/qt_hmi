@@ -32,7 +32,7 @@ if (Qt6_VERSION VERSION_GREATER_EQUAL 6.3)
 endif()
 
 qt_add_executable(${CMAKE_PROJECT_NAME}
-${CMAKE_CURRENT_SOURCE_DIR}/RosQML2.qrc)
+    RosQML2.qrc)
 
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
     PREFIX "/"

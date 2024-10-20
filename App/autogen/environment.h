@@ -9,7 +9,7 @@
 Q_IMPORT_QML_PLUGIN(RosQML2ContentPlugin)
 Q_IMPORT_QML_PLUGIN(RosQML2Plugin)
 
-const char mainQmlFile[] = "qrc:/qt/qml/RosQML2Content/App.qml";
+const char mainQmlFile[] = "qrc:/RosQML2Content/App.qml";
 
 #ifdef BUILD_QDS_COMPONENTS
 

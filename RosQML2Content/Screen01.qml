@@ -31,13 +31,13 @@ Page {
     property string control_mode: "RUNNING"
     property string mode_mode: "MANUAL"
     property string status_mode: "INITIATING"
-    property string state_mute: "qrc:/content/asset/sound.svg"
+    property string state_mute: "qrc:/RosQML2Content/asset/sound.svg"
     property double vel_linear: 0
     property double vel_angular: 0
     property int volume_current: 80
     property int volume_: 80
     property string ip_agf: ""
-    property string ready_icon_source: "qrc:/content/asset/svg.svg"
+    property string ready_icon_source: "qrc:/RosQML2Content/asset/svg.svg"
     property string color_state: ""
     property bool state_panel_edit: false
     property bool state_panel_queue: false
