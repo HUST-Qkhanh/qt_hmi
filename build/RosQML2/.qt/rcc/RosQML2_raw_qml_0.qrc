@@ -1,9 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/RosQML2/">
-    <file alias="EventListModel.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2/EventListModel.qml</file>
-    <file alias="Constants.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2/Constants.qml</file>
-    <file alias="EventListSimulator.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2/EventListSimulator.qml</file>
-    <file alias="DirectoryFontLoader.qml">/home/khanh/mav_ws/src/qt_hmi/RosQML2/DirectoryFontLoader.qml</file>
-  </qresource>
-</RCC>
-

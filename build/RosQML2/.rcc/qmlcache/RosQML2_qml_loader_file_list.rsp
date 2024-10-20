@@ -1,8 +1,0 @@
---resource
-/home/khanh/mav_ws/src/qt_hmi/build/RosQML2/.qt/rcc/qmake_RosQML2.qrc
---resource
-/home/khanh/mav_ws/src/qt_hmi/build/RosQML2/.qt/rcc/RosQML2_raw_qml_0.qrc
-/qt/qml/RosQML2/EventListModel.qml
-/qt/qml/RosQML2/Constants.qml
-/qt/qml/RosQML2/EventListSimulator.qml
-/qt/qml/RosQML2/DirectoryFontLoader.qml

@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file alias="qtquickcontrols2.conf">/home/khanh/mav_ws/src/qt_hmi/qtquickcontrols2.conf</file>
-  </qresource>
-</RCC>
-
