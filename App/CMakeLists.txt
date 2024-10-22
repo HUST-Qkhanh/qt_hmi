@@ -31,7 +31,8 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
   "/usr/local/include/bsoncxx/v_noabi/bsoncxx/third_party/mnmlstc/core"
   "/usr/include/boost"
   ${catkin_INCLUDE_DIRS}
-  /home/khanh/mav_ws/devel/include
+  # /home/mkac/mav_ws/devel/include
+  /home/mkac/amr_ws/devel/include
 )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE

@@ -11,7 +11,7 @@
                 "/usr/local/include/bsoncxx/v_noabi",
                 "/usr/local/include/mongocxx/v_noabi",
                 "${workspaceFolder}/App/include",
-                "/home/khanh/mav_ws/devel/include/**",
+                "/home/mkac/amr_ws/devel/include/**",
                 "${workspaceFolder}/build/RosQML2App_autogen/include_Debug"
             ],
             "name": "ROS",

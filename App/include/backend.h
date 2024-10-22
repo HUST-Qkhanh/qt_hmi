@@ -125,6 +125,11 @@ private:
     void systemStatusCallback(const std_stamped_msgs::StringStamped::ConstPtr &msg);
     // void standardIoCallback(const std_stamped_msgs::StringStamped &msg);
 
+    static std::shared_ptr<mongocxx::instance> getInstance() {
+        static std::shared_ptr<mongocxx::instance> instance(new mongocxx::instance());
+        return instance;
+    }
+
 
     double batteryVoltageStr;
     double batteryPercentageStr;
@@ -142,7 +147,7 @@ private:
     QString stateValueSystemStr;
     mongocxx::uri uri;
     mongocxx::client client;
-    mongocxx::database db;
+    mongocxx::database database;;
     mongocxx::collection collection;
     mongocxx::collection collection_queue;
     mongocxx::collection collection_model;

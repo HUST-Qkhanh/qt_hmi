@@ -13,7 +13,8 @@ message(STATUS "BUILDING PROJECT: ${CMAKE_PROJECT_NAME}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_PREFIX_PATH "/opt/ros/noetic")
-list(APPEND CMAKE_PREFIX_PATH "/home/khanh/mav_ws/devel" "/usr/local/lib")
+# list(APPEND CMAKE_PREFIX_PATH "/home/khanh/mav_ws/devel" "/usr/local/lib")
+list(APPEND CMAKE_PREFIX_PATH "/home/mkac/amr_ws/devel" "/usr/local/lib")
 
 
 set(CMAKE_AUTOMOC ON)

@@ -13,16 +13,44 @@
 
 using json = nlohmann::json;
 Backend::Backend(QObject* parent)
-    : QObject(parent), nh(),
-    uri("mongodb://localhost:27017"),
-    client(uri), db(client["admin"]),
-    collection(db["pallet_buffer"]),
-    collection_queue(db["pallet_queue"]),
-    collection_model(db["pallet_model"])
-    
+    : QObject(parent), nh() 
 {
+  try
+  {
+    // Initialize mongocxx driver
+    auto instance = getInstance();
+    std::string uri_string = "mongodb://localhost:27017/";
+    std::cout << "Connecting to MongoDB..." << std::endl;
+
+    // Build URI with authentication if username and password are provided
+
+    mongocxx::uri uri = mongocxx::uri(uri_string);
+
+    std::cout << "MongoDB URI parsed successfully!" << std::endl;
+    try
+    {
+      client = mongocxx::client{uri};
+    }
+    catch (const std::exception& e)
+    {
+      std::cout << "Init client: " << e.what() << std::endl;
+    }
+    // Access the specified database
+    database = client["admin"];
+
+    std::cout << "MongoDB database retrieved successfully!" << std::endl;
+  }
+  catch (const mongocxx::exception& e)
+  {
+    std::cerr << "Error during MongoDB initialization: " << e.what()
+              << std::endl;
+    throw;  // Rethrow the exception to propagate it further if needed
+  }
     // Initialize the subscriber in the constructor
-    
+    collection = database["pallet_buffer"];
+    collection_queue = database["pallet_queue"];
+    collection_model = database["pallet_model"];
+
     battery_percent_sub = nh.subscribe("/arduino_driver/float_param/battery_percent", 1, &Backend::batteryPercentCallback, this);
     battery_voltage_sub = nh.subscribe("/arduino_driver/float_param/battery_voltage", 1, &Backend::batteryVoltageCallback, this);
     battery_current_sub = nh.subscribe("/arduino_driver/float_param/battery_ampe", 1, &Backend::batteryCurrentCallback, this);
@@ -756,7 +784,7 @@ void Backend::setDataBuffer(QString id) {
         bsoncxx::document::view view = result->view();
         rootObject = engine->rootObjects().first();
         for (auto it = view.begin(); it != view.end(); ++it) {
-            std::string key = "___" + it->key().to_string();  // Lấy tên key
+            std::string key = "___" + std::string(it->key());  // Lấy tên key
             auto value = it->get_value();  // Lấy giá trị
             QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(key));
             if (item) {
@@ -776,8 +804,8 @@ void Backend::setDataBuffer(QString id) {
                         propertyValue = QString::number(value.get_double());
                         break;
                     case bsoncxx::type::k_utf8:
-                        // std::cout << key << ": " << value.get_utf8().value.to_string() << std::endl;
-                        propertyValue = QString::fromStdString(value.get_utf8().value.to_string());
+                        // std::cout << key << ": " << value.get_string().value.to_string() << std::endl;
+                        propertyValue = QString::fromStdString(std::string(value.get_string().value));
                         break;
                     case bsoncxx::type::k_oid:
                         // std::cout << key << ": " << value.get_oid().value.to_string() << std::endl;
@@ -793,7 +821,7 @@ void Backend::setDataBuffer(QString id) {
                 std::cout << key << std::endl;
                 
                 for (auto it = view.begin(); it != view.end(); ++it) {
-                    std::string key = "___" + it->key().to_string();  // Lấy tên key
+                    std::string key = "___" + std::string(it->key());  // Lấy tên key
                     auto value = it->get_value();  // Lấy giá trị
                     QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(key));
                     if (item) {
@@ -813,12 +841,12 @@ void Backend::setDataBuffer(QString id) {
                                 propertyValue = QString::number(value.get_double());
                                 break;
                             case bsoncxx::type::k_utf8:
-                                // std::cout << key << ": " << value.get_utf8().value.to_string() << std::endl;
-                                propertyValue = QString::fromStdString(value.get_utf8().value.to_string());
+                                // std::cout << key << ": " << value.get_string().value.to_string() << std::endl;
+                                propertyValue = QString::fromStdString(std::string(value.get_string()));
                                 break;
                             case bsoncxx::type::k_oid:
                                 // std::cout << key << ": " << value.get_oid().value.to_string() << std::endl;
-                                propertyValue = QString::fromStdString( value.get_oid().value.to_string());
+                                propertyValue = QString::fromStdString(value.get_oid().value.to_string());
                                 break;
                         }
                         item->setProperty("text", propertyValue);

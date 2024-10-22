@@ -21,7 +21,7 @@ private:
     
 
     QQmlApplicationEngine engine;
-    // Backend backend;
+    Backend backend;
     ConfigManager configManager;
     ros::Publisher hmi_status_pub;
     std_stamped_msgs::StringStamped hmi_msg;
@@ -33,7 +33,7 @@ public:
         connect(rosTimer, &QTimer::timeout, this, [this]() {
             hmi_msg.stamp = ros::Time::now();
             hmi_status_pub.publish(hmi_msg);
-            // backend.initColor();
+            backend.initColor();
             ros::spinOnce();
             });
         rosTimer->start(200); // Adjust the interval as needed
@@ -69,14 +69,14 @@ hmiApp::hmiApp(int argc, char** argv)
         Qt::QueuedConnection);
     qmlRegisterType<Backend>("backendqt", 1, 0, "Backend");
     engine.rootContext()->setContextProperty("configManager", &configManager);
-    // engine.rootContext()->setContextProperty("backend", &backend);
+    engine.rootContext()->setContextProperty("backend", &backend);
     engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
     engine.addImportPath(":/");
     engine.load(url);
     QInputMethod *inputMethod = QGuiApplication::inputMethod();
     inputMethod->show();
-    // backend.setEngine(&engine);
-    // backend.initColor();
+    backend.setEngine(&engine);
+    backend.initColor();
     
     // Initialize ROS timer to process callbacks
     init_ros_timer();
