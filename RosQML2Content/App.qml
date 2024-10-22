@@ -6,19 +6,17 @@ import QtQuick 6.2
 import QtQuick.Controls 6.2
 import QtQuick.Layouts 6.2
 import QtQuick.VirtualKeyboard 6.7
-// import backendqt 1.0
 
+// import backendqt 1.0
 
 ApplicationWindow {
     //width: 1920
     //height: 1080
     id: window
     visible: true
-    flags: Qt.FramelessWindowHint  
+    flags: Qt.FramelessWindowHint
     visibility: Window.FullScreen
     title: "HMI_appication"
-
-
 
     PropertyAnimation {
         id: fadeIn
@@ -27,8 +25,6 @@ ApplicationWindow {
         to: 1
         duration: 500
     }
-
-
 
     ToolBar {
         id: toolBar
@@ -41,15 +37,12 @@ ApplicationWindow {
             bottomMargin: 20
         }
         background: Rectangle {
-                    color: "#FFFFFF" 
-                }
-
-
-
+            color: "#FFFFFF"
+        }
 
         Button {
             id: dashboard_button
-            height: (toolBar.height -120) * 0.2
+            height: (toolBar.height - 120) * 0.2
             palette.buttonText: "#448AFF"
             font.bold: true
             font.family: "ubuntu"
@@ -75,24 +68,22 @@ ApplicationWindow {
             }
             onClicked: {
                 loader.setSource("qrc:/RosQML2Content/Screen01.qml");
-                Qt.callLater(function() {
+                Qt.callLater(function () {
                     backend.initColor();
                 });
             }
-            
+
             onPressedChanged: {
                 if (pressed) {
-                    background.color = "#B0BEC5"; 
-                    
+                    background.color = "#B0BEC5";
                 } else {
-                    background.color = "#F5F5F5"; 
-                    
+                    background.color = "#F5F5F5";
                 }
             }
         }
         Button {
             id: mission_button
-            height: (toolBar.height -120) * 0.2
+            height: (toolBar.height - 120) * 0.2
             text: qsTr("MONITORING")
             palette.buttonText: "#448AFF"
             anchors.left: parent.left
@@ -127,7 +118,7 @@ ApplicationWindow {
         }
         Button {
             id: setup_button
-            height: (toolBar.height -120) * 0.2
+            height: (toolBar.height - 120) * 0.2
             palette.buttonText: "#448AFF"
             font.bold: true
             font.family: "ubuntu"
@@ -153,7 +144,7 @@ ApplicationWindow {
             onClicked: loader.setSource("qrc:/RosQML2Content/Screen02.qml")
             onPressedChanged: {
                 if (pressed) {
-                    background.color = "#B0BEC5"; 
+                    background.color = "#B0BEC5";
                 } else {
                     background.color = "#F5F5F5";
                 }
@@ -162,7 +153,7 @@ ApplicationWindow {
 
         Button {
             id: monitoring_button
-            height: (toolBar.height -120) * 0.2
+            height: (toolBar.height - 120) * 0.2
             text: qsTr("MONITORING")
             palette.buttonText: "#448AFF"
             anchors.left: parent.left
@@ -188,19 +179,19 @@ ApplicationWindow {
             }
             onPressedChanged: {
                 if (pressed) {
-                    background.color = "#B0BEC5"; 
+                    background.color = "#B0BEC5";
                 } else {
-                    background.color = "#F5F5F5"; 
+                    background.color = "#F5F5F5";
                 }
             }
             onClicked: loader.setSource("qrc:/RosQML2Content/Screen03.qml")
         }
-        
+
         Button {
             id: system_button
             text: qsTr("SYSTEM")
             palette.buttonText: "#448AFF"
-            height: (toolBar.height -120) * 0.2
+            height: (toolBar.height - 120) * 0.2
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
@@ -224,15 +215,14 @@ ApplicationWindow {
             }
             onPressedChanged: {
                 if (pressed) {
-                    background.color = "#B0BEC5"; 
+                    background.color = "#B0BEC5";
                 } else {
-                    background.color = "#F5F5F5"; 
+                    background.color = "#F5F5F5";
                 }
             }
             onClicked: loader.setSource("qrc:/RosQML2Content/component_test_2.ui.qml")
         }
     }
-
 
     ToolBar {
         id: control_panel
@@ -248,118 +238,127 @@ ApplicationWindow {
         anchors.bottomMargin: 0
         background: Rectangle {
             color: "#FFFFFF"
-            radius: 10 
+            radius: 10
+        }
+
+        MouseArea {
+            id: dragArea
+            anchors.fill: parent
+            drag.target: null  // We're manually moving the window
+            property real dragOffsetX: 0
+            property real dragOffsetY: 0
+            
+            onPressed: {
+                dragOffsetX = window.x - dragArea.mouseX;
+                dragOffsetY = window.y - dragArea.mouseY;
+            }
+            
+            onPositionChanged: {
+                if (window.visibility !== Window.FullScreen && drag.active) {
+                    window.x = dragArea.mouseX + dragOffsetX;
+                    window.y = dragArea.mouseY + dragOffsetY;
+                }
+            }
         }
 
 
-        MouseArea {
-                    id: dragArea
-                    anchors.fill: parent
-                    drag.target: window
-                    onPositionChanged: {
-                        if (window.visibility !== Window.FullScreen)
-                        {
-                        window.x += dragArea.mouseX - dragArea.width / 2
-                        window.y += dragArea.mouseY - dragArea.height / 2
-                        }
-                    }
+        Button {
+            id: close_button
+            width: close_button.height
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 10
+            anchors.topMargin: 10
+            anchors.bottomMargin: 10
+            rightPadding: 16
+            leftPadding: 16
+            spacing: 0
+            icon.height: 50
+            icon.width: 50
+            display: AbstractButton.IconOnly
+            icon.source: "qrc:/RosQML2Content/asset/close.svg"
+            background: Rectangle {
+                color: "#ECEFF1"
+                radius: 10
+                border.color: "#78909C"
+                border.width: 2
+            }
+            onClicked: {
+                Qt.quit();
+            }
         }
 
         Button {
-                id: close_button
-                width: close_button.height
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.rightMargin: 10
-                anchors.topMargin: 10
-                anchors.bottomMargin: 10
-                rightPadding: 16
-                leftPadding: 16
-                spacing: 0
-                icon.height: 50
-                icon.width: 50
-                display: AbstractButton.IconOnly
-                icon.source: "qrc:/RosQML2Content/asset/close.svg"
-                background: Rectangle {
-                    color: "#ECEFF1"
-                    radius: 10
-                    border.color: "#78909C"
-                    border.width: 2
-                }
-                onClicked: {
-                    Qt.quit();
-                }
+            id: zoom_button
+            width: close_button.height
+            height: close_button.height
+            anchors.right: close_button.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 10
+            anchors.topMargin: 10
+            anchors.bottomMargin: 10
+            icon.height: 50
+            icon.width: 50
+            icon.source: "qrc:/RosQML2Content/asset/zoom.svg"
+            display: AbstractButton.IconOnly
+            background: Rectangle {
+                color: "#ECEFF1"
+                radius: 10
+                border.color: "#78909C"
+                border.width: 2
             }
-
-            Button {
-                id: zoom_button
-                width: close_button.height
-                height: close_button.height
-                anchors.right: close_button.left
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.rightMargin: 10
-                anchors.topMargin: 10
-                anchors.bottomMargin: 10
-                rightPadding: 16
-                leftPadding: 16
-                icon.height: 50
-                icon.width: 50
-                icon.source: "qrc:/RosQML2Content/asset/zoom.svg"
-                display: AbstractButton.IconOnly
-                background: Rectangle {
-                    color: "#ECEFF1"
-                    radius: 10
-                    border.color: "#78909C"
-                    border.width: 2
-                }
-                onClicked: {
-                                if (window.visibility === Window.FullScreen) {
-                                    window.width = Screen.width / 1.5;
-                                    window.height = Screen.height / 1.5;
-                                    window.x = (Screen.width - window.width) / 2;
-                                    window.y = (Screen.height - window.height) / 2;
-                                } else {
-                                    window.visibility = Window.FullScreen
-                                }
-            }
-            }
-
-            Button {
-                id: minimal_button
-                width: close_button.height
-                height: close_button.height
-                anchors.right: zoom_button.left
-                anchors.bottom: parent.bottom
-                anchors.rightMargin: 10
-                anchors.bottomMargin: 10
-                leftPadding: 16
-                rightPadding: 16
-                icon.height: 50
-                icon.width: 50
-                icon.source: "qrc:/RosQML2Content/asset/minimize.svg"
-                display: AbstractButton.IconOnly
-                background: Rectangle {
-                    color: "#ECEFF1"
-                    radius: 10
-                    border.color: "#78909C"
-                    border.width: 2
-                }
-                onClicked: {
-                    window.width = Screen.width / 1.5;
-                    window.height = Screen.height / 1.5;
-                    window.x = (Screen.width - window.width) / 2;
-                    window.y = (Screen.height - window.height) / 2;
+            onClicked: {
+                print("Zooming to:", window.screen.width, window.screen.height);
+                
+                if (window.visibility === Window.FullScreen) {
+                    window.showNormal();  // Restore to normal size if currently fullscreen
+                    window.width = window.screen.width / 1.5;
+                    window.height = window.screen.height / 1.5;
+                    window.x = (window.screen.width - window.width) / 2;
+                    window.y = (window.screen.height - window.height) / 2;
+                } else {
                     window.visibility = Window.FullScreen;
-                    window.showMinimized();
                 }
             }
+        }
+
+
+
+        Button {
+            id: minimal_button
+            width: close_button.height
+            height: close_button.height
+            anchors.right: zoom_button.left
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 10
+            anchors.bottomMargin: 10
+            leftPadding: 16
+            rightPadding: 16
+            icon.height: 50
+            icon.width: 50
+            icon.source: "qrc:/RosQML2Content/asset/minimize.svg"
+            display: AbstractButton.IconOnly
+            background: Rectangle {
+                color: "#ECEFF1"
+                radius: 10
+                border.color: "#78909C"
+                border.width: 2
+            }
+            onClicked: {
+                window.showNormal();  // Restore to normal size if currently fullscreen
+                window.width = window.screen.width / 1.5;
+                window.height = window.screen.height / 1.5;
+                window.x = (window.screen.width - window.width) / 2;
+                window.y = (window.screen.height - window.height) / 2;
+                window.showMinimized();
+            }
+        }
     }
 
     StackView {
-          id: stackView
-
+        id: stackView
 
         anchors.left: toolBar.right
         anchors.right: parent.right
@@ -368,8 +367,7 @@ ApplicationWindow {
         anchors.leftMargin: 0
         anchors.topMargin: 0
         anchors.verticalCenter: window.verticalCenter
-        Loader
-        {
+        Loader {
             id: loader
             anchors.fill: parent
             onLoaded: {
@@ -379,15 +377,10 @@ ApplicationWindow {
 
             // Property to control the opacity for animation
             opacity: 0
-
         }
 
-
         initialItem: loader.setSource("qrc:/RosQML2Content/Screen01.qml")
-
     }
-
-
 
     Component {
         id: pageComponent
@@ -411,9 +404,8 @@ ApplicationWindow {
                     border.width: 5
                 }
                 onClicked: {
-                        backend.change_to_eng()
-
-                    }
+                    backend.change_to_eng();
+                }
                 onPressedChanged: {
                     if (pressed) {
                         background.color = "#B0BEC5";
@@ -441,9 +433,8 @@ ApplicationWindow {
                     border.width: 5
                 }
                 onClicked: {
-                        backend.change_to_japan()
-
-                    }
+                    backend.change_to_japan();
+                }
                 onPressedChanged: {
                     if (pressed) {
                         background.color = "#B0BEC5";
@@ -454,8 +445,4 @@ ApplicationWindow {
             }
         }
     }
-
-
-
 }
-

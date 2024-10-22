@@ -2624,13 +2624,7 @@ Page {
             // anchors.bottomMargin: 0
             ColumnLayout {
                 id: layout_note_1
-                width: 50
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-                anchors.bottomMargin: 0
+                Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
@@ -2674,7 +2668,7 @@ Page {
                 anchors.bottomMargin: 0
                 spacing: 5
                 Text {
-                    height: 50
+                    Layout.preferredHeight: 50
                     text: "Trống "
                     font.pixelSize: 35 * up_panel.height / 588
                     horizontalAlignment: Text.AlignHCenter
@@ -2685,7 +2679,7 @@ Page {
 
                 Text {
 
-                    height: 50
+                    Layout.preferredHeight: 50
                     text: "Pallet thấp"
                     font.pixelSize: 35 * up_panel.height / 588
                     horizontalAlignment: Text.AlignHCenter
@@ -2696,7 +2690,7 @@ Page {
 
                 Text {
 
-                    height: 50
+                    Layout.preferredHeight: 50
                     text: "Pallet cao"
                     font.pixelSize: 35 * up_panel.height / 588
                     horizontalAlignment: Text.AlignHCenter
@@ -2707,7 +2701,7 @@ Page {
 
                 Text {
 
-                    height: 50
+                    Layout.preferredHeight: 50
                     text: "Pallet kép"
                     font.pixelSize: 35 * up_panel.height / 588
                     horizontalAlignment: Text.AlignHCenter
@@ -2717,7 +2711,7 @@ Page {
                 }
                 Text {
 
-                    height: 50
+                    Layout.preferredHeight: 50
                     text: "Pallet đơn"
                     font.pixelSize: 35 * up_panel.height / 588
                     horizontalAlignment: Text.AlignHCenter
@@ -2790,7 +2784,7 @@ Page {
                 }
             }
             onPressedChanged: {
-                if (pressed) {
+                if (pressed) {height: 50
                     background.color = "#E1BEE7";
                 } else {
                     background.color = "#AB47BC";

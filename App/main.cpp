@@ -70,7 +70,7 @@ hmiApp::hmiApp(int argc, char** argv)
     qmlRegisterType<Backend>("backendqt", 1, 0, "Backend");
     engine.rootContext()->setContextProperty("configManager", &configManager);
     engine.rootContext()->setContextProperty("backend", &backend);
-    engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
+    // engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
     engine.addImportPath(":/");
     engine.load(url);
     QInputMethod *inputMethod = QGuiApplication::inputMethod();
@@ -91,7 +91,7 @@ int hmiApp::_exit() {
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "hmi_agf_node");
-    qputenv("QML2_IMPORT_PATH", QString("/home/khanh/Qt/6.8.0/gcc_64/qml").toLatin1());
+    qputenv("QML2_IMPORT_PATH", QString("/home/mkac/Qt/6.8.0/gcc_64/qml").toLatin1());
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
     hmiApp hmi(argc, argv);
     // hmi.init_ros_timer();

@@ -5,9 +5,10 @@ import QmlProject
 
 Project {
     mainFile: "RosQML2Content/App.qml"
-    mainUiFile: "RosQML2Content/Screen01.ui.qml"
+    mainUiFile: "RosQML2Content/Screen01.qml"
     targetDirectory: "/opt/RosQML2"
-    enableCMakeGeneration: true
+    enableCMakeGeneration: false
+    enablePythonGeneration: false
     widgetApp: true
     importPaths: [ "." ]
 

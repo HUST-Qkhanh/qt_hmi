@@ -12,12 +12,12 @@ qt_add_library(RosQML2 STATIC)
 qt6_add_qml_module(RosQML2
     URI "RosQML2"
     VERSION 1.0
-    RESOURCE_PREFIX "/qt/qml"
+    RESOURCE_PREFIX "/"
     QML_FILES
+        "DirectoryFontLoader.qml"
         "EventListModel.qml"
         "Constants.qml"
         "EventListSimulator.qml"
-        "DirectoryFontLoader.qml"
 )
 
 
