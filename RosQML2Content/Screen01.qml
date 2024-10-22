@@ -15,8 +15,6 @@ import QtQuick.VirtualKeyboard 6.7
 Page {
     id: page1
     visible: true
-    width: 1720
-    height: 980
 
     // color: "#FAFAFA"
     property double batteryPercentage: 0
@@ -475,7 +473,8 @@ Page {
                                 "ZoneId": _ZoneId_.text,
                                 "ColumnId": _ColumnId_.text,
                                 "LocationId": _LocationId_.text,
-
+                                "Barcode": _Barcode_.text,
+                                "Time": _Time_.text,
                                 "queue": _queue_.text,
                             
                             };
@@ -569,7 +568,8 @@ Page {
                                 "ZoneId": _ZoneId_.text,
                                 "ColumnId": _ColumnId_.text,
                                 "LocationId": _LocationId_.text,
-
+                                "Barcode": _Barcode_.text,
+                                "Time": _Time_.text,
                                 "queue": _queue_.text,
                             
                             };
@@ -2784,7 +2784,7 @@ Page {
                 }
             }
             onPressedChanged: {
-                if (pressed) {height: 50
+                if (pressed) {
                     background.color = "#E1BEE7";
                 } else {
                     background.color = "#AB47BC";
@@ -3065,7 +3065,5 @@ Page {
             }
             
         }
-    }
-
-   
+    }  
 }
