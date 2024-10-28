@@ -1,0 +1,6 @@
+*/TODO: 
+- Migrate pallet_queue db write access to system_agf
+- Create class for pallet to store data
+- Convert pallet_conveyor to a LINKED_LIST for dynamic change of pallets list
+- Add way to insert new pallet onto pallet_conveyor on HMI screen (QML)
+- Renovate the HMI design
