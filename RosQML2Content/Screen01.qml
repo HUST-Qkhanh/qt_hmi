@@ -1,5 +1,3 @@
-
-
 /*
 This is a UI file (.qml) that is intended to be edited in Qt Design Studio only.
 It is supposed to be strictly declarative and only uses a subset of QML. If you edit
@@ -10,6 +8,8 @@ import QtQuick 6.2
 import QtQuick.Controls 6.2
 import QtQuick.Layouts 6.2
 import QtQuick.VirtualKeyboard 6.7
+import RosQML2
+
 // import QtQuick.VirtualKeyboard.Components 6.7
 // import backendqt 1.0
 Page {
@@ -40,65 +40,63 @@ Page {
     property bool state_panel_edit: false
     property bool state_panel_queue: false
     property bool popup_confirm_visible: true
-    property int state_edit: 0 // 0 -> buffer | 1 -> queue 
-    property int  width_current: 100
+    property int state_edit: 0 // 0 -> buffer | 1 -> queue
+    property int width_current: 100
     property string header_layout_text: "Trạng thái"
     property string model_data: ""
     property string count_data: ""
-    property int  item_count: loadConfig()
+    property int item_count: loadConfig()
     property var model_pallet_: getListModel()
     // property var count_pallet: []
     // Khi cần khôi phục cấu hình
     function loadConfig() {
-        var config = 
-        configManager.loadConfig("config.json")
+        var config = configManager.loadConfig("config.json");
         if (config.item_count !== undefined) {
-            item_count = config.item_count
+            item_count = config.item_count;
         }
-        return item_count
+        return item_count;
     }
     function saveConfig(value_) {
-            var config = {
-                "item_count": value_
-            }
-            configManager.saveConfig(config, "config.json")
-        }
+        var config = {
+            "item_count": value_
+        };
+        configManager.saveConfig(config, "config.json");
+    }
     function getListCount() {
-        backend.getDataComboBox2()
-        var item = backend.getListCount()
-        return item
+        backend.getDataComboBox2();
+        var item = backend.getListCount();
+        return item;
     }
     function getListModel() {
-        backend.getDataComboBox()
-        var item = backend.getListModel()
-        return item
+        backend.getDataComboBox();
+        var item = backend.getListModel();
+        return item;
     }
 
     function clearDataQueue() {
-        uuid_queue.text = "-----"
-        _Id_.text = "-----"
-        _PalletInfo_.text = "-----"
-        _Merchandise_.text = "-----"
-        _NameModel_.text = "-----"
-        _Destination_.text = "-----"
-        _ZoneId_.text = "-----"
-        _ColumnId_.text = "-----"
-        _LocationId_.text = "-----"
-        _queue_.text = "-----"
-        _Model_.text = "-----"
-        _Count_.text = "-----"
-        _height_.text = "-----"
-        _width_.text = "-----"
-        _length_.text = "-----"
-        _pallet_type_.text = "-----"
-
+        uuid_queue.text = "-----";
+        _Id_.text = "-----";
+        _PalletInfo_.text = "-----";
+        _Merchandise_.text = "-----";
+        _NameModel_.text = "-----";
+        _Destination_.text = "-----";
+        _ZoneId_.text = "-----";
+        _ColumnId_.text = "-----";
+        _LocationId_.text = "-----";
+        _queue_.text = "-----";
+        _Model_.text = "-----";
+        _Count_.text = "-----";
+        _height_.text = "-----";
+        _width_.text = "-----";
+        _length_.text = "-----";
+        _pallet_type_.text = "-----";
     }
 
     function popup_close() {
-            header_layout_text = "Trạng thái"
-            pop_up_2.close()
-            backend.set_color()
-        }
+        header_layout_text = "Trạng thái";
+        pop_up_2.close();
+        backend.set_color();
+    }
     // Component.onCompleted: loadConfig()
 
     // onClosing: {
@@ -205,24 +203,22 @@ Page {
             }
             onClicked: {
                 if (popup_mode === 1) {
-
                     if (mode_mode === "MANUAL") {
                         // mode_mode ="AUTO"
-                        backend.requestMode("AUTO")
+                        backend.requestMode("AUTO");
                     } else if (mode_mode === "AUTO") {
                         // mode_mode =  "MANUAL"
-                        backend.requestMode("MANUAL")
+                        backend.requestMode("MANUAL");
                     }
                 } else if (popup_mode === 0) {
-                    confirm_button_popup.text = qsTr("Reset")
-                    backend.resetError()
-                }
-                else if (popup_mode === 2) {
-                    confirm_button_popup.text = qsTr("Reset")
-                    backend.requestReset("request_reset")
+                    confirm_button_popup.text = qsTr("Reset");
+                    backend.resetError();
+                } else if (popup_mode === 2) {
+                    confirm_button_popup.text = qsTr("Reset");
+                    backend.requestReset("request_reset");
                 }
 
-                popup.close()
+                popup.close();
             }
         }
         Button {
@@ -246,14 +242,12 @@ Page {
             }
             onClicked: popup.close()
         }
-
     }
-
 
     Popup {
         id: pop_up_2
         x: 0
-        y: - page1.height * 0.08
+        y: -page1.height * 0.08
         width: page1.width * 0.9
         height: page1.height * 0.65
         opacity: 1
@@ -267,1699 +261,11 @@ Page {
             radius: 5
         }
 
-        RowLayout {
-            id: header_layout
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: parent.height * 0.1
-            Text {
-
-                text: header_layout_text
-                // text: " Trạng thái"
-                anchors.fill: parent
-                font.pointSize: 30 * parent.height / 50
-            }
+        MyUserPopup {
+            id: myUserPopup
+            anchors.fill: parent
+            state: page1.state_edit
         }
-        RowLayout {
-            id: footer_layout
-            anchors.top: stackLayout.bottom
-            anchors.bottom: parent.bottom
-            layoutDirection: Qt.RightToLeft
-            spacing: 10
-            width: parent.width * 0.6
-            anchors.right: parent.right
-            anchors.topMargin: 10
-
-            
-            Button {
-                id: view_button
-                // height: parent.height * 0.12
-                text: "Trở về"
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
-
-
-                font.pointSize: 25 * view_button.height / 118
-                font.family: "ubuntu"
-                font.bold: true
-                display: AbstractButton.TextOnly
-                background: Rectangle {
-                    color: "#FFFFFF"
-                    radius: 10
-                    border.color: "#607D8B"
-                    border.width: 5
-                }
-                onClicked: {
-                    
-                    popup_close()
-                }
-                //     animation_goout.start();
-                //     animation_forward.start();
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#607D8B"
-                    } else {
-                        background.color = "#FFFFFF"
-                    }
-                }
-            }
-            Button {
-                id: del_button
-                // height: parent.height * 0.12
-                text: "Xóa"
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
-
-                font.pointSize: 25 * del_button.height / 118
-                font.family: "ubuntu"
-                font.bold: true
-                display: AbstractButton.TextOnly
-                background: Rectangle {
-                    color: "#FFFFFF"
-                    radius: 10
-                    border.color: "#F44336"
-                    border.width: 5
-                }
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#F44336"
-                    } else {
-                        background.color = "#FFFFFF"
-                    }
-                }
-                onClicked: {
-
-                    if (state_edit === 0) {
-                        if (___id.text != "-----") {
-                            var jsonObject = {
-                            
-                                "_id": ___id.text,
-                                "id": _id.text,
-                                "id_hang": _id_hang.text,
-                                "status": _status.text,
-                                "stt": _stt.text,
-                                "type": _type.text,
-
-                                "height": _height.text,
-                                "width": _width.text,
-                                "length": _length.text,
-                                "zone_id": _zone_id.text,
-                                "column_id": _column_id.text,
-                                "location_id": _location_id.text,
-                                
-                            
-                            };
-                            backend.deleteDataBuffer(JSON.stringify(jsonObject, null, 2))
-                        } else {
-                            header_layout_text = " Mục không tồn tại - xóa chỉ khả dụng trên mục đã có"
-                        }
-                    } else if (state_edit === 1) {
-                        if (uuid_queue.text != "-----") {
-                            backend.deleteDataQueue(uuid_queue.text)
-                            clearDataQueue()
-                        } else {
-                            header_layout_text = " Mục không tồn tại - xóa chỉ khả dụng trên mục đã có"
-                        }
-                    } else if (state_edit === 2) {
-                        if (__id__.text != "-----") {
-
-                        
-                            var jsonObject = {
-                                "_id": __id__.text,
-                                "Merchandise": list_model.editText,
-                                "Count": list_count.editText,
-                                "height": _height__.text,
-                                "width": _width__.text,
-                                "length": _length__.text,
-                                "pallet_type": _pallet_type__.text,
-                                };
-                            backend.deleteDataModel(JSON.stringify(jsonObject, null, 2))
-                            header_layout_text = " Thành công"
-                        }
-                        else {
-                            header_layout_text = " Mục không tồn tại - xóa chỉ khả dụng trên mục đã có"
-                        }
-                        
-                        
-                        
-                        
-                    }
-                    
-                }
-        
-            }
-            Button {
-                id: save_button
-                // height: parent.height * 0.12
-                text: "Lưu"
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
-                
-
-                font.pointSize: 25 * save_button.height / 118
-                font.family: "ubuntu"
-                font.bold: true
-                display: AbstractButton.TextOnly
-                background: Rectangle {
-                    color: "#FFFFFF"
-                    radius: 10
-                    border.color: "#4CAF50"
-                    border.width: 5
-                }
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#4CAF50"
-                    } else {
-                        background.color = "#FFFFFF"
-                    }
-                }
-                onClicked: {
-
-                    if (state_edit === 0) {
-                        if (___id.text != "-----") {
-                            var jsonObject = {
-                                "_id": ___id.text,
-                                "id": _id.text,
-                                "id_hang": _id_hang.text,
-                                "status": _status.text,
-                                "stt": _stt.text,
-                                "type": _type.text,
-
-                                "height": _height.text,
-                                "width": _width.text,
-                                "length": _length.text,
-                                "zone_id": _zone_id.text,
-                                "column_id": _column_id.text,
-                                "location_id": _location_id.text,
-                                
-                            
-                            };
-                            backend.saveDataBuffer(JSON.stringify(jsonObject, null, 2))
-                        } else {
-                            header_layout_text  = " Mục không tồn tại - sửa và lưu chỉ khả dụng với mục đã có"
-                        }
-                    } else if (state_edit === 1) {
-                        if (uuid_queue.text != "-----") {
-                            var jsonObject = {
-                                "_id": uuid_queue.text,
-                                "Id": _Id_.text,
-                                "PalletInfo": _PalletInfo_.text,
-                                "Model": _Model_.text,
-                                "Merchandise": _Merchandise_.text,
-                                "NameModel": _NameModel_.text,
-                                "Destination": _Destination_.text,
-                                "Count": _Count_.text,
-                                "ZoneId": _ZoneId_.text,
-                                "ColumnId": _ColumnId_.text,
-                                "LocationId": _LocationId_.text,
-                                "Barcode": _Barcode_.text,
-                                "Time": _Time_.text,
-                                "queue": _queue_.text,
-                            
-                            };
-                            // console.log(JSON.stringify(jsonObject, null, 2))
-                            
-                            backend.saveDataQueue(JSON.stringify(jsonObject, null, 2))
-                            // backend.setDataQueue(parseInt(_queue_.text))
-                        } else {
-                            header_layout_text  = " Mục không tồn tại - sửa và lưu chỉ khả dụng với mục đã có"
-                        }
-                    } else if (state_edit === 2) {
-                        if (__id__.text != "-----") {
-                            var jsonObject = {
-                                "_id": __id__.text,
-                                "Merchandise": list_model.editText,
-                                "Count": list_count.editText,
-                                "height": _height__.text,
-                                "width": _width__.text,
-                                "length": _length__.text,
-                                "pallet_type": _pallet_type__.text,
-                                };
-
-                                backend.saveDataModel(JSON.stringify(jsonObject, null, 2))
-                                header_layout_text = "Thành công"
-                        } else {
-                            header_layout_text  = " Mục không tồn tại - sửa và lưu chỉ khả dụng với mục đã có"
-                        }
-                        
-                        
-                        
-                        
-                    }
-                }
-    
-            }
-            Button {
-                id: add_button
-                // height: parent.height * 0.12
-                text: "Thêm"
-
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
-
-                font.pointSize: 25 * add_button.height / 118
-                font.family: "ubuntu"
-                font.bold: true
-                display: AbstractButton.TextOnly
-                background: Rectangle {
-                    color: "#FFFFFF"
-                    radius: 10
-                    border.color: "#9E9E9E"
-                    border.width: 5
-                }
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#9E9E9E"
-                    } else {
-                        background.color = "#FFFFFF"
-                    }
-                }
-                onClicked: {
-
-                    if ( state_edit === 2) {
-                        if (__id__.text == "-----") {
-                            var jsonObject = {
-                                "_id": __id__.text,
-                                "Merchandise": list_model.editText,
-                                "Count": list_count.editText,
-                                "height": _height__.text,
-                                "width": _width__.text,
-                                "length": _length__.text,
-                                "pallet_type": _pallet_type__.text,
-                                }; 
-                                backend.addDataModel(JSON.stringify(jsonObject, null, 2))
-                                header_layout_text = " Thành công"
-                        } else {
-                            header_layout_text  = " Mục đã tồn tại - hãy ấn sửa "
-                        }
-                        
-                    } else if ( state_edit === 1) {
-                        if (uuid_queue.text == "-----") {
-                            var jsonObject = {
-                                "_id": uuid_queue.text,
-                                "Id": _Id_.text,
-                                "PalletInfo": _PalletInfo_.text,
-                                "Model": _Model_.text,
-                                "Merchandise": _Merchandise_.text,
-                                "NameModel": _NameModel_.text,
-                                "Destination": _Destination_.text,
-                                "Count": _Count_.text,
-                                "ZoneId": _ZoneId_.text,
-                                "ColumnId": _ColumnId_.text,
-                                "LocationId": _LocationId_.text,
-                                "Barcode": _Barcode_.text,
-                                "Time": _Time_.text,
-                                "queue": _queue_.text,
-                            
-                            };
-                            // console.log(JSON.stringify(jsonObject, null, 2))
-                            
-                            backend.addDataQueue(JSON.stringify(jsonObject, null, 2))
-                        } else {
-                            header_layout_text  = " Mục đã tồn tại - hãy ấn sửa "
-                        }
-                    } else if (state_edit === 0) {
-                        if (___id.text == "-----") {
-                            var jsonObject = {
-                                "_id": ___id.text,
-                                "id": _id.text,
-                                "id_hang": _id_hang.text,
-                                "status": _status.text,
-                                "stt": _stt.text,
-                                "type": _type.text,
-
-                                "height": _height.text,
-                                "width": _width.text,
-                                "length": _length.text,
-                                "zone_id": _zone_id.text,
-                                "column_id": _column_id.text,
-                                "location_id": _location_id.text,
-                                
-                            
-                            };
-                        backend.addDataBuffer(JSON.stringify(jsonObject, null, 2))
-                        } else {
-                            header_layout_text  = " Mục đã tồn tại - hãy ấn sửa "
-                        }
-                    }
-                }
-
-            }
-
-            Button {
-                id: model_button
-                // height: parent.height * 0.12
-                text: "Model"
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
-
-
-                font.pointSize: 25 * view_button.height / 118
-                font.family: "ubuntu"
-                font.bold: true
-                display: AbstractButton.TextOnly
-                background: Rectangle {
-                    color: "#FFFFFF"
-                    radius: 10
-                    border.color: "#607D8B"
-                    border.width: 5
-                }
-                onClicked: {
-                    backend.getDataComboBox()
-                    backend.getDataComboBox2()
-                    state_edit = 2
-                    // pop_up_2.close()
-                }
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#607D8B"
-                    } else {
-                        background.color = "#FFFFFF"
-                    }
-                }
-            }
-        }
-    
-        
-        StackLayout {
-            id: stackLayout
-            anchors.top: header_layout.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: parent.height * 0.73
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.topMargin: 10
-            currentIndex: state_edit
-            Item {
-                id: buffer_item
-                GridLayout {
-                    id: main_layout
-                    anchors.top: parent.top
-                    rowSpacing: 15
-                    columnSpacing: 20
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: parent.height
-                    anchors.verticalCenter: parent.verticalCenter
-                    rows: 4
-                    columns: 6
-                    Text {
-                        text: qsTr("Unique ID: ")
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        font.pointSize: 20 *  main_layout.height / 364
-                        Layout.column: 0
-                        Layout.row: 0
-                    }
-                    Text {
-                        text: qsTr("ID: ")
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.column: 2
-                        Layout.row: 0
-                    }
-                    Text {
-                        text: qsTr("ID Hàng: ")
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.bold: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        Layout.column: 4
-                        Layout.row: 0
-                    }
-                    Text {
-                        text: qsTr("Trạng thái: ")
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        Layout.column: 0
-                        Layout.row: 1
-                    }
-                    Text {
-                        text: qsTr("Số thứ tự: ")
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        Layout.column: 2
-                        Layout.row: 1
-                    }
-                    Text {
-                        text: qsTr("type: ")
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        Layout.column: 4
-                        Layout.row: 1
-                    }
-                    Text {
-                        text: qsTr("height")
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        Layout.column: 0
-                        Layout.row: 2
-                    }
-                    Text {
-                        text: qsTr("width: ")
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        Layout.column: 2
-                        Layout.row: 2
-                    }
-                    Text {
-                        text: qsTr("length: ")
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        Layout.column: 4
-                        Layout.row: 2
-                    }
-                    Text {
-                        text: qsTr("zone_id: ")
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        Layout.column: 0
-                        Layout.row: 3
-                    }
-                    Text {
-                        text: qsTr("column_id: ")
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        Layout.column: 2
-                        Layout.row: 3
-                    }
-                    Text {
-                        text: qsTr("location_id: ")
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.preferredWidth: parent.width * 0.15
-                        Layout.fillHeight: true
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font.bold: true
-                        Layout.column: 4
-                        Layout.row: 3
-                    }
-
-                    TextField {
-                        id: ___id
-                        font.pixelSize: 25 * _id.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        readOnly: true
-                        objectName: "____id"
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        Layout.column: 1
-                        Layout.row: 0
-                        width: 150
-
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            radius: 5
-                            border.color: "#3850ff"
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: parent.left
-                            anchors.top: parent.top
-                            anchors.bottom: parent.bottom
-                            anchors.horizontalCenter: parent.horizontalCenter
-                        }
-                    }
-
-                    TextField {
-                        id: _id
-                        objectName: "___id"
-                        font.pixelSize: 25 * _id.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.column: 3
-                        Layout.row: 0
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _id_hang
-                        objectName: "___id_hang"
-                        font.pixelSize: 25 * _id_hang.height / 45
-
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 5
-                        Layout.row: 0
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _status
-                        objectName: "___status"
-                        font.pixelSize: 25 * _status.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 1
-                        Layout.row: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _stt
-                        objectName: "___stt"
-                        font.pixelSize: 25 * _stt.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 3
-                        Layout.row: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _type
-                        objectName: "___type"
-                        font.pixelSize: 25 * _type.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 5
-                        Layout.row: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _height
-                        objectName: "___height"
-                        font.pixelSize: 25 * _height.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 1
-                        Layout.row: 2
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _width
-                        objectName: "___width"
-                        font.pixelSize: 25 * _width.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 3
-                        Layout.row: 2
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _length
-                        objectName: "___length"
-                        font.pixelSize: 25 * _length.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 5
-                        Layout.row: 2
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _zone_id
-                        objectName: "___zone_id"
-                        font.pixelSize: 25 * _zone_id.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 1
-                        Layout.row: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _column_id
-                        objectName: "___column_id"
-                        font.pixelSize: 25 * _column_id.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 3
-                        Layout.row: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _location_id
-                        objectName: "___location_id"
-                        font.pixelSize: 25 * _location_id.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        
-                        onActiveFocusChanged: {
-                            if(activeFocus) {
-                                console.log("jomphere");
-                                Qt.inputMethod.update(Qt.ImQueryInput)
-                            }
-                        }
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        property bool isBold: false
-                        property real radius: 5
-                        Layout.column: 5
-                        Layout.row: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                }
-            }
-            Item {
-                id: grid_queue
-                GridLayout {
-                    id: main_layout_queue
-                    anchors.top: parent.top
-                    rowSpacing: 15
-                    columnSpacing: 20
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: parent.height
-                    anchors.verticalCenter: parent.verticalCenter
-                    rows: 5
-                    columns: 6
-
-                    Text {
-                        text: qsTr("Unique ID")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        font.bold: true
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        Layout.row: 0
-                        Layout.column: 0
-                    }
-                    Text {
-                        text: qsTr("ID")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        font.bold: true
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        Layout.row: 1
-                        Layout.column: 0
-                    }
-                    Text {
-                        text: qsTr("PalletInfo")
-                        font.family: "Ubuntu"
-                        font.bold: true
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.pointSize: 15 * main_layout.height / 364
-                        Layout.row: 2
-                        Layout.column: 0
-                    }
-                    
-                    Text {
-                        text: qsTr("Merchandise")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 0
-                        Layout.column: 4
-                    }
-
-                    Text {
-                        text: qsTr("NameModel")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 4
-                        Layout.column: 0
-                    }
-
-                    Text {
-                        text: qsTr("Barcode")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 5
-                        Layout.column: 0
-                    }
-
-                    Text {
-                        text: qsTr("Destination")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 0
-                        Layout.column: 2
-                    }
-                    
-                    Text {
-                        text: qsTr("ZoneId")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 1
-                        Layout.column: 2
-                    }
-                    Text {
-                        text: qsTr("ColumnId")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 2
-                        Layout.column: 2
-                    }
-                    Text {
-                        text: qsTr("LocationId")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 3
-                        Layout.column: 2
-                    }
-
-                    Text {
-                        text: qsTr("Time")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 4
-                        Layout.column: 2
-                    }
-
-                    Text {
-                        text: qsTr("queue")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 5
-                        Layout.column: 2
-                    }
-                    Text {
-                        text: qsTr("Model")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.bold: true
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.family: "Ubuntu"
-                        Layout.row: 3
-                        Layout.column: 0
-                    }
-                    Text {
-                        text: qsTr("Count")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 1
-                        Layout.column: 4
-                    }
-                    Text {
-                        text: qsTr("height")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 2
-                        Layout.column: 4
-
-                    }
-                    Text {
-                        text: qsTr("width")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 3
-                        Layout.column: 4
-                    }
-                    Text {
-                        text: qsTr("length")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 4
-                        Layout.column: 4
-                    }
-                    Text {
-                        text: qsTr("pallet_type")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        Layout.preferredWidth: parent.width * 0.1
-                        Layout.fillHeight: true
-                        font.bold: true
-                        Layout.row: 5
-                        Layout.column: 4
-                    }
-                    
-
-                    TextField {
-                        id: uuid_queue
-                        objectName: "uuid_queue"
-                        font.pixelSize: 25 * uuid_queue.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        readOnly: true
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 0
-                        Layout.column: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _Id_
-                        objectName: "_Id"
-                        font.pixelSize: 25 * _Id_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        focus: true
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 1
-                        Layout.column: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _PalletInfo_
-                        objectName: "_PalletInfo"
-                        font.pixelSize: 25 * _PalletInfo_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        focus: true
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 2
-                        Layout.column: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    
-
-                    TextField {
-                        id: _Merchandise_
-                        objectName: "_Merchandise"
-                        font.pixelSize: 25 * _Merchandise_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 0
-                        Layout.column: 5
-                        
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _NameModel_
-                        objectName: "_NameModel"
-                        font.pixelSize: 25 * _NameModel_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 4
-                        Layout.column: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _Barcode_
-                        objectName: "_Barcode"
-                        font.pixelSize: 25 * _Barcode_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 5
-                        Layout.column: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _Destination_
-                        objectName: "_Destination"
-                        font.pixelSize: 25 * _Destination_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 0
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    
-
-                    TextField {
-                        id: _ZoneId_
-                        objectName: "_ZoneId"
-                        font.pixelSize: 25 * _ZoneId_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 1
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _ColumnId_
-                        objectName: "_ColumnId"
-                        font.pixelSize: 25 * _ColumnId_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 2
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _LocationId_
-                        objectName: "_LocationId"
-                        font.pixelSize: 25 * _LocationId_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 3
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-                    TextField {
-                        id: _Time_
-                        objectName: "_Time"
-                        font.pixelSize: 25 * _Time_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 4
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-
-
-                    TextField {
-                        id: _queue_
-                        objectName: "_queue"
-                        font.pixelSize: 25 * _queue_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 5
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _Model_
-                        objectName: "_Model"
-                        font.pixelSize: 25 * _Model_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 3
-                        Layout.column: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _Count_
-                        objectName: "_Count"
-                        font.pixelSize: 25 * _Count_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 1
-                        Layout.column: 5
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _height_
-                        objectName: "_height"
-                        font.pixelSize: 25 * _height_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 2
-                        Layout.column: 5
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-                        readOnly: true
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _width_
-                        objectName: "_width"
-                        font.pixelSize: 25 * _width_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 3
-                        Layout.column: 5
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-                        readOnly: true
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _length_
-                        objectName: "_length"
-                        font.pixelSize: 25 * _length_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        readOnly: true
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 4
-                        Layout.column: 5
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _pallet_type_
-                        objectName: "_pallet_type"
-                        font.pixelSize: 25 * _pallet_type_.height / 45
-                        Layout.fillWidth: true
-                        text: "-----"
-                        readOnly: true
-                        property bool isBold: false
-                        property real radius: 5
-                        width: 150
-                        Layout.preferredWidth: parent.width * 0.2
-                        Layout.fillHeight: true
-                        Layout.row: 5
-                        Layout.column: 5
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                }
-            }
-
-            Item {
-                id: model_pallet
-                GridLayout {
-                    anchors.top: parent.top
-                    rowSpacing: 15
-                    columnSpacing: 20
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: parent.height
-                    anchors.verticalCenter: parent.verticalCenter
-                    rows: 4
-                    columns: 4
-
-                    Text {
-                        text: qsTr("Unique ID")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        font.bold: true
-                        
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.width * 0.25
-                        Layout.row: 0
-                        Layout.column: 0
-                    }
-                    Text {
-                        text: qsTr("Merchandise")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        font.bold: true
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.row: 1
-                        Layout.column: 0
-                    }
-
-                    Text {
-                        text: qsTr("Count")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        font.bold: true
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.width * 0.25
-                        Layout.row: 2
-                        Layout.column: 0
-                    }
-                    Text {
-                        text: qsTr("height")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        font.bold: true
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.width * 0.25
-                        Layout.row: 0
-                        Layout.column: 2
-                    }
-                    Text {
-                        text: qsTr("width")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        font.bold: true
-
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.width * 0.25
-                        Layout.row: 1
-                        Layout.column: 2
-                    }
-                    Text {
-                        text: qsTr("length")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        font.bold: true
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.row: 2
-                        Layout.column: 2
-                    }
-
-                    Text {
-                        text: qsTr("pallet_type")
-                        font.pointSize: 15 * main_layout.height / 364
-                        font.family: "Ubuntu"
-                        font.bold: true
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.width * 0.25
-                        Layout.row: 3
-                        Layout.column: 2
-                    }
-                    
-                    TextField {
-                        id: __id__
-                        objectName: "__id__"
-                        font.pixelSize: 20 * _height__.height / 45
-                        text: "-----"
-                        
-                        readOnly: true
-                        property bool isBold: false
-                        property real radius: 5
-                        // width: 150
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.height * 0.25
-                        Layout.preferredWidth: parent.width * 0.35
-                        Layout.row: 0
-                        Layout.column: 1
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    ComboBox {
-                        id: list_model
-                        editable: true
-                        font.pixelSize: 20 * _height__.height / 45
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.height * 0.25
-                        Layout.preferredWidth: parent.width * 0.35
-                        Layout.row: 1
-                        Layout.column: 1
-                        currentIndex: 0
-
-                        // property var model_pallet_: backend.getListModel()
-                        model: ListModel {
-                            id: list_model_pallet
-                        }
-
-                        delegate: ItemDelegate {
-                            text: model.text
-                        }
-
-                        Component.onCompleted: {
-                            // Khởi tạo danh sách ban đầu
-                            for (var i = 0; i < model_pallet_.length; i++) {
-                                list_model_pallet.append({
-                                                            "text": model_pallet_[i]
-                                                        })
-                            }
-                        }
-                        onEditTextChanged: {
-                            model_data = editText
-                            __id__.text = "-----"
-                            _height__.text = "-----"
-                            _width__.text = "-----"
-                            _length__.text = "-----"
-                            _pallet_type__.text = "-----"
-                            backend.updateComboBox(model_data,count_data)
-                            console.log("Selected fruit: " + editText)
-                        }
-                    }
-                    ComboBox {
-                        id: list_count
-                        editable: true
-                        font.pixelSize: 20 * _height__.height / 45
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.height * 0.25
-                        Layout.preferredWidth: parent.width * 0.35
-                        Layout.row: 2
-                        Layout.column: 1
-                        currentIndex: 0
-
-                        property var count_pallet: [6,8,10,12,14,16,18]
-                        model: ListModel {
-                            id: list_count_pallet
-                        }
-
-                        delegate: ItemDelegate {
-                            text: model.text
-                        }
-
-                        Component.onCompleted: {
-                            // Khởi tạo danh sách ban đầu
-                            for (var i = 0; i < count_pallet.length; i++) {
-                                list_count_pallet.append({
-                                                            "text": count_pallet[i]
-                                                        })
-                            }
-                        }
-                        onEditTextChanged: {
-                            count_data = editText
-                            
-                            __id__.text = "-----"
-                            _height__.text = "-----"
-                            _width__.text = "-----"
-                            _length__.text = "-----"
-                            _pallet_type__.text = "-----"
-                            console.log("Selected fruit: " + editText)
-                            backend.updateComboBox(model_data,count_data)
-                            
-                        }
-                    }
-                    TextField {
-                        id: _height__
-                        objectName: "_height__"
-                        font.pixelSize: 25 * _height__.height / 45
-                        
-                        text: "-----"
-                        focus: true
-                        property bool isBold: false
-                        property real radius: 5
-                        // width: 150
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.height * 0.25
-                        Layout.row: 0
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        } 
-                        
-                    }
-                    TextField {
-                        id: _width__
-                        objectName: "_width__"
-                        font.pixelSize: 25 * _width__.height / 45
-                        text: "-----"
-                        focus: true
-                        property bool isBold: false
-                        property real radius: 5
-                        // width: 150
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.height * 0.25
-                        Layout.row: 1
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _length__
-                        objectName: "_length__"
-                        font.pixelSize: 25 * _length__.height / 45
-                        text: "-----"
-                        focus: true
-                        property bool isBold: false
-                        property real radius: 5
-                        // width: 150
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.height * 0.25
-                        Layout.row: 2
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                    TextField {
-                        id: _pallet_type__
-                        objectName: "_pallet_type__"
-                        font.pixelSize: 25 * _length__.height / 45
-                        text: "-----"
-                        focus: true
-                        property bool isBold: false
-                        property real radius: 5
-                        // width: 150
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.preferredHeight: parent.height * 0.25
-                        Layout.row: 3
-                        Layout.column: 3
-                        placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                        background: Rectangle {
-                            anchors.fill: parent
-                            radius: 5
-                            border.color: "#3850ff"
-                        }
-                    }
-                }
-            }
-
-        }
-
     }
 
     Page {
@@ -2040,37 +346,20 @@ Page {
 
             Rectangle {
                 Layout.preferredWidth: parent.width * 0.4
-                Layout.preferredHeight:  parent.height 
+                Layout.preferredHeight: parent.height
                 color: "#64B5F6"
                 border.color: "#607D8B"
                 border.width: 2
+                Layout.fillHeight: false
+                Layout.fillWidth: true
                 Text {
                     anchors.fill: parent
                     text: "Băng tải chủ động"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignBottom
                     font.pointSize: 20
-
                 }
-
             }
-            Rectangle {
-                Layout.preferredWidth: parent.width * 0.6
-                Layout.preferredHeight:  parent.height
-                color: "#B3E5FC"
-                border.color: "#607D8B"
-                border.width: 2
-                Text {
-                    anchors.fill: parent
-                    text: "Băng tải free"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignBottom
-                    font.pointSize: 20
-
-                }
-
-            }
-
         }
 
         RowLayout {
@@ -2083,6 +372,7 @@ Page {
             spacing: 2
 
             layoutDirection: Qt.RightToLeft
+
             // Rectangle {
             //     color: "#ae0808"
             //     anchors.fill: parent
@@ -2107,17 +397,16 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(1)
-                    
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    console.log("zone_1_queue");
+                    backend.setDataQueue(1);
                 }
-
             }
             Button {
                 id: palet_2
-                
+
                 text: qsTr("2")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.preferredHeight: width_current * parent.height / 167
@@ -2132,16 +421,15 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(2)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(2);
                 }
-
             }
             Button {
                 id: palet_3
-                
+
                 text: qsTr("3")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.preferredHeight: width_current * parent.height / 167
@@ -2156,10 +444,10 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(3)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(3);
                 }
             }
             Button {
@@ -2168,7 +456,7 @@ Page {
                 Layout.preferredWidth: width_current * parent.height / 167
                 text: qsTr("4")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                
+
                 font.bold: true
                 font.pointSize: 30 * parent.height / 155
 
@@ -2179,15 +467,15 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(4)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(4);
                 }
             }
             Button {
                 id: palet_5
-                
+
                 text: qsTr("5")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.preferredHeight: width_current * parent.height / 167
@@ -2202,15 +490,15 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(5)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(5);
                 }
             }
             Button {
                 id: palet_6
-                
+
                 text: qsTr("6")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.preferredHeight: width_current * parent.height / 167
@@ -2225,15 +513,15 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(6)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(6);
                 }
             }
             Button {
                 id: palet_7
-                
+
                 text: qsTr("7")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.preferredHeight: width_current * parent.height / 167
@@ -2250,10 +538,10 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(7)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(7);
                 }
             }
             Button {
@@ -2262,9 +550,8 @@ Page {
                 Layout.preferredWidth: width_current * parent.height / 167
                 text: qsTr("8")
 
-
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                
+
                 font.bold: true
                 font.pointSize: 30 * parent.height / 155
 
@@ -2275,10 +562,10 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(8)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(8);
                 }
             }
             Button {
@@ -2298,10 +585,10 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(9)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(9);
                 }
             }
 
@@ -2311,7 +598,6 @@ Page {
                 Layout.preferredWidth: width_current * parent.height / 167
                 text: qsTr("10")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                
 
                 font.bold: true
                 font.pointSize: 30 * parent.height / 155
@@ -2323,10 +609,10 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(10)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(10);
                 }
             }
 
@@ -2346,10 +632,10 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(11)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(11);
                 }
             }
 
@@ -2371,10 +657,10 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(12)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(12);
                 }
             }
 
@@ -2394,10 +680,10 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(13)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(13);
                 }
             }
             Button {
@@ -2416,10 +702,10 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(14)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(14);
                 }
             }
             Button {
@@ -2438,14 +724,12 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1
-                    pop_up_2.open()
-                    clearDataQueue()
-                    backend.setDataQueue(15)
+                    state_edit = 1;
+                    pop_up_2.open();
+                    clearDataQueue();
+                    backend.setDataQueue(15);
                 }
             }
-
-
         }
         // Image {
         //     id: ready_icon
@@ -2506,10 +790,10 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0
-                    pop_up_2.open()
+                    state_edit = 0;
+                    pop_up_2.open();
 
-                    backend.setDataBuffer("zone_1")
+                    backend.setDataBuffer("zone_1");
                 }
             }
 
@@ -2526,9 +810,9 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0
-                    pop_up_2.open()
-                    backend.setDataBuffer("zone_2")
+                    state_edit = 0;
+                    pop_up_2.open();
+                    backend.setDataBuffer("zone_2");
                 }
             }
             Button {
@@ -2545,9 +829,9 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0
-                    pop_up_2.open()
-                    backend.setDataBuffer("zone_3")
+                    state_edit = 0;
+                    pop_up_2.open();
+                    backend.setDataBuffer("zone_3");
                 }
             }
             Button {
@@ -2564,9 +848,9 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0
-                    pop_up_2.open()
-                    backend.setDataBuffer("zone_4")
+                    state_edit = 0;
+                    pop_up_2.open();
+                    backend.setDataBuffer("zone_4");
                 }
             }
 
@@ -2584,16 +868,15 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0
-                    pop_up_2.open()
-                    backend.setDataBuffer("zone_5")
+                    state_edit = 0;
+                    pop_up_2.open();
+                    backend.setDataBuffer("zone_5");
                 }
             }
 
             Button {
 
                 text: qsTr("6")
-
 
                 Layout.fillHeight: true
                 Layout.preferredWidth: waiting.height
@@ -2605,9 +888,9 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0
-                    pop_up_2.open()
-                    backend.setDataBuffer("zone_6")
+                    state_edit = 0;
+                    pop_up_2.open();
+                    backend.setDataBuffer("zone_6");
                 }
             }
         }
@@ -2656,10 +939,9 @@ Page {
                 }
             }
             ColumnLayout {
-
                 id: layout_note_2
                 anchors.left: layout_note_1.right
-                anchors.right: parent.right 
+                anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.leftMargin: 0
@@ -2737,14 +1019,11 @@ Page {
             to: 15
             from: 8
             onValueChanged: {
-                item_count = value
-                width_current = 140 - (value -8) * 7
-                saveConfig(value)
-
+                item_count = value;
+                width_current = 140 - (value - 8) * 7;
+                saveConfig(value);
             }
         }
-
-
     }
 
     ColumnLayout {
@@ -2758,6 +1037,7 @@ Page {
         anchors.topMargin: 10
         anchors.bottomMargin: 10
         spacing: 10
+
         // rows: 3
         // columns: 2
 
@@ -2778,9 +1058,9 @@ Page {
             }
             onClicked: {
                 if (stop_mode === "STOP") {
-                    backend.requestStop("STOP")
+                    backend.requestStop("STOP");
                 } else if (stop_mode === "PAUSED") {
-                    backend.requestStop("RUN")
+                    backend.requestStop("RUN");
                 }
             }
             onPressedChanged: {
@@ -2809,12 +1089,12 @@ Page {
                 border.width: 1
             }
             onClicked: {
-                popup_mode = 2
-                status_popup.text = state_system
-                
-                popup_confirm_visible = true
-                
-                popup.open()
+                popup_mode = 2;
+                status_popup.text = state_system;
+
+                popup_confirm_visible = true;
+
+                popup.open();
             }
             onPressedChanged: {
                 if (pressed) {
@@ -2828,7 +1108,7 @@ Page {
         Button {
             id: homming_button
             text: homing_mode
-            
+
             Layout.fillWidth: true
             Layout.fillHeight: true
             highlighted: false
@@ -2854,11 +1134,6 @@ Page {
             // }
 
         }
-
-
-        
-
-
     }
     RowLayout {
         width: parent.width * 0.5
@@ -2871,6 +1146,7 @@ Page {
         anchors.leftMargin: parent.width * 0.25
         anchors.bottomMargin: 0
         spacing: 10
+
         // rows: 3
         // columns: 2
 
@@ -2882,7 +1158,7 @@ Page {
             highlighted: false
             font.bold: true
             font.pointSize: 40 * parent.height / 200
-            
+
             background: Rectangle {
                 color: "#2196F3"
                 radius: 30 * parent.height / 104
@@ -2891,9 +1167,9 @@ Page {
             }
             onClicked: {
                 if (control_mode === "RUNNING") {
-                    backend.requestControl("STOP")
+                    backend.requestControl("STOP");
                 } else if (control_mode === "PAUSED") {
-                    backend.requestControl("RUN")
+                    backend.requestControl("RUN");
                 }
             }
             onPressedChanged: {
@@ -2908,8 +1184,6 @@ Page {
             id: status_button
             text: status_mode
 
-            
-
             Layout.fillHeight: true
             Layout.preferredWidth: parent.width * 0.3
             highlighted: false
@@ -2922,25 +1196,21 @@ Page {
                 border.width: 1
             }
             onClicked: {
-                popup_mode = 0
+                popup_mode = 0;
                 if (status_mode === "ERROR") {
-                    status_popup.text = backend.robotError
-                    popup_confirm_visible = true
+                    status_popup.text = backend.robotError;
+                    popup_confirm_visible = true;
                 } else {
-                    status_popup.text = backend.robotDetail
-                    popup_confirm_visible = false
+                    status_popup.text = backend.robotDetail;
+                    popup_confirm_visible = false;
                 }
-                    
 
-                popup.open()
+                popup.open();
             }
-            
         }
         Button {
             id: mode_button
             text: qsTr(mode_mode)
-
-            
 
             Layout.fillHeight: true
             Layout.preferredWidth: parent.width * 0.3
@@ -2954,25 +1224,23 @@ Page {
                 border.width: 1
             }
             onClicked: {
-                popup_mode = 1
-                popup_confirm_visible = true
+                popup_mode = 1;
+                popup_confirm_visible = true;
                 if (mode_mode === "MANUAL") {
                     // mode_mode ="AUTO"
-                    status_popup.text = qsTr(
-                                "Change robot mode to AUTO")
-                    mode_button.background.color = "#4CAF50"
+                    status_popup.text = qsTr("Change robot mode to AUTO");
+                    mode_button.background.color = "#4CAF50";
                 } else if (mode_mode === "AUTO") {
                     // mode_mode =  "MANUAL"
-                    status_popup.text = qsTr(
-                                "Change robot mode to MANUAL")
-                    mode_button.background.color = "#03A9F4"
+                    status_popup.text = qsTr("Change robot mode to MANUAL");
+                    mode_button.background.color = "#03A9F4";
                 } else
-                    status_popup.text = qsTr("Data false")
-                popup.open()
+                    status_popup.text = qsTr("Data false");
+                popup.open();
             }
         }
     }
- 
+
     // Thêm bàn phím ảo
     Keyboard {
         id: inputPanel
@@ -2984,8 +1252,6 @@ Page {
         anchors.left: parent.left
         anchors.right: parent.right
         parent: Overlay.overlay
-
-        
     }
 
     // Hiển thị bàn phím khi TextField nhận focus
@@ -2995,75 +1261,70 @@ Page {
     Connections {
         target: backend
         onBatteryPercentageChanged: {
-            batteryPercentage = backend.batteryPercentage
+            batteryPercentage = backend.batteryPercentage;
         }
         onBatteryVoltageChanged: {
-            batteryVoltage = backend.batteryVoltage
+            batteryVoltage = backend.batteryVoltage;
         }
         onBatteryCurrentChanged: {
-            batteryCurrent = backend.batteryCurrent
+            batteryCurrent = backend.batteryCurrent;
         }
         onRobotDetailChanged: {
             if (status_mode === "ERROR") {
-                status_header.text = backend.robotError
+                status_header.text = backend.robotError;
             } else {
-                status_header.text = backend.robotDetail
+                status_header.text = backend.robotDetail;
             }
         }
         onRobotModeChanged: {
-            mode_mode = backend.robotMode
+            mode_mode = backend.robotMode;
             if (mode_mode === "MANUAL") {
-                mode_button.background.color = "#03A9F4"
+                mode_button.background.color = "#03A9F4";
             } else if (mode_mode === "AUTO") {
-                mode_button.background.color = "#4CAF50"
+                mode_button.background.color = "#4CAF50";
             } else
-                mode_button.background.color = "#FF9800"
+                mode_button.background.color = "#FF9800";
         }
         onRobotStatusChanged: {
-            status_mode = backend.robotStatus
+            status_mode = backend.robotStatus;
 
             if ((status_mode === "ERROR") || (status_mode === "EMG")) {
-                status_button.background.color = "#F44336"
+                status_button.background.color = "#F44336";
             } else if (status_mode === "WAITING_INIT_POSE") {
-                status_button.background.color = "#FFFFFF"
+                status_button.background.color = "#FFFFFF";
             } else if (status_mode === "NORMAL") {
-                status_button.background.color = "#4CAF50"
+                status_button.background.color = "#4CAF50";
             } else if (status_mode === "WAITING") {
-                status_button.background.color = "#FFEB3B"
+                status_button.background.color = "#FFEB3B";
             } else {
-                status_button.background.color = "#FF9800"
+                status_button.background.color = "#FF9800";
             }
         }
         onGetControlChanged: {
-            control_mode = backend.getControl
+            control_mode = backend.getControl;
             if (mode_mode === "AUTO" && control_mode === "RUNNING") {
                 if (status_mode === "WAITING") {
-                    control_button.background.color = "#2196F3"
+                    control_button.background.color = "#2196F3";
                 } else {
-                    control_button.background.color = "#4CAF50"
+                    control_button.background.color = "#4CAF50";
                 }
             } else if (mode_mode === "MANUAL" && control_mode === "RUNNING") {
-                control_button.background.color = "#2196F3"
+                control_button.background.color = "#2196F3";
             } else if (control_mode === "PAUSE") {
-                control_button.background.color = "#FFEB3B"
+                control_button.background.color = "#FFEB3B";
             } else
-                control_button.background.color = "#FFEB3B"
+                control_button.background.color = "#FFEB3B";
         }
         onSystemStatusChanged: {
-            state_system = "State AGF: " + backend.getStateSystem()
-            
-            status_system = backend.systemStatus
-            reset_mode = backend.systemStatus
+            state_system = "State AGF: " + backend.getStateSystem();
+
+            status_system = backend.systemStatus;
+            reset_mode = backend.systemStatus;
             if (backend.systemStatus === "ERROR") {
-                reset_button.background.color = "#F44336"
-                
-                
-                
+                reset_button.background.color = "#F44336";
+            } else if (backend.systemStatus === "NORMAL") {
+                reset_button.background.color = "#4CAF50";
             }
-            else if (backend.systemStatus === "NORMAL") {
-                reset_button.background.color = "#4CAF50"
-            }
-            
         }
-    }  
+    }
 }

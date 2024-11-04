@@ -9,9 +9,9 @@ import QtQuick.VirtualKeyboard 6.7
 
 // import backendqt 1.0
 
-ApplicationWindow {
-    //width: 1920
-    //height: 1080
+Window {
+    width: 1920
+    height: 1080
     id: window
     visible: true
     flags: Qt.FramelessWindowHint

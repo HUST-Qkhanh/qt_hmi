@@ -11,6 +11,8 @@
 #include "config_manager.h"
 #include <QApplication>
 #include "autogen/environment.h"
+#include <QTranslator>
+
 
 class hmiApp : public QObject {
     Q_OBJECT
@@ -56,6 +58,10 @@ hmiApp::hmiApp(int argc, char** argv)
     // app.installTranslator(&translator);
     set_qt_environment();
 
+    QTranslator translator;
+    translator.load(":/simplequick");
+    app.installTranslator(&translator);
+    
     hmi_status_pub = nh.advertise<std_stamped_msgs::StringStamped>("/hmi_status", 1);
     const QUrl url(mainQmlFile);
     QObject::connect(
