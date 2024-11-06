@@ -53,6 +53,7 @@
 #include <QVariant>
 #include <thread>
 #include <QQmlContext>
+#include "threadPoolManager.h"
 // #include <OpenXLSX.hpp>
 
 using json = nlohmann::json;
@@ -71,7 +72,35 @@ class Backend : public QObject
     Q_PROPERTY(double getAngular READ getAngular NOTIFY velChanged)
     Q_PROPERTY(QString systemStatus READ systemStatus NOTIFY systemStatusChanged)
     Q_PROPERTY(QString updateStatus READ updateStatus NOTIFY updateStatusChanged)
-    // Q_PROPERTY(NOTIFY colorChanged)
+    Q_PROPERTY(QString fetchedQueueJson READ getQueueJson NOTIFY queueJsonChanged)
+    
+public slots:
+    void queueJsonFetched(const QString &result) {
+        ROS_ERROR("queueJsonFetched");
+        qDebug() << "palletJson: " << result;
+        fetchedQueueStr = result.toStdString();
+        emit queueJsonChanged();
+    };
+
+signals:
+    void batteryPercentageChanged();
+    void batteryVoltageChanged();
+    void batteryCurrentChanged();
+    void robotModeChanged();
+    void robotStatusChanged();
+    void robotDetailChanged();
+    void robotErrorChanged();
+    void getNameChanged();
+    void getIPChanged();
+    void getControlChanged();
+    void getFastechInputChanged();
+    void getFastechOutputChanged();
+    void velChanged();
+    void volumePercentageChanged();
+    void systemStatusChanged();
+    void updateStatusChanged();
+    void queueJsonChanged();
+
 private:
     ros::NodeHandle nh;
     QQmlApplicationEngine *engine = nullptr;
@@ -151,7 +180,8 @@ private:
     mongocxx::collection collection;
     mongocxx::collection collection_queue;
     mongocxx::collection collection_model;
-    
+
+    ThreadPoolManager threadManager;    
 
     std::vector<int> fastechData;
     std::vector<int> fastechDataOutput;
@@ -164,6 +194,7 @@ private:
     std::string statusValueSystem;
     std::string _queue;
     std::string zone_;
+    std::string fetchedQueueStr;
     bool bug_manual_mode;
     int index;
     int max_index;
@@ -250,6 +281,7 @@ public:
     QString getControl() const;
     QString systemStatus() const;
     QString updateStatus() const;
+    QString getQueueJson() const;
     double getLinear() const;
     double getAngular() const;
     
@@ -305,29 +337,8 @@ public:
     Q_INVOKABLE void set_color() {
         initColor();
     }
-
     Q_INVOKABLE QString openFileDialog() ;
-
-    
-
-
-signals:
-    void batteryPercentageChanged();
-    void batteryVoltageChanged();
-    void batteryCurrentChanged();
-    void robotModeChanged();
-    void robotStatusChanged();
-    void robotDetailChanged();
-    void robotErrorChanged();
-    void getNameChanged();
-    void getIPChanged();
-    void getControlChanged();
-    void getFastechInputChanged();
-    void getFastechOutputChanged();
-    void velChanged();
-    void volumePercentageChanged();
-    void systemStatusChanged();
-    void updateStatusChanged();
+    Q_INVOKABLE QString getQueuePallet();
 };
 
 #endif // BACKEND_H

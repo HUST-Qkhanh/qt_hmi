@@ -46,7 +46,11 @@ Page {
     property string model_data: ""
     property string count_data: ""
     property int item_count: loadConfig()
-    property var model_pallet_: getListModel()
+
+    signal queuePalletRequest(int queueId)
+    signal loadPopupType(int type)
+
+    // property var model_pallet_: getListModel()
     // property var count_pallet: []
     // Khi cần khôi phục cấu hình
     function loadConfig() {
@@ -62,34 +66,35 @@ Page {
         };
         configManager.saveConfig(config, "config.json");
     }
-    function getListCount() {
-        backend.getDataComboBox2();
-        var item = backend.getListCount();
-        return item;
-    }
-    function getListModel() {
-        backend.getDataComboBox();
-        var item = backend.getListModel();
-        return item;
-    }
+
+    // function getListCount() {
+    //     backend.getDataComboBox2();
+    //     var item = backend.getListCount();
+    //     return item;
+    // }
+    // function getListModel() {
+    //     backend.getDataComboBox();
+    //     var item = backend.getListModel();
+    //     return item;
+    // }
 
     function clearDataQueue() {
-        uuid_queue.text = "-----";
-        _Id_.text = "-----";
-        _PalletInfo_.text = "-----";
-        _Merchandise_.text = "-----";
-        _NameModel_.text = "-----";
-        _Destination_.text = "-----";
-        _ZoneId_.text = "-----";
-        _ColumnId_.text = "-----";
-        _LocationId_.text = "-----";
-        _queue_.text = "-----";
-        _Model_.text = "-----";
-        _Count_.text = "-----";
-        _height_.text = "-----";
-        _width_.text = "-----";
-        _length_.text = "-----";
-        _pallet_type_.text = "-----";
+    // // uuid_queue.text = "-----";
+    // // _Id_.text = "-----";
+    // _PalletInfo_.text = "-----";
+    // _Merchandise_.text = "-----";
+    // _NameModel_.text = "-----";
+    // _Destination_.text = "-----";
+    // _ZoneId_.text = "-----";
+    // _ColumnId_.text = "-----";
+    // _LocationId_.text = "-----";
+    // _queue_.text = "-----";
+    // _Model_.text = "-----";
+    // _Count_.text = "-----";
+    // _height_.text = "-----";
+    // _width_.text = "-----";
+    // _length_.text = "-----";
+    // _pallet_type_.text = "-----";
     }
 
     function popup_close() {
@@ -397,11 +402,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    console.log("zone_1_queue");
-                    backend.setDataQueue(1);
+                    queuePalletRequest(1);
                 }
             }
             Button {
@@ -421,10 +422,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(2);
+                    queuePalletRequest(2);
                 }
             }
             Button {
@@ -444,10 +442,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(3);
+                    queuePalletRequest(3);
                 }
             }
             Button {
@@ -467,10 +462,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(4);
+                    queuePalletRequest(4);
                 }
             }
             Button {
@@ -490,10 +482,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(5);
+                    queuePalletRequest(5);
                 }
             }
             Button {
@@ -513,10 +502,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(6);
+                    queuePalletRequest(6);
                 }
             }
             Button {
@@ -538,10 +524,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(7);
+                    queuePalletRequest(7);
                 }
             }
             Button {
@@ -562,10 +545,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(8);
+                    queuePalletRequest(8);
                 }
             }
             Button {
@@ -585,10 +565,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(9);
+                    queuePalletRequest(9);
                 }
             }
 
@@ -609,10 +586,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(10);
+                    queuePalletRequest(10);
                 }
             }
 
@@ -632,10 +606,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(11);
+                    queuePalletRequest(11);
                 }
             }
 
@@ -657,10 +628,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(12);
+                    queuePalletRequest(12);
                 }
             }
 
@@ -680,10 +648,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(13);
+                    queuePalletRequest(13);
                 }
             }
             Button {
@@ -702,10 +667,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(14);
+                    queuePalletRequest(14);
                 }
             }
             Button {
@@ -724,10 +686,7 @@ Page {
                     border.width: 2
                 }
                 onClicked: {
-                    state_edit = 1;
-                    pop_up_2.open();
-                    clearDataQueue();
-                    backend.setDataQueue(15);
+                    queuePalletRequest(15);
                 }
             }
         }
@@ -888,7 +847,7 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0;
+                    page1.state_edit = 0;
                     pop_up_2.open();
                     backend.setDataBuffer("zone_6");
                 }
@@ -1325,6 +1284,16 @@ Page {
             } else if (backend.systemStatus === "NORMAL") {
                 reset_button.background.color = "#4CAF50";
             }
+        }
+    }
+
+    Connections {
+        target: page1
+        onQueuePalletRequest: {
+            pop_up_2.open();
+            loadPopupType(0);
+            console.log("queueID: " + queueId);
+            backend.setDataQueue(queueId);
         }
     }
 }

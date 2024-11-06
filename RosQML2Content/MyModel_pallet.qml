@@ -17,7 +17,6 @@ Item {
         anchors.bottomMargin: 5
         spacing: 50
 
-
         GridLayout {
             id: gridLayout
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
@@ -75,14 +74,14 @@ Item {
                     // Khởi tạo danh sách ban đầu
                     for (var i = 0; i < count_pallet.length; i++) {
                         list_count_pallet.append({
-                                                     "text": count_pallet[i]
-                                                 });
+                            "text": count_pallet[i]
+                        });
                     }
                 }
                 onEditTextChanged: {
                     count_data = editText;
 
-                    __id__.text = "-----";
+                    // __id__.text = "-----";
                     _height__.text = "-----";
                     _width__.text = "-----";
                     _length__.text = "-----";
@@ -97,6 +96,7 @@ Item {
                 editable: true
                 font.pixelSize: 10 * model_pallet.height / 300
                 Layout.fillHeight: true
+
                 // Layout.preferredHeight: 31
 
                 Layout.preferredWidth: parent.width * 0.6
@@ -113,17 +113,17 @@ Item {
                     text: model.text
                 }
 
-                Component.onCompleted: {
-                    // Khởi tạo danh sách ban đầu
-                    for (var i = 0; i < model_pallet_.length; i++) {
-                        list_model_pallet.append({
-                                                     "text": model_pallet_[i]
-                                                 });
-                    }
-                }
+                Component.onCompleted:
+                // // Khởi tạo danh sách ban đầu
+                // for (var i = 0; i < model_pallet_.length; i++) {
+                //     list_model_pallet.append({
+                //         "text": model_pallet_[i]
+                //     });
+                // }
+                {}
                 onEditTextChanged: {
                     model_data = editText;
-                    __id__.text = "-----";
+                    // __id__.text = "-----";
                     _height__.text = "-----";
                     _width__.text = "-----";
                     _length__.text = "-----";
@@ -285,7 +285,6 @@ Item {
                 Layout.row: 2
                 Layout.column: 3
 
-
                 background: Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -305,7 +304,6 @@ Item {
                 Layout.preferredWidth: parent.width * 0.6
                 Layout.row: 3
                 Layout.column: 3
-
 
                 background: Rectangle {
                     anchors.fill: parent

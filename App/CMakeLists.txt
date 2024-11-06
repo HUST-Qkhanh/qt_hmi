@@ -47,6 +47,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     "include/model_pallet.h"
     "src/model_queue.cpp"
     "include/model_queue.h"
+    "include/asyncTasks.h"
+    "include/threadPoolManager.h"
+    "src/asyncTasks.cpp"
+    "src/threadPoolManager.cpp"
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE

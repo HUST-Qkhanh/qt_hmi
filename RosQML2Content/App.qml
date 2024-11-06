@@ -9,7 +9,7 @@ import QtQuick.VirtualKeyboard 6.7
 
 // import backendqt 1.0
 
-Window {
+ApplicationWindow {
     width: 1920
     height: 1080
     id: window

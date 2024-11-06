@@ -18,6 +18,7 @@ list(APPEND CMAKE_PREFIX_PATH "/home/mkac/amr_ws/devel" "/usr/local/lib")
 
 
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/qml)
 set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
@@ -25,7 +26,18 @@ set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
     FORCE
 )
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Qml Quick Widgets)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Qml Quick LinguistTools Widgets)
+qt_create_translation(QM_FILES ${CMAKE_CURRENT_SOURCE_DIR} simplequick.ts)
+message(STATUS "QM_FILES: ${QM_FILES}")
+configure_file(/home/mkac/qt_ws/qt_hmi/simplequick.qm ${CMAKE_SOURCE_DIR}/Generated/translation.qm COPYONLY)
+
+# foreach(QM_FILE ${QM_FILES})
+#     configure_file(
+#         ${QM_FILE}
+#         ${CMAKE_CURRENT_SOURCE_DIR} # Destination directory
+#         COPYONLY
+#     )
+# endforeach()
 
 
 if (Qt6_VERSION VERSION_GREATER_EQUAL 6.3)
@@ -33,7 +45,8 @@ if (Qt6_VERSION VERSION_GREATER_EQUAL 6.3)
 endif()
 
 qt_add_executable(${CMAKE_PROJECT_NAME}
-    RosQML2.qrc)
+    RosQML2.qrc
+    ${QM_FILES})
 
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
     PREFIX "/"
