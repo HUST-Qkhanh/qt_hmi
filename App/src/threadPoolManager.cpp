@@ -12,10 +12,26 @@ ThreadPoolManager::~ThreadPoolManager()
     QThreadPool::globalInstance()->waitForDone();
 }
 
-void ThreadPoolManager::handleTaskFinished(const QString &result)
+void ThreadPoolManager::handleTaskFinished(const int &task_id, const QString &result)
 {
-    qDebug("Task completed");
-    emit taskCompleted(result);
+
+
+    if (task_id == 1)
+    {
+        qDebug() << "Task is of type GetQueueTask";
+        // Perform actions specific to SpecificTaskType
+        emit queueTaskCompleted(result);
+    }
+    else if (task_id == 2)
+    {
+        qDebug() << "Task is of type GetBufferTask";
+        // Perform actions specific to AnotherTaskType
+        emit bufferTaskCompleted(result);
+    }
+    else
+    {
+        qDebug() << "Task is of an unknown or base type AsyncTask";
+    }
 
     // Clean up
     // currentTask->deleteLater();
@@ -31,7 +47,7 @@ void ThreadPoolManager::executeTask(AsyncTask *task)
 {
     if (task)
     {
-        bool connected = connect(task, &AsyncTask::taskFinished, this, &ThreadPoolManager::handleTaskFinished);
+        bool connected = connect(task, &AsyncTask::taskFinished, this, &ThreadPoolManager::handleTaskFinished, Qt::UniqueConnection);
         if (connected)
         {
             qWarning("Connected taskFinished signal");

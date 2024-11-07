@@ -18,10 +18,11 @@ public:
 
 signals:
     void taskStarted();
-    void taskCompleted(const QString &result);
+    void queueTaskCompleted(const QString &result);
+    void bufferTaskCompleted(const QString &result);
 
 public slots:
-    void handleTaskFinished(const QString &result);
+    void handleTaskFinished(const int &task_id, const QString &result);
 };
 
 #endif // THREADPOOLMANAGER_H

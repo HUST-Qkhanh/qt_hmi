@@ -1,239 +1,245 @@
 import QtQuick 6.2
 import QtQuick.Controls 6.2
 import QtQuick.Layouts 6.2
+import RosQML2
 
 Item {
     id: buffer_item
 
-    ColumnLayout {
-        id: columnLayout
-        x: 0
-        y: 0
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
+    property alias _id: _stt.text
+
+    property alias _zone: _zone_id.text
+    property alias _column: _column_id.text
+    property alias _location: _location_id.text
+
+    property alias _palletStatus: _status.text
+    property alias _merchandise: _id_hang.text
+    property alias _palletType: _type.text
+
+    property alias _palletHeight: _height.text
+    property alias _palletWidth: _width.text
+    property alias _palletLength: _length.text
+
+    property string jsonBuffer: ''
+
+    function clearTextFields() {
+        _id = qsTr("");
+
+        _zone = qsTr("");
+        _column = qsTr("");
+        _location = qsTr("");
+
+        _palletStatus = qsTr("");
+        _merchandise = qsTr("");
+        _palletType = qsTr("");
+
+        _palletHeight = qsTr("");
+        _palletWidth = qsTr("");
+        _palletLength = qsTr("");
+    }
+
+    function updateQueuePallet(jsonStr) {
+        var jsonObj = JSON.parse(jsonStr); // Parse the JSON string into a JavaScript object
+
+        // Update the text fields with parsed data
+        _id = jsonObj.stt.toString() || "";
+        _zone = jsonObj.zone_id.toString() || "";
+        _column = jsonObj.column_id.toString() || "";
+        _location = jsonObj.location_id.toString() || "";
+        _palletStatus = jsonObj.status.toString() || "";
+        _merchandise = jsonObj.id_hang.toString() || "";
+        _palletType = jsonObj.type.toString() || "";
+        _palletHeight = jsonObj.height.toString() || "";
+        _palletWidth = jsonObj.width.toString() || "";
+        _palletLength = jsonObj.length.toString() || "";
+
+        console.log("buffer_id: " + _id);
+    }
+
+    Component.onCompleted: {
+        clearTextFields();
+    }
+
+    Connections {
+        target: backend
+        onBufferJsonChanged: {
+            var jsonBuffer = backend.fetchedBufferJson;
+            console.log("Fetched queue json:" + jsonBuffer);
+            updateQueuePallet(jsonBuffer);
+        }
+    }
+
+    Connections {
+        target: userPopup
+        onPopupLoaded: {
+            clearTextFields();
+        }
+    }
+
+    RowLayout {
+        id: rowLayout1
+        anchors.fill: parent
         anchors.leftMargin: 5
         anchors.rightMargin: 5
         anchors.topMargin: 5
         anchors.bottomMargin: 5
-        spacing: 15
+        spacing: 50
 
-
-        RowLayout {
-            id: rowLayout
-            width: 433
-            height: 42
-            Layout.rightMargin: 145
-            Layout.fillWidth: true
-            layoutDirection: Qt.LeftToRight
-            spacing: 5
-            Layout.maximumHeight: parent.height * 0.2
-            // Layout.maximumWidth: parent.width * 0.45
-
-            Text {
-                text: qsTr("Merchandise :")
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                clip: true
-                Layout.fillWidth: true
-                Layout.preferredWidth: parent.width * 0.15
-                Layout.fillHeight: true
-                font.pointSize: 15 * main_layout.height / 364
-                font.bold: false
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.column: 4
-                Layout.row: 0
-            }
-
-            TextField {
-                id: _id_hang
-                objectName: "___id_hang"
-                font.pixelSize: 25 * _id_hang.height / 45
-                Layout.preferredWidth: parent.width * 0.65
-                Layout.fillHeight: true
-                property bool isBold: false
-                property real radius: 5
-                Layout.column: 5
-                Layout.row: 0
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }
-            }
-        }
         GridLayout {
             id: main_layout
-            Layout.rightMargin: 50
-            Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+            Layout.rightMargin: 0
             layoutDirection: Qt.LeftToRight
             Layout.fillWidth: true
             rows: 4
             columns: 6
-            // Layout.maximumWidth: parent.width * 0.9
-            Layout.maximumHeight: parent.height * 0.8
+            Layout.maximumHeight: parent.height * 0.7
             Text {
+                visible: false
                 text: qsTr("Status :")
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
-                Layout.fillHeight: true
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                font.styleName: "Regular"
+                Layout.fillHeight: false
                 Layout.fillWidth: true
                 font.pointSize: 15 * main_layout.height / 364
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                 font.bold: false
                 Layout.column: 0
-                Layout.row: 1
-            }
-            Text {
-                text: qsTr("Position :")
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
-                font.pointSize: 15 * main_layout.height / 364
-                Layout.preferredWidth: parent.width * 0.15
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                font.bold: false
-                Layout.column: 2
-                Layout.row: 1
+                Layout.row: 0
             }
             Text {
                 text: qsTr("Type :")
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                font.styleName: "Regular"
+                Layout.fillWidth: true
                 font.pointSize: 15 * main_layout.height / 364
-                Layout.preferredWidth: parent.width * 0.15
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillHeight: false
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                 font.bold: false
-                Layout.column: 4
-                Layout.row: 1
+                Layout.column: 0
+                Layout.row: 4
             }
             Text {
+                visible: true
                 text: qsTr("Height :")
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                font.styleName: "Regular"
+                Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+                Layout.fillWidth: true
                 font.pointSize: 15 * main_layout.height / 364
-                Layout.preferredWidth: parent.width * 0.15
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillHeight: false
                 font.bold: false
-                Layout.column: 0
-                Layout.row: 2
+                Layout.column: 1
+                Layout.row: 0
             }
             Text {
+                visible: true
                 text: qsTr("Width :")
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                font.styleName: "Regular"
+                Layout.fillWidth: true
                 font.pointSize: 15 * main_layout.height / 364
-                Layout.preferredWidth: parent.width * 0.15
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillHeight: false
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                 font.bold: false
-                Layout.column: 2
+                Layout.column: 1
                 Layout.row: 2
             }
             Text {
+                visible: true
                 text: qsTr("Length :")
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                font.styleName: "Regular"
+                Layout.fillWidth: true
                 font.pointSize: 15 * main_layout.height / 364
-                Layout.preferredWidth: parent.width * 0.15
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillHeight: false
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                 font.bold: false
-                Layout.column: 4
-                Layout.row: 2
+                Layout.column: 1
+                Layout.row: 4
             }
             Text {
+                visible: true
                 text: qsTr("Zone ID :")
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                font.styleName: "Regular"
+                Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+                Layout.fillWidth: true
                 font.pointSize: 15 * main_layout.height / 364
-                Layout.preferredWidth: parent.width * 0.15
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                font.bold: false
-                Layout.column: 0
-                Layout.row: 3
-            }
-            Text {
-                text: qsTr("Column ID :")
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
-                font.pointSize: 15 * main_layout.height / 364
-                Layout.preferredWidth: parent.width * 0.15
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillHeight: false
                 font.bold: false
                 Layout.column: 2
-                Layout.row: 3
+                Layout.row: 0
+            }
+            Text {
+                visible: true
+                text: qsTr("Column ID :")
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                font.styleName: "Regular"
+                Layout.fillWidth: true
+                font.pointSize: 15 * main_layout.height / 364
+                Layout.fillHeight: false
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
+                font.bold: false
+                Layout.column: 2
+                Layout.row: 2
             }
             Text {
                 text: qsTr("Location ID :")
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                font.styleName: "Regular"
+                Layout.fillWidth: true
                 font.pointSize: 15 * main_layout.height / 364
-                Layout.preferredWidth: parent.width * 0.15
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillHeight: false
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                 font.bold: false
-                Layout.column: 4
-                Layout.row: 3
+                Layout.column: 2
+                Layout.row: 4
             }
             TextField {
                 id: _status
                 objectName: "___status"
-                font.pixelSize: 25 * _status.height / 45
+                font.pixelSize: 25 * buffer_item.height / 600
+                verticalAlignment: Text.AlignVCenter
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                 Layout.fillWidth: true
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
                 property bool isBold: false
                 property real radius: 5
-                Layout.column: 1
+                Layout.column: 0
                 Layout.row: 1
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
+                placeholderText: qsTr("Status")
+                placeholderTextColor: Constants.textColorSecondary
 
-                background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }
-            }
-            TextField {
-                id: _stt
-                objectName: "___stt"
-                font.pixelSize: 25 * _stt.height / 45
-                Layout.fillWidth: true
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
-                property bool isBold: false
-                property real radius: 5
-                Layout.column: 3
-                Layout.row: 1
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
-                background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }
+                // background: Rectangle {
+                //     anchors.fill: parent
+                //     radius: 5
+                //     border.color: "#3850ff"
+                // }
             }
             TextField {
                 id: _type
                 objectName: "___type"
-                font.pixelSize: 25 * _type.height / 45
+                font.pixelSize: 18 * buffer_item.height / 600
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                 Layout.fillWidth: true
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
                 property bool isBold: false
                 property real radius: 5
-                Layout.column: 5
-                Layout.row: 1
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
+                visible: true
+                Layout.column: 0
+                Layout.row: 5
+                placeholderText: qsTr("Empty")
+                placeholderTextColor: Constants.textColorSecondary
                 background: Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -244,15 +250,18 @@ Item {
             TextField {
                 id: _height
                 objectName: "___height"
-                font.pixelSize: 25 * _height.height / 45
+                font.pixelSize: 18 * buffer_item.height / 600
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                 Layout.fillWidth: true
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
                 property bool isBold: false
                 property real radius: 5
+                placeholderText: qsTr("Empty")
+                placeholderTextColor: Constants.textColorSecondary
+                visible: true
                 Layout.column: 1
-                Layout.row: 2
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
+                Layout.row: 1
 
                 background: Rectangle {
                     anchors.fill: parent
@@ -264,16 +273,18 @@ Item {
             TextField {
                 id: _width
                 objectName: "___width"
-                font.pixelSize: 25 * _width.height / 45
+                font.pixelSize: 18 * buffer_item.height / 600
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                 Layout.fillWidth: true
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
                 property bool isBold: false
                 property real radius: 5
-                Layout.column: 3
-                Layout.row: 2
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
+                visible: true
+                Layout.column: 1
+                Layout.row: 3
+                placeholderText: qsTr("Empty")
+                placeholderTextColor: Constants.textColorSecondary
                 background: Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -284,16 +295,18 @@ Item {
             TextField {
                 id: _length
                 objectName: "___length"
-                font.pixelSize: 25 * _length.height / 45
+                font.pixelSize: 18 * buffer_item.height / 600
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                 Layout.fillWidth: true
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
                 property bool isBold: false
                 property real radius: 5
-                Layout.column: 5
-                Layout.row: 2
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
+                visible: true
+                Layout.column: 1
+                Layout.row: 5
+                placeholderText: qsTr("Empty")
+                placeholderTextColor: Constants.textColorSecondary
                 background: Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -304,16 +317,18 @@ Item {
             TextField {
                 id: _zone_id
                 objectName: "___zone_id"
-                font.pixelSize: 25 * _zone_id.height / 45
+                font.pixelSize: 18 * buffer_item.height / 600
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                 Layout.fillWidth: true
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
                 property bool isBold: false
                 property real radius: 5
-                Layout.column: 1
-                Layout.row: 3
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
+                visible: true
+                Layout.column: 2
+                Layout.row: 1
+                placeholderText: qsTr("Empty")
+                placeholderTextColor: Constants.textColorSecondary
                 background: Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -324,16 +339,18 @@ Item {
             TextField {
                 id: _column_id
                 objectName: "___column_id"
-                font.pixelSize: 25 * _column_id.height / 45
+                font.pixelSize: 18 * buffer_item.height / 600
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                 Layout.fillWidth: true
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
                 property bool isBold: false
                 property real radius: 5
-                Layout.column: 3
+                visible: true
+                Layout.column: 2
                 Layout.row: 3
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
+                placeholderText: qsTr("Empty")
+                placeholderTextColor: Constants.textColorSecondary
                 background: Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -344,8 +361,11 @@ Item {
             TextField {
                 id: _location_id
                 objectName: "___location_id"
-                font.pixelSize: 25 * _location_id.height / 45
+                font.pixelSize: 18 * buffer_item.height / 600
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                 Layout.fillWidth: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
 
                 onActiveFocusChanged: {
                     if (activeFocus) {
@@ -353,18 +373,119 @@ Item {
                         Qt.inputMethod.update(Qt.ImQueryInput);
                     }
                 }
-                Layout.preferredWidth: parent.width * 0.2
-                Layout.fillHeight: true
+
                 property bool isBold: false
                 property real radius: 5
-                Layout.column: 5
-                Layout.row: 3
-                placeholderTextColor: "#F44336" //AppStyle.placeholderColor
-
+                visible: true
+                Layout.column: 2
+                Layout.row: 5
+                placeholderText: qsTr("Empty")
+                placeholderTextColor: Constants.textColorSecondary
                 background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
+                }
+            }
+
+            Text {
+                text: qsTr("Merchandise :")
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                font.styleName: "Regular"
+                clip: true
+                Layout.fillWidth: true
+                Layout.preferredWidth: parent.width * 0.15
+                Layout.fillHeight: false
+                font.pointSize: 15 * main_layout.height / 364
+                font.bold: false
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
+                Layout.column: 0
+                Layout.row: 2
+            }
+
+            TextField {
+                id: _id_hang
+                objectName: "___id_hang"
+                font.pixelSize: 18 * buffer_item.height / 600
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                Layout.fillWidth: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
+                property bool isBold: false
+                property real radius: 5
+                Layout.column: 0
+                Layout.row: 3
+                placeholderText: qsTr("Empty")
+                placeholderTextColor: Constants.textColorSecondary
+                background: Rectangle {
+                    anchors.fill: parent
+                    radius: 5
+                    border.color: "#3850ff"
+                }
+            }
+        }
+
+        ColumnLayout {
+            id: columnLayout1
+            width: 100
+            height: 100
+            clip: true
+            // Layout.fillWidth: true
+            Layout.preferredWidth: parent.width * 0.3
+            Layout.maximumHeight: parent.height * 0.8
+            Image {
+                id: pallet1
+                source: "asset/pallet (1).png"
+                sourceSize.height: 300
+                sourceSize.width: 300
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                fillMode: Image.PreserveAspectFit
+            }
+
+            ColumnLayout {
+                id: columnLayout
+                Layout.bottomMargin: 5
+                // Layout.maximumWidth: parent.width * 0.5
+                // Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
+                Layout.preferredHeight: parent.height * 0.2
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
+                Layout.maximumWidth: parent.width * 0.5
+
+                Text {
+                    visible: true
+                    text: qsTr("Position :")
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignBottom
+                    Layout.fillWidth: true
+                    font.pointSize: 15 * main_layout.height / 364
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
+                    font.bold: false
+                    Layout.column: 0
+                    Layout.row: 2
+                }
+
+                TextField {
+                    id: _stt
+                    objectName: "___stt"
+                    font.pixelSize: 18 * buffer_item.height / 600
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                    Layout.fillWidth: true
+                    Layout.preferredWidth: parent.width * 0.2
+                    Layout.preferredHeight: _status.height
+                    property bool isBold: false
+                    property real radius: 5
+                    visible: true
+                    placeholderText: qsTr("Empty")
+                    placeholderTextColor: Constants.textColorSecondary
+                    background: Rectangle {
+                        anchors.fill: parent
+                        radius: 5
+                        border.color: "#3850ff"
+                    }
                 }
             }
         }

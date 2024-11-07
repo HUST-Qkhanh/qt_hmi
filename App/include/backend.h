@@ -15,8 +15,8 @@
 #include "model_queue.h"
 #include "model_buffer.h"
 #include "model_pallet.h"
-#include <fstream> 
-#include <cmath> 
+#include <fstream>
+#include <cmath>
 #include <std_msgs/Int16MultiArray.h>
 #include <vector>
 #include <geometry_msgs/Twist.h>
@@ -73,13 +73,22 @@ class Backend : public QObject
     Q_PROPERTY(QString systemStatus READ systemStatus NOTIFY systemStatusChanged)
     Q_PROPERTY(QString updateStatus READ updateStatus NOTIFY updateStatusChanged)
     Q_PROPERTY(QString fetchedQueueJson READ getQueueJson NOTIFY queueJsonChanged)
-    
+    Q_PROPERTY(QString fetchedBufferJson READ getBufferJson NOTIFY bufferJsonChanged)
+
 public slots:
-    void queueJsonFetched(const QString &result) {
+    void queueJsonFetched(const QString &result)
+    {
         ROS_ERROR("queueJsonFetched");
         qDebug() << "palletJson: " << result;
         fetchedQueueStr = result.toStdString();
         emit queueJsonChanged();
+    };
+    void bufferJsonFetched(const QString &result)
+    {
+        ROS_ERROR("bufferJsonFetched");
+        qDebug() << "palletJson: " << result;
+        fetchedBufferStr = result.toStdString();
+        emit bufferJsonChanged();
     };
 
 signals:
@@ -100,6 +109,7 @@ signals:
     void systemStatusChanged();
     void updateStatusChanged();
     void queueJsonChanged();
+    void bufferJsonChanged();
 
 private:
     ros::NodeHandle nh;
@@ -118,7 +128,6 @@ private:
     ros::Subscriber pallet_status_sub;
     ros::Subscriber system_status_sub;
 
-    
     ros::Publisher robot_mode_pub;
     ros::Publisher request_run_stop_pub;
     ros::Publisher request_working_stt_pub;
@@ -127,16 +136,15 @@ private:
     ros::Publisher robot_stop_pub;
 
     ros::ServiceServer pop_last_pallet;
-    bool servicePopPalletCallback(std_stamped_msgs::StringService::Request& req, std_stamped_msgs::StringService::Response& res );
+    bool servicePopPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res);
 
     ros::ServiceServer append_head_pallet;
-    bool serviceAppendPalletCallback(std_stamped_msgs::StringService::Request& req, std_stamped_msgs::StringService::Response& res );
-    
+    bool serviceAppendPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res);
+
     ros::ServiceClient reset_error_agf;
     ros::ServiceClient stop_error_agf;
     ros::ServiceServer get_last_pallet;
-    bool serviceLookupPalletCallback(std_stamped_msgs::StringService::Request& req, std_stamped_msgs::StringService::Response& res);
-
+    bool serviceLookupPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res);
 
     // QString formatJsonString(const QString& rawJson);
     // json toJson(const char* jsonString);
@@ -154,11 +162,11 @@ private:
     void systemStatusCallback(const std_stamped_msgs::StringStamped::ConstPtr &msg);
     // void standardIoCallback(const std_stamped_msgs::StringStamped &msg);
 
-    static std::shared_ptr<mongocxx::instance> getInstance() {
+    static std::shared_ptr<mongocxx::instance> getInstance()
+    {
         static std::shared_ptr<mongocxx::instance> instance(new mongocxx::instance());
         return instance;
     }
-
 
     double batteryVoltageStr;
     double batteryPercentageStr;
@@ -176,12 +184,13 @@ private:
     QString stateValueSystemStr;
     mongocxx::uri uri;
     mongocxx::client client;
-    mongocxx::database database;;
+    mongocxx::database database;
+    ;
     mongocxx::collection collection;
     mongocxx::collection collection_queue;
     mongocxx::collection collection_model;
 
-    ThreadPoolManager threadManager;    
+    ThreadPoolManager threadManager;
 
     std::vector<int> fastechData;
     std::vector<int> fastechDataOutput;
@@ -195,45 +204,53 @@ private:
     std::string _queue;
     std::string zone_;
     std::string fetchedQueueStr;
+    std::string fetchedBufferStr;
     bool bug_manual_mode;
     int index;
     int max_index;
 
-    QStringList* models = new QStringList();
-    QStringList* counts = new QStringList();
+    QStringList *models = new QStringList();
+    QStringList *counts = new QStringList();
 
     double start_time = ros::Time::now().toSec();
     double vel_linear;
     double vel_angular;
     json deleteObjQueue(int queue);
     void arrangeQueue();
-    void colorPalletQueue(mongocxx::collection coll,std::string prefix,std::string id_,std::string suffix);
-    void colorPallet(mongocxx::collection coll,std::string prefix,std::string id_,std::string suffix);
-    void delayFunction(int milliseconds) {
+    void colorPalletQueue(mongocxx::collection coll, std::string prefix, std::string id_, std::string suffix);
+    void colorPallet(mongocxx::collection coll, std::string prefix, std::string id_, std::string suffix);
+    void delayFunction(int milliseconds)
+    {
         std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
     }
-    void switchColorBuffer(mongocxx::collection coll,std::string old_id);
-    void switchColorQueue(mongocxx::collection coll,std::string old_id, std::string update_id);
+    void switchColorBuffer(mongocxx::collection coll, std::string old_id);
+    void switchColorQueue(mongocxx::collection coll, std::string old_id, std::string update_id);
     json lookupPalletModel(std::string model, std::string count);
 
-    std::string exec(const char* cmd) {
+    std::string exec(const char *cmd)
+    {
         std::array<char, 128> buffer;
         std::string result;
         std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
-        if (!pipe) throw std::runtime_error("popen() failed!");
-        while (!feof(pipe.get())) {
+        if (!pipe)
+            throw std::runtime_error("popen() failed!");
+        while (!feof(pipe.get()))
+        {
             if (fgets(buffer.data(), 128, pipe.get()) != nullptr)
                 result += buffer.data();
         }
         return result;
     }
 
-    int getVolumePercentage(const std::string& mixerOutput) {
+    int getVolumePercentage(const std::string &mixerOutput)
+    {
         std::istringstream ss(mixerOutput);
         std::string line;
-        while (std::getline(ss, line)) {
+        while (std::getline(ss, line))
+        {
             size_t pos = line.find("[");
-            if (pos != std::string::npos && line.find("%]") != std::string::npos) {
+            if (pos != std::string::npos && line.find("%]") != std::string::npos)
+            {
                 std::string percentage = line.substr(pos + 1, line.find("%") - pos - 1);
                 // ROS_INFO_STREAM(std::stoi(percentage));
                 return std::stoi(percentage);
@@ -242,32 +259,36 @@ private:
         return -1; // return -1 if not found
     }
     // std::string getStringWithPrecision(float value, int precision) ;
-    float stringToFloat(const std::string& str) {
+    float stringToFloat(const std::string &str)
+    {
         std::stringstream ss(str);
         float result;
         ss >> result;
         return result;
     }
-    double stringToDouble(const std::string& str) {
+    double stringToDouble(const std::string &str)
+    {
         std::stringstream ss(str);
         double result;
         ss >> result;
         return result;
     }
 
-    int check_line( std::vector<std::string> &current_line , std::vector<std::string> &pre_line, std::vector<std::string> &next_line) ;
-    
+    int check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line);
 
 public:
     explicit Backend(QObject *parent = nullptr);
     QTranslator m_translator;
-    void setEngine(QQmlApplicationEngine *eng) { 
+    void setEngine(QQmlApplicationEngine *eng)
+    {
         engine = eng;
         arrangeQueue();
-        while ( engine->rootObjects().isEmpty()) {};
+        while (engine->rootObjects().isEmpty())
+        {
+        };
         rootObject = engine->rootObjects().first();
-        colorPallet(collection,"zone_","zone_id","");
-        colorPalletQueue(collection_queue,"zone_","queue","_queue");        
+        colorPallet(collection, "zone_", "zone_id", "");
+        colorPalletQueue(collection_queue, "zone_", "queue", "_queue");
     }
 
     // SUBCRIBER
@@ -282,62 +303,62 @@ public:
     QString systemStatus() const;
     QString updateStatus() const;
     QString getQueueJson() const;
+    QString getBufferJson() const;
     double getLinear() const;
     double getAngular() const;
-    
-    
+
     // int getFastechRear(int index) const;
 
-
-
-
     // PUBLISHER
-    Q_INVOKABLE  int getFastechRear(int index);
-    Q_INVOKABLE  int getFastechFront(int index);
-    Q_INVOKABLE void resetError() ;
-    Q_INVOKABLE void requestMode(const QString &str) ;
-    Q_INVOKABLE void requestControl(const QString &str) ;
-    Q_INVOKABLE  int setVolume(int percent) ;
-    Q_INVOKABLE  int getVolume() ;
-    Q_INVOKABLE  void shutdown(int state);
+    Q_INVOKABLE int getFastechRear(int index);
+    Q_INVOKABLE int getFastechFront(int index);
+    Q_INVOKABLE void resetError();
+    Q_INVOKABLE void requestMode(const QString &str);
+    Q_INVOKABLE void requestControl(const QString &str);
+    Q_INVOKABLE int setVolume(int percent);
+    Q_INVOKABLE int getVolume();
+    Q_INVOKABLE void shutdown(int state);
     Q_INVOKABLE void getVolume_on_off(int i);
 
-    Q_INVOKABLE void requestStop(const QString &str) ;
-    Q_INVOKABLE void requestReset(const QString &str) ;
+    Q_INVOKABLE void requestStop(const QString &str);
+    Q_INVOKABLE void requestReset(const QString &str);
 
-    Q_INVOKABLE  void change_to_japan() ;
-    Q_INVOKABLE  void change_to_eng() ;
-    Q_INVOKABLE  QString getNameAGV() ;
-    Q_INVOKABLE  QString getIP() ;
-    Q_INVOKABLE  QString getIPServer() ;
-    Q_INVOKABLE void initColor() ;
-    Q_INVOKABLE void setDataBuffer(QString id) ;
-    Q_INVOKABLE void setDataQueue(int id) ;
-    Q_INVOKABLE void saveDataBuffer(QString jsonstring) ;
-    Q_INVOKABLE void saveDataQueue(QString jsonstring) ;
-    Q_INVOKABLE void saveDataModel(QString jsonstring) ;
-    Q_INVOKABLE void deleteDataBuffer(QString jsonstring) ;
-    Q_INVOKABLE void deleteDataQueue(QString jsonstring) ;
-    Q_INVOKABLE void deleteDataModel(QString jsonstring) ;
+    Q_INVOKABLE void change_to_japan();
+    Q_INVOKABLE void change_to_eng();
+    Q_INVOKABLE QString getNameAGV();
+    Q_INVOKABLE QString getIP();
+    Q_INVOKABLE QString getIPServer();
+    Q_INVOKABLE void initColor();
+    Q_INVOKABLE void setDataBuffer(int id);
+    Q_INVOKABLE void setDataQueue(int id);
+    Q_INVOKABLE void saveDataBuffer(QString jsonstring);
+    Q_INVOKABLE void saveDataQueue(QString jsonstring);
+    Q_INVOKABLE void saveDataModel(QString jsonstring);
+    Q_INVOKABLE void deleteDataBuffer(QString jsonstring);
+    Q_INVOKABLE void deleteDataQueue(QString jsonstring);
+    Q_INVOKABLE void deleteDataModel(QString jsonstring);
 
-    Q_INVOKABLE void addDataBuffer(QString jsonstring) ;
-    Q_INVOKABLE void addDataQueue(QString jsonstring) ;
-    Q_INVOKABLE void addDataModel(QString jsonstring) ;
+    Q_INVOKABLE void addDataBuffer(QString jsonstring);
+    Q_INVOKABLE void addDataQueue(QString jsonstring);
+    Q_INVOKABLE void addDataModel(QString jsonstring);
 
-    Q_INVOKABLE QString getStateSystem() ;
-    Q_INVOKABLE void getDataComboBox() ;
-    Q_INVOKABLE void getDataComboBox2() ;
-    Q_INVOKABLE void updateComboBox(QString model, QString count) ;
-    Q_INVOKABLE QStringList getListModel() {
+    Q_INVOKABLE QString getStateSystem();
+    Q_INVOKABLE void getDataComboBox();
+    Q_INVOKABLE void getDataComboBox2();
+    Q_INVOKABLE void updateComboBox(QString model, QString count);
+    Q_INVOKABLE QStringList getListModel()
+    {
         return *models;
     }
-    Q_INVOKABLE QStringList getListCount() {
+    Q_INVOKABLE QStringList getListCount()
+    {
         return *counts;
     }
-    Q_INVOKABLE void set_color() {
+    Q_INVOKABLE void set_color()
+    {
         initColor();
     }
-    Q_INVOKABLE QString openFileDialog() ;
+    Q_INVOKABLE QString openFileDialog();
     Q_INVOKABLE QString getQueuePallet();
 };
 

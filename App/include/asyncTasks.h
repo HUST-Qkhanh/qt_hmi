@@ -41,17 +41,17 @@ public:
     virtual void run() = 0; // Pure virtual run() for subclasses to implement
 
 signals:
-    void taskFinished(const QString &result);
+    void taskFinished(const int &task_id, const QString &result);
 };
 
-class FetchPalletTask : public AsyncTask
+class GetQueueTask : public AsyncTask
 {
     Q_OBJECT
 
 public:
-    explicit FetchPalletTask(const mongocxx::collection &palletCollection, const int &id, json &palletJson, QObject *parent = nullptr)
+    explicit GetQueueTask(const mongocxx::collection &palletCollection, const int &id, QObject *parent = nullptr)
         : AsyncTask(parent),
-          palletCollection_(palletCollection), id_(id), palletJson_(palletJson)
+          palletCollection_(palletCollection), id_(id)
     {
         setAutoDelete(true);
     };
@@ -62,5 +62,25 @@ private:
     int id_;
     json palletJson_;
 };
+
+class GetBufferTask : public AsyncTask
+{
+    Q_OBJECT
+
+public:
+    explicit GetBufferTask(const mongocxx::collection &palletCollection, const int &id, QObject *parent = nullptr)
+        : AsyncTask(parent),
+          palletCollection_(palletCollection), id_(id)
+    {
+        setAutoDelete(true);
+    };
+    void run() override;
+
+private:
+    mongocxx::collection palletCollection_;
+    int id_;
+    json palletJson_;
+};
+
 
 #endif // ASYNCTASK_H

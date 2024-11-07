@@ -10,53 +10,34 @@ Rectangle {
     visible: true
     color: Constants.surfaceColor
 
-    
-    property int  state: 0
-    
+    property int state: 0
+
     property string _headerLayoutText: "Trạng thái"
 
-    
-    signal popupLoaded()
-    
+    signal popupLoaded
+
+    signal modelViewRequest
+
     Connections {
         target: page1
         onLoadPopupType: {
             if (type === 0) {
                 popupLoader.source = "qrc:/RosQML2Content/MyGrid_queue.qml";
                 popupLoaded();
-            }
-            else if (type === 1) {
-                popupLoader.source = "qrc:/RosQML2Content/MyModel_pallet.qml";
-                popupLoaded();
-            }
-            else if (type === 2) {
+            } else if (type === 1) {
                 popupLoader.source = "qrc:/RosQML2Content/MyBuffer_item.qml";
                 popupLoaded();
             }
         }
     }
-    
 
-    // StackLayout {
-    //     id: stackLayout
-    //     anchors.top: header_layout.bottom
-    //     anchors.left: parent.left
-    //     anchors.right: parent.right
-    //     height: parent.height * 0.73
-    //     anchors.verticalCenter: parent.verticalCenter
-    //     anchors.topMargin: 10
-    //     currentIndex: userPopup.state
-    //     MyBuffer_item {
-    //         id: buffer_item
-    //     }
-    //     MyGrid_queue {
-    //         id: grid_queue
-    //     }
-
-    //     MyModel_pallet {
-    //         id: model_pallet
-    //     }
-    // }
+    Connections {
+        target: model_button
+        onClicked: {
+            popupLoader.source = "qrc:/RosQML2Content/MyModel_pallet.qml";
+            popupLoaded();
+        }
+    }
 
     ColumnLayout {
         id: columnLayout
@@ -83,6 +64,7 @@ Rectangle {
 
         Loader {
             id: popupLoader
+            Layout.bottomMargin: 10
             Layout.fillHeight: true
             Layout.fillWidth: true
             // source: "qrc:/RosQML2Content/MyGrid_queue.qml"
@@ -101,6 +83,8 @@ Rectangle {
                 id: view_button
                 // height: parent.height * 0.12
                 text: "Trở về"
+                flat: false
+                highlighted: false
                 // Layout.fillWidth: true
                 rightPadding: 0
                 leftPadding: 0
@@ -286,7 +270,7 @@ Rectangle {
                                 "ColumnId": _ColumnId_.text,
                                 "LocationId": _LocationId_.text,
                                 "Barcode": _Barcode_.text,
-                                "Time": _Time_.text,
+                                // "Time": _Time_.text,
                                 "queue": _queue_.text
                             };
                             // console.log(JSON.stringify(jsonObject, null, 2))
@@ -380,7 +364,7 @@ Rectangle {
                                 "ColumnId": _ColumnId_.text,
                                 "LocationId": _LocationId_.text,
                                 "Barcode": _Barcode_.text,
-                                "Time": _Time_.text,
+                                // "Time": _Time_.text,
                                 "queue": _queue_.text
                             };
                             // console.log(JSON.stringify(jsonObject, null, 2))
@@ -415,6 +399,7 @@ Rectangle {
 
             Button {
                 id: model_button
+                visible: true
                 // height: parent.height * 0.12
                 text: "Model"
                 Layout.fillWidth: true
@@ -440,10 +425,7 @@ Rectangle {
                     border.width: 5
                 }
                 onClicked: {
-                    // backend.getDataComboBox();
-                    // backend.getDataComboBox2();
-                    state = 2;
-                    // pop_up_2.close()
+                    modelViewRequest()
                 }
                 onPressedChanged: {
                     if (pressed) {
@@ -453,10 +435,6 @@ Rectangle {
                     }
                 }
             }
-
         }
     }
-
 }
-
-

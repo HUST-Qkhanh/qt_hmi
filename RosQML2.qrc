@@ -33,10 +33,12 @@
 <file>RosQML2Content/asset/charge.svg</file>
 <file>RosQML2Content/asset/circle.svg</file>
 <file>RosQML2Content/asset/close.svg</file>
+<file>RosQML2Content/asset/conveyor-belt.png</file>
 <file>RosQML2Content/asset/dart-mission-goal-success-svgrepo-com.svg</file>
 <file>RosQML2Content/asset/low-battery-svgrepo-com.svg</file>
 <file>RosQML2Content/asset/minimize.svg</file>
 <file>RosQML2Content/asset/mute.svg</file>
+<file>RosQML2Content/asset/pallet (1).png</file>
 <file>RosQML2Content/asset/setup.svg</file>
 <file>RosQML2Content/asset/sound.svg</file>
 <file>RosQML2Content/asset/svg.svg</file>
@@ -57,7 +59,9 @@
 <file>RosQML2Content/images/setup.svg</file>
 <file>RosQML2Content/images/sound.svg</file>
 <file>RosQML2Content/images/tv.svg</file>
+<file>build/CMakeFiles/RosQML2App_autogen.dir/AutoRcc_RosQML2_EWIEGA46WW_Info.json</file>
 <file>build/CMakeFiles/RosQML2App_autogen.dir/AutogenInfo.json</file>
+<file>build/Debug/config.json</file>
 <file>build/RosQML2/CMakeFiles/RosQML2_autogen.dir/AutogenInfo.json</file>
 <file>build/RosQML2/CMakeFiles/RosQML2plugin_autogen.dir/AutogenInfo.json</file>
 <file>build/RosQML2/CMakeFiles/RosQML2plugin_init_autogen.dir/AutogenInfo.json</file>

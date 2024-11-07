@@ -60,6 +60,11 @@ Item {
                 Layout.row: 1
                 Layout.column: 1
                 currentIndex: 0
+                background: Rectangle {
+                    anchors.fill: parent
+                    radius: 5
+                    border.color: "#3850ff"
+                }
 
                 property var count_pallet: [6, 8, 10, 12, 14, 16, 18]
                 model: ListModel {
@@ -103,6 +108,11 @@ Item {
                 Layout.row: 0
                 Layout.column: 1
                 currentIndex: 0
+                background: Rectangle {
+                    anchors.fill: parent
+                    radius: 5
+                    border.color: "#3850ff"
+                }
 
                 // property var model_pallet_: backend.getListModel()
                 model: ListModel {

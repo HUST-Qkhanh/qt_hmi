@@ -48,6 +48,8 @@ Page {
     property int item_count: loadConfig()
 
     signal queuePalletRequest(int queueId)
+    signal bufferPalletRequest(int bufferId)
+    
     signal loadPopupType(int type)
 
     // property var model_pallet_: getListModel()
@@ -78,25 +80,6 @@ Page {
     //     return item;
     // }
 
-    function clearDataQueue() {
-    // // uuid_queue.text = "-----";
-    // // _Id_.text = "-----";
-    // _PalletInfo_.text = "-----";
-    // _Merchandise_.text = "-----";
-    // _NameModel_.text = "-----";
-    // _Destination_.text = "-----";
-    // _ZoneId_.text = "-----";
-    // _ColumnId_.text = "-----";
-    // _LocationId_.text = "-----";
-    // _queue_.text = "-----";
-    // _Model_.text = "-----";
-    // _Count_.text = "-----";
-    // _height_.text = "-----";
-    // _width_.text = "-----";
-    // _length_.text = "-----";
-    // _pallet_type_.text = "-----";
-    }
-
     function popup_close() {
         header_layout_text = "Trạng thái";
         pop_up_2.close();
@@ -109,11 +92,13 @@ Page {
     //     }
     Popup {
         id: popup
-        x: page1.width * 0.15
-        y: page1.height * 0.1
+        // x: page1.width * 0.15
+        // y: page1.height * 0.1
+        anchors.centerIn: parent
         width: page1.width * 0.7
         height: page1.height * 0.8
         visible: false
+        dim: true
         font.italic: true
         font.pointSize: 50
         font.family: "Ubuntu"
@@ -251,12 +236,15 @@ Page {
 
     Popup {
         id: pop_up_2
-        x: 0
-        y: -page1.height * 0.08
+        // x: 0
+        // y: -page1.height * 0.08
+        anchors.centerIn: parent
         width: page1.width * 0.9
         height: page1.height * 0.65
         opacity: 1
         visible: false
+        modal: true
+        dim: true
         closePolicy: Popup.NoAutoClose
         // closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         background: Rectangle {
@@ -749,10 +737,7 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0;
-                    pop_up_2.open();
-
-                    backend.setDataBuffer("zone_1");
+                    bufferPalletRequest(1);
                 }
             }
 
@@ -769,9 +754,7 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0;
-                    pop_up_2.open();
-                    backend.setDataBuffer("zone_2");
+                    bufferPalletRequest(2);
                 }
             }
             Button {
@@ -788,9 +771,7 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0;
-                    pop_up_2.open();
-                    backend.setDataBuffer("zone_3");
+                    bufferPalletRequest(3);
                 }
             }
             Button {
@@ -807,9 +788,7 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0;
-                    pop_up_2.open();
-                    backend.setDataBuffer("zone_4");
+                    bufferPalletRequest(4);
                 }
             }
 
@@ -827,9 +806,7 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    state_edit = 0;
-                    pop_up_2.open();
-                    backend.setDataBuffer("zone_5");
+                    bufferPalletRequest(5);
                 }
             }
 
@@ -847,21 +824,22 @@ Page {
                     color: "#CFD8DC"
                 }
                 onClicked: {
-                    page1.state_edit = 0;
-                    pop_up_2.open();
-                    backend.setDataBuffer("zone_6");
+                    bufferPalletRequest(6);
                 }
             }
         }
         GridLayout {
             id: note
 
-            width: parent.width * 0.15
             // anchors.right: parent.right
             anchors.left: parent.left
+            anchors.right: parent.left
+            anchors.top: parent.top
             anchors.bottom: parent.bottom
             // anchors.bottom: waiting.bottom
             anchors.leftMargin: 20
+            anchors.rightMargin: -300
+            anchors.topMargin: 100
             anchors.bottomMargin: 20
             // anchors.bottomMargin: 0
             ColumnLayout {
@@ -1294,6 +1272,13 @@ Page {
             loadPopupType(0);
             console.log("queueID: " + queueId);
             backend.setDataQueue(queueId);
+        }
+        onBufferPalletRequest: {
+            pop_up_2.open();
+            loadPopupType(1);
+            console.log("bufferID: " + bufferId);
+            // var id = bufferId;
+            backend.setDataBuffer(bufferId);
         }
     }
 }
