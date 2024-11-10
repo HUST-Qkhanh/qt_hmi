@@ -239,7 +239,7 @@ Page {
         // x: 0
         // y: -page1.height * 0.08
         anchors.centerIn: parent
-        width: page1.width * 0.9
+        width: page1.width * 0.8
         height: page1.height * 0.65
         opacity: 1
         visible: false

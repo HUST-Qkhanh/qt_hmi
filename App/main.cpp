@@ -73,6 +73,7 @@ hmiApp::hmiApp(int argc, char** argv)
                 QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
+        
     qmlRegisterType<Backend>("backendqt", 1, 0, "Backend");
     engine.rootContext()->setContextProperty("configManager", &configManager);
     engine.rootContext()->setContextProperty("backend", &backend);

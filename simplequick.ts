@@ -2248,76 +2248,58 @@
 <context>
     <name>MyBuffer_item</name>
     <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="392"/>
-        <source>Merchandise :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="98"/>
-        <source>Status :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="219"/>
-        <source>Status</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="241"/>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="260"/>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="286"/>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="308"/>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="330"/>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="352"/>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="382"/>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="419"/>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="482"/>
-        <source>Empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="459"/>
-        <source>Position :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="111"/>
-        <source>Type :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="RosQML2Content/MyBuffer_item.qml" line="26"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="125"/>
-        <source>Height :</source>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="257"/>
+        <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="139"/>
-        <source>Width :</source>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="280"/>
+        <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="153"/>
-        <source>Length :</source>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="300"/>
+        <source>Height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="167"/>
-        <source>Zone ID :</source>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="327"/>
+        <source>Width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="181"/>
-        <source>Column ID :</source>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="350"/>
+        <source>Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyBuffer_item.qml" line="194"/>
-        <source>Location ID :</source>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="373"/>
+        <source>Zone ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="396"/>
+        <source>Column ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="427"/>
+        <source>Location ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="467"/>
+        <source>Merchandise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/MyBuffer_item.qml" line="530"/>
+        <source>Position</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2329,48 +2311,48 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="354"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="387"/>
         <source>Position :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="92"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="126"/>
         <source>Merchandise :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="105"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="139"/>
         <source>Count :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="118"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="152"/>
         <source>Height :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="131"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="165"/>
         <source>Width :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="144"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="178"/>
         <source>Length :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="157"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="191"/>
         <source>Type :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="176"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="199"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="224"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="249"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="274"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="299"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="381"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="210"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="233"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="258"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="283"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="308"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="333"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="414"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2401,40 +2383,45 @@
 <context>
     <name>MyModel_pallet</name>
     <message>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="27"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="12"/>
+        <source></source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="91"/>
         <source>Merchandise :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="40"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="104"/>
         <source>Count :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="168"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="233"/>
         <source>height :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="180"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="245"/>
         <source>width :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="193"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="258"/>
         <source>length :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="206"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="271"/>
         <source>pallet_type :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="248"/>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="269"/>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="290"/>
-        <location filename="RosQML2Content/MyModel_pallet.qml" line="310"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="313"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="334"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="355"/>
+        <location filename="RosQML2Content/MyModel_pallet.qml" line="375"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3015,20 +3002,20 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1165"/>
-        <location filename="RosQML2Content/Screen01.qml" line="1165"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1168"/>
+        <location filename="RosQML2Content/Screen01.qml" line="1168"/>
         <source>Change robot mode to AUTO</source>
         <translation>Chuyển sang chế độ tự động</translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1169"/>
-        <location filename="RosQML2Content/Screen01.qml" line="1169"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1172"/>
+        <location filename="RosQML2Content/Screen01.qml" line="1172"/>
         <source>Change robot mode to MANUAL</source>
         <translation>Chuyển sang chế độ thủ công</translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1172"/>
-        <location filename="RosQML2Content/Screen01.qml" line="1172"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1175"/>
+        <location filename="RosQML2Content/Screen01.qml" line="1175"/>
         <source>Data false</source>
         <translation type="unfinished"></translation>
     </message>

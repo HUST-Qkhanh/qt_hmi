@@ -82,5 +82,25 @@ private:
     json palletJson_;
 };
 
+class GetModelTask : public AsyncTask
+{
+    Q_OBJECT
+
+public:
+    explicit GetModelTask(const mongocxx::collection &palletCollection, const int &id, QObject *parent = nullptr)
+        : AsyncTask(parent),
+          palletCollection_(palletCollection), id_(id)
+    {
+        setAutoDelete(true);
+    };
+    void run() override;
+
+private:
+    mongocxx::collection palletCollection_;
+    int id_;
+    int count_;
+    json palletJson_;
+};
+
 
 #endif // ASYNCTASK_H

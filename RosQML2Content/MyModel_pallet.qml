@@ -8,6 +8,70 @@ Item {
     height: 300
     width: 600
 
+    function clearTextFields() {
+        _id = qsTr("");
+
+        _zone = qsTr("");
+        _column = qsTr("");
+        _location = qsTr("");
+
+        _palletStatus = qsTr("");
+        _merchandise = qsTr("");
+        _palletType = qsTr("");
+
+        _palletHeight = qsTr("");
+        _palletWidth = qsTr("");
+        _palletLength = qsTr("");
+    }
+
+    function updateModelPallet(jsonStr) {
+        var jsonObj = JSON.parse(jsonStr); // Parse the JSON string into a JavaScript object
+
+        // Update the text fields with parsed data
+        _id = jsonObj.stt.toString() || "";
+        _zone = jsonObj.zone_id.toString() || "";
+        _column = jsonObj.column_id.toString() || "";
+        _location = jsonObj.location_id.toString() || "";
+        _palletStatus = jsonObj.status.toString() || "";
+        _merchandise = jsonObj.id_hang.toString() || "";
+        _palletType = jsonObj.type.toString() || "";
+        _palletHeight = jsonObj.height.toString() || "";
+        _palletWidth = jsonObj.width.toString() || "";
+        _palletLength = jsonObj.length.toString() || "";
+
+        console.log("buffer_id: " + _id);
+    }
+
+    function addModelPallet() {
+        if (___id.text === "-----") {
+            jsonObject = {
+                "_id": ___id.text,
+                "id": _id.text,
+                "id_hang": _id_hang.text,
+                "status": _status.text,
+                "stt": _stt.text,
+                "type": _type.text,
+                "height": _height.text,
+                "width": _width.text,
+                "length": _length.text,
+                "zone_id": _zone_id.text,
+                "column_id": _column_id.text,
+                "location_id": _location_id.text
+            };
+            backend.addDataBuffer(JSON.stringify(jsonObject, null, 2));
+        } else {
+            _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
+        }
+    }
+
+    function deleteModelPallet(queueId) {
+    // body...
+    }
+
+    function saveModelPallet(queueId) {
+    // body...
+    }
+
     RowLayout {
         id: rowLayout
         anchors.fill: parent
@@ -60,11 +124,12 @@ Item {
                 Layout.row: 1
                 Layout.column: 1
                 currentIndex: 0
-                background: Rectangle {
+
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
 
                 property var count_pallet: [6, 8, 10, 12, 14, 16, 18]
                 model: ListModel {
@@ -108,11 +173,11 @@ Item {
                 Layout.row: 0
                 Layout.column: 1
                 currentIndex: 0
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
 
                 // property var model_pallet_: backend.getListModel()
                 model: ListModel {
@@ -254,11 +319,11 @@ Item {
                 Layout.row: 0
                 Layout.column: 3
 
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
             TextField {
                 id: _width__
@@ -275,11 +340,11 @@ Item {
                 Layout.row: 1
                 Layout.column: 3
 
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
             TextField {
                 id: _length__
@@ -295,11 +360,11 @@ Item {
                 Layout.row: 2
                 Layout.column: 3
 
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
             TextField {
                 id: _pallet_type__
@@ -315,11 +380,11 @@ Item {
                 Layout.row: 3
                 Layout.column: 3
 
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
         }
     }

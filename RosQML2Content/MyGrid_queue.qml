@@ -45,6 +45,40 @@ Item {
         console.log("queue_id: " + jsonObj.queue);
     }
 
+    function addQueuePallet() {
+        if (uuid_queue.text === "-----") {
+            jsonObject = {
+                "_id": uuid_queue.text,
+                "Id": _Id_.text,
+                "PalletInfo": _PalletInfo_.text,
+                "Model": _Model_.text,
+                "Merchandise": _Merchandise_.text,
+                "NameModel": _NameModel_.text,
+                "Destination": _Destination_.text,
+                "Count": _Count_.text,
+                "ZoneId": _ZoneId_.text,
+                "ColumnId": _ColumnId_.text,
+                "LocationId": _LocationId_.text,
+                "Barcode": _Barcode_.text,
+                // "Time": _Time_.text,
+                "queue": _queue_.text
+            };
+            // console.log(JSON.stringify(jsonObject, null, 2))
+
+            backend.addDataQueue(JSON.stringify(jsonObject, null, 2));
+        } else {
+            _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
+        }
+    }
+
+    function deleteQueuePallet(queueId) {
+    // body...
+    }
+
+    function saveQueuePallet(queueId) {
+    // body...
+    }
+
     Component.onCompleted: {
         clearTextFields();
     }
@@ -79,7 +113,7 @@ Item {
             id: parent_queue
             Layout.fillWidth: true
             Layout.bottomMargin: 0
-            Layout.maximumHeight:  parent.height * 0.8
+            Layout.maximumHeight: parent.height * 0.8
             layoutDirection: Qt.LeftToRight
             flow: GridLayout.TopToBottom
             rowSpacing: 5
@@ -182,11 +216,11 @@ Item {
                 Layout.preferredHeight: 50 * grid_queue.height / 600
                 Layout.row: 1
                 Layout.column: 0
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
 
             TextField {
@@ -209,11 +243,11 @@ Item {
                 Layout.row: 3
                 Layout.column: 0
 
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
             TextField {
                 id: _height_
@@ -234,11 +268,11 @@ Item {
                 Layout.column: 1
 
                 readOnly: true
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
             TextField {
                 id: _width_
@@ -259,11 +293,11 @@ Item {
                 Layout.column: 1
 
                 readOnly: true
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
             TextField {
                 id: _length_
@@ -284,11 +318,11 @@ Item {
                 Layout.row: 5
                 Layout.column: 1
 
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
             TextField {
                 id: _pallet_type_
@@ -309,11 +343,11 @@ Item {
                 Layout.row: 7
                 Layout.column: 1
 
-                background: Rectangle {
+                /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
-                }
+                }*/
             }
         }
 
@@ -321,7 +355,7 @@ Item {
             id: columnLayout
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             // Layout.fillWidth: true
-            Layout.maximumHeight:  parent.height * 0.8
+            Layout.maximumHeight: parent.height * 0.8
             Layout.preferredWidth: parent.width * 0.3
 
             Image {
@@ -340,7 +374,6 @@ Item {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.bottomMargin: 0
                 fillMode: Image.PreserveAspectFit
-
             }
 
             ColumnLayout {

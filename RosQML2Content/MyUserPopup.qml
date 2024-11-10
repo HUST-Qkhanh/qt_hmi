@@ -11,12 +11,13 @@ Rectangle {
     color: Constants.surfaceColor
 
     property int state: 0
-
     property string _headerLayoutText: "Trạng thái"
 
     signal popupLoaded
-
     signal modelViewRequest
+    signal addDataRequest
+    signal saveDataRequest
+    signal deleteDataRequest
 
     Connections {
         target: page1
@@ -156,50 +157,51 @@ Rectangle {
                     }
                 }
                 onClicked: {
-                    if (state === 0) {
-                        if (___id.text !== "-----") {
-                            var jsonObject = {
-                                "_id": ___id.text,
-                                "id": _id.text,
-                                "id_hang": _id_hang.text,
-                                "status": _status.text,
-                                "stt": _stt.text,
-                                "type": _type.text,
-                                "height": _height.text,
-                                "width": _width.text,
-                                "length": _length.text,
-                                "zone_id": _zone_id.text,
-                                "column_id": _column_id.text,
-                                "location_id": _location_id.text
-                            };
-                            backend.deleteDataBuffer(JSON.stringify(jsonObject, null, 2));
-                        } else {
-                            _headerLayoutText = " Mục không tồn tại - xóa chỉ khả dụng trên mục đã có";
-                        }
-                    } else if (state === 1) {
-                        if (uuid_queue.text !== "-----") {
-                            backend.deleteDataQueue(uuid_queue.text);
-                            clearDataQueue();
-                        } else {
-                            _headerLayoutText = " Mục không tồn tại - xóa chỉ khả dụng trên mục đã có";
-                        }
-                    } else if (state === 2) {
-                        if (__id__.text !== "-----") {
-                            jsonObject = {
-                                "_id": __id__.text,
-                                "Merchandise": list_model.editText,
-                                "Count": list_count.editText,
-                                "height": _height__.text,
-                                "width": _width__.text,
-                                "length": _length__.text,
-                                "pallet_type": _pallet_type__.text
-                            };
-                            backend.deleteDataModel(JSON.stringify(jsonObject, null, 2));
-                            _headerLayoutText = " Thành công";
-                        } else {
-                            _headerLayoutText = " Mục không tồn tại - xóa chỉ khả dụng trên mục đã có";
-                        }
-                    }
+                    deleteDataRequest();
+                    // if (state === 0) {
+                    //     if (___id.text !== "-----") {
+                    //         var jsonObject = {
+                    //             "_id": ___id.text,
+                    //             "id": _id.text,
+                    //             "id_hang": _id_hang.text,
+                    //             "status": _status.text,
+                    //             "stt": _stt.text,
+                    //             "type": _type.text,
+                    //             "height": _height.text,
+                    //             "width": _width.text,
+                    //             "length": _length.text,
+                    //             "zone_id": _zone_id.text,
+                    //             "column_id": _column_id.text,
+                    //             "location_id": _location_id.text
+                    //         };
+                    //         backend.deleteDataBuffer(JSON.stringify(jsonObject, null, 2));
+                    //     } else {
+                    //         _headerLayoutText = " Mục không tồn tại - xóa chỉ khả dụng trên mục đã có";
+                    //     }
+                    // } else if (state === 1) {
+                    //     if (uuid_queue.text !== "-----") {
+                    //         backend.deleteDataQueue(uuid_queue.text);
+                    //         clearDataQueue();
+                    //     } else {
+                    //         _headerLayoutText = " Mục không tồn tại - xóa chỉ khả dụng trên mục đã có";
+                    //     }
+                    // } else if (state === 2) {
+                    //     if (__id__.text !== "-----") {
+                    //         jsonObject = {
+                    //             "_id": __id__.text,
+                    //             "Merchandise": list_model.editText,
+                    //             "Count": list_count.editText,
+                    //             "height": _height__.text,
+                    //             "width": _width__.text,
+                    //             "length": _length__.text,
+                    //             "pallet_type": _pallet_type__.text
+                    //         };
+                    //         backend.deleteDataModel(JSON.stringify(jsonObject, null, 2));
+                    //         _headerLayoutText = " Thành công";
+                    //     } else {
+                    //         _headerLayoutText = " Mục không tồn tại - xóa chỉ khả dụng trên mục đã có";
+                    //     }
+                    // }
                 }
             }
             Button {
@@ -235,69 +237,70 @@ Rectangle {
                     }
                 }
                 onClicked: {
-                    if (state === 0) {
-                        if (___id.text !== "-----") {
-                            var jsonObject = {
-                                "_id": ___id.text,
-                                "id": _id.text,
-                                "id_hang": _id_hang.text,
-                                "status": _status.text,
-                                "stt": _stt.text,
-                                "type": _type.text,
-                                "height": _height.text,
-                                "width": _width.text,
-                                "length": _length.text,
-                                "zone_id": _zone_id.text,
-                                "column_id": _column_id.text,
-                                "location_id": _location_id.text
-                            };
-                            backend.saveDataBuffer(JSON.stringify(jsonObject, null, 2));
-                        } else {
-                            _headerLayoutText = " Mục không tồn tại - sửa và lưu chỉ khả dụng với mục đã có";
-                        }
-                    } else if (state === 1) {
-                        if (uuid_queue.text !== "-----") {
-                            jsonObject = {
-                                "_id": uuid_queue.text,
-                                "Id": _Id_.text,
-                                "PalletInfo": _PalletInfo_.text,
-                                "Model": _Model_.text,
-                                "Merchandise": _Merchandise_.text,
-                                "NameModel": _NameModel_.text,
-                                "Destination": _Destination_.text,
-                                "Count": _Count_.text,
-                                "ZoneId": _ZoneId_.text,
-                                "ColumnId": _ColumnId_.text,
-                                "LocationId": _LocationId_.text,
-                                "Barcode": _Barcode_.text,
-                                // "Time": _Time_.text,
-                                "queue": _queue_.text
-                            };
-                            // console.log(JSON.stringify(jsonObject, null, 2))
+                    saveDataRequest();
+                    //     if (state === 0) {
+                    //         if (___id.text !== "-----") {
+                    //             var jsonObject = {
+                    //                 "_id": ___id.text,
+                    //                 "id": _id.text,
+                    //                 "id_hang": _id_hang.text,
+                    //                 "status": _status.text,
+                    //                 "stt": _stt.text,
+                    //                 "type": _type.text,
+                    //                 "height": _height.text,
+                    //                 "width": _width.text,
+                    //                 "length": _length.text,
+                    //                 "zone_id": _zone_id.text,
+                    //                 "column_id": _column_id.text,
+                    //                 "location_id": _location_id.text
+                    //             };
+                    //             backend.saveDataBuffer(JSON.stringify(jsonObject, null, 2));
+                    //         } else {
+                    //             _headerLayoutText = " Mục không tồn tại - sửa và lưu chỉ khả dụng với mục đã có";
+                    //         }
+                    //     } else if (state === 1) {
+                    //         if (uuid_queue.text !== "-----") {
+                    //             jsonObject = {
+                    //                 "_id": uuid_queue.text,
+                    //                 "Id": _Id_.text,
+                    //                 "PalletInfo": _PalletInfo_.text,
+                    //                 "Model": _Model_.text,
+                    //                 "Merchandise": _Merchandise_.text,
+                    //                 "NameModel": _NameModel_.text,
+                    //                 "Destination": _Destination_.text,
+                    //                 "Count": _Count_.text,
+                    //                 "ZoneId": _ZoneId_.text,
+                    //                 "ColumnId": _ColumnId_.text,
+                    //                 "LocationId": _LocationId_.text,
+                    //                 "Barcode": _Barcode_.text,
+                    //                 // "Time": _Time_.text,
+                    //                 "queue": _queue_.text
+                    //             };
+                    //             // console.log(JSON.stringify(jsonObject, null, 2))
 
-                            backend.saveDataQueue(JSON.stringify(jsonObject, null, 2));
-                            // backend.setDataQueue(parseInt(_queue_.text))
-                        } else {
-                            _headerLayoutText = " Mục không tồn tại - sửa và lưu chỉ khả dụng với mục đã có";
-                        }
-                    } else if (state === 2) {
-                        if (__id__.text !== "-----") {
-                            jsonObject = {
-                                "_id": __id__.text,
-                                "Merchandise": list_model.editText,
-                                "Count": list_count.editText,
-                                "height": _height__.text,
-                                "width": _width__.text,
-                                "length": _length__.text,
-                                "pallet_type": _pallet_type__.text
-                            };
+                    //             backend.saveDataQueue(JSON.stringify(jsonObject, null, 2));
+                    //             // backend.setDataQueue(parseInt(_queue_.text))
+                    //         } else {
+                    //             _headerLayoutText = " Mục không tồn tại - sửa và lưu chỉ khả dụng với mục đã có";
+                    //         }
+                    //     } else if (state === 2) {
+                    //         if (__id__.text !== "-----") {
+                    //             jsonObject = {
+                    //                 "_id": __id__.text,
+                    //                 "Merchandise": list_model.editText,
+                    //                 "Count": list_count.editText,
+                    //                 "height": _height__.text,
+                    //                 "width": _width__.text,
+                    //                 "length": _length__.text,
+                    //                 "pallet_type": _pallet_type__.text
+                    //             };
 
-                            backend.saveDataModel(JSON.stringify(jsonObject, null, 2));
-                            _headerLayoutText = "Thành công";
-                        } else {
-                            _headerLayoutText = " Mục không tồn tại - sửa và lưu chỉ khả dụng với mục đã có";
-                        }
-                    }
+                    //             backend.saveDataModel(JSON.stringify(jsonObject, null, 2));
+                    //             _headerLayoutText = "Thành công";
+                    //         } else {
+                    //             _headerLayoutText = " Mục không tồn tại - sửa và lưu chỉ khả dụng với mục đã có";
+                    //         }
+                    //     }
                 }
             }
             Button {
@@ -333,67 +336,29 @@ Rectangle {
                     }
                 }
                 onClicked: {
-                    if (state === 2) {
-                        if (__id__.text === "-----") {
-                            var jsonObject = {
-                                "_id": __id__.text,
-                                "Merchandise": list_model.editText,
-                                "Count": list_count.editText,
-                                "height": _height__.text,
-                                "width": _width__.text,
-                                "length": _length__.text,
-                                "pallet_type": _pallet_type__.text
-                            };
-                            backend.addDataModel(JSON.stringify(jsonObject, null, 2));
-                            _headerLayoutText = " Thành công";
-                        } else {
-                            _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
-                        }
-                    } else if (state === 1) {
-                        if (uuid_queue.text === "-----") {
-                            jsonObject = {
-                                "_id": uuid_queue.text,
-                                "Id": _Id_.text,
-                                "PalletInfo": _PalletInfo_.text,
-                                "Model": _Model_.text,
-                                "Merchandise": _Merchandise_.text,
-                                "NameModel": _NameModel_.text,
-                                "Destination": _Destination_.text,
-                                "Count": _Count_.text,
-                                "ZoneId": _ZoneId_.text,
-                                "ColumnId": _ColumnId_.text,
-                                "LocationId": _LocationId_.text,
-                                "Barcode": _Barcode_.text,
-                                // "Time": _Time_.text,
-                                "queue": _queue_.text
-                            };
-                            // console.log(JSON.stringify(jsonObject, null, 2))
+                    addDataRequest();
+                    //     if (state === 2) {
+                    //         if (__id__.text === "-----") {
+                    //             var jsonObject = {
+                    //                 "_id": __id__.text,
+                    //                 "Merchandise": list_model.editText,
+                    //                 "Count": list_count.editText,
+                    //                 "height": _height__.text,
+                    //                 "width": _width__.text,
+                    //                 "length": _length__.text,
+                    //                 "pallet_type": _pallet_type__.text
+                    //             };
+                    //             backend.addDataModel(JSON.stringify(jsonObject, null, 2));
+                    //             _headerLayoutText = " Thành công";
+                    //         } else {
+                    //             _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
+                    //         }
+                    //     } else if (state === 1) {
+                    // }
 
-                            backend.addDataQueue(JSON.stringify(jsonObject, null, 2));
-                        } else {
-                            _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
-                        }
-                    } else if (state === 0) {
-                        if (___id.text === "-----") {
-                            jsonObject = {
-                                "_id": ___id.text,
-                                "id": _id.text,
-                                "id_hang": _id_hang.text,
-                                "status": _status.text,
-                                "stt": _stt.text,
-                                "type": _type.text,
-                                "height": _height.text,
-                                "width": _width.text,
-                                "length": _length.text,
-                                "zone_id": _zone_id.text,
-                                "column_id": _column_id.text,
-                                "location_id": _location_id.text
-                            };
-                            backend.addDataBuffer(JSON.stringify(jsonObject, null, 2));
-                        } else {
-                            _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
-                        }
-                    }
+                    //     } else if (state === 0) {
+
+                    //     }
                 }
             }
 
@@ -425,7 +390,7 @@ Rectangle {
                     border.width: 5
                 }
                 onClicked: {
-                    modelViewRequest()
+                    modelViewRequest();
                 }
                 onPressedChanged: {
                     if (pressed) {
