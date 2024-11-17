@@ -412,12 +412,12 @@ Item {
                 Layout.preferredWidth: 300 * parent.width / 1000
                 Layout.preferredHeight: 90 * parent.height / 600
 
-                onActiveFocusChanged: {
-                    if (activeFocus) {
-                        console.log("jomphere");
-                        Qt.inputMethod.update(Qt.ImQueryInput);
-                    }
-                }
+                // onActiveFocusChanged: {
+                //     if (activeFocus) {
+                //         console.log("jomphere");
+                //         Qt.inputMethod.update(Qt.ImQueryInput);
+                //     }
+                // }
 
                 property bool isBold: false
                 property real radius: 5

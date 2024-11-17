@@ -56,34 +56,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
   "src/dbManager.cpp"
 )
 
-# BUILD TEST
-add_executable(singleton_db_test
-  test/singletonDb.cpp
-  include/dbManager.h
-  src/dbManager.cpp)
 
-target_include_directories(singleton_db_test PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/include
-  "/usr/local/include/mongocxx/v_noabi"
-  "/usr/local/include/bsoncxx/v_noabi"
-  "/usr/local/include/bsoncxx/v_noabi/bsoncxx/third_party/mnmlstc"
-  "/usr/local/include/bsoncxx/v_noabi/bsoncxx/third_party/mnmlstc/core"
-  "/usr/include/boost"
-  ${catkin_INCLUDE_DIRS}
-)
-
-target_link_libraries(singleton_db_test
-  ${catkin_LIBRARIES}
-  /usr/local/lib/libmongocxx.so # Thay đổi đường dẫn tuyệt đối này nếu cần thiết
-  /usr/local/lib/libbsoncxx.so # Thay đổi đường dẫn tuyệt đối này nếu cần thiết
-  nlohmann_json::nlohmann_json
-
-  # ${libbsoncxx_LIBRARIES}
-  # ${libmongocxx_LIBRARIES}
-)
-set_target_properties(singleton_db_test PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
-)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
   Qt${QT_VERSION_MAJOR}::Core
@@ -98,3 +71,33 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
   # nlohmann_json::nlohmann_json
   /usr/lib/x86_64-linux-gnu/libyaml-cpp.so
 )
+
+
+# BUILD TEST
+# add_executable(singleton_db_test
+#   test/singletonDb.cpp
+#   include/dbManager.h
+#   src/dbManager.cpp)
+
+# target_include_directories(singleton_db_test PRIVATE
+#   ${CMAKE_CURRENT_SOURCE_DIR}/include
+#   "/usr/local/include/mongocxx/v_noabi"
+#   "/usr/local/include/bsoncxx/v_noabi"
+#   "/usr/local/include/bsoncxx/v_noabi/bsoncxx/third_party/mnmlstc"
+#   "/usr/local/include/bsoncxx/v_noabi/bsoncxx/third_party/mnmlstc/core"
+#   "/usr/include/boost"
+#   ${catkin_INCLUDE_DIRS}
+# )
+
+# target_link_libraries(singleton_db_test
+#   ${catkin_LIBRARIES}
+#   /usr/local/lib/libmongocxx.so # Thay đổi đường dẫn tuyệt đối này nếu cần thiết
+#   /usr/local/lib/libbsoncxx.so # Thay đổi đường dẫn tuyệt đối này nếu cần thiết
+#   nlohmann_json::nlohmann_json
+
+#   # ${libbsoncxx_LIBRARIES}
+#   # ${libmongocxx_LIBRARIES}
+# )
+# set_target_properties(singleton_db_test PROPERTIES
+#   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+# )

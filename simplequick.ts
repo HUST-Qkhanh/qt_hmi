@@ -50,40 +50,40 @@
 <context>
     <name>App</name>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="56"/>
-        <location filename="RosQML2Content/App.qml" line="56"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="76"/>
+        <location filename="RosQML2Content/App.qml" line="76"/>
         <source>DASHBOARD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="87"/>
-        <location filename="build/qml/RosQML2Content/App.qml" line="157"/>
-        <location filename="RosQML2Content/App.qml" line="87"/>
-        <location filename="RosQML2Content/App.qml" line="157"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="107"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="177"/>
+        <location filename="RosQML2Content/App.qml" line="107"/>
+        <location filename="RosQML2Content/App.qml" line="177"/>
         <source>MONITORING</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="131"/>
-        <location filename="RosQML2Content/App.qml" line="131"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="151"/>
+        <location filename="RosQML2Content/App.qml" line="151"/>
         <source>SETUP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="192"/>
-        <location filename="RosQML2Content/App.qml" line="192"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="212"/>
+        <location filename="RosQML2Content/App.qml" line="212"/>
         <source>SYSTEM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="394"/>
-        <location filename="RosQML2Content/App.qml" line="394"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="411"/>
+        <location filename="RosQML2Content/App.qml" line="411"/>
         <source>ENGLISH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="423"/>
-        <location filename="RosQML2Content/App.qml" line="423"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="440"/>
+        <location filename="RosQML2Content/App.qml" line="440"/>
         <source>JAPANESE</source>
         <translation type="unfinished"></translation>
     </message>
@@ -582,6 +582,64 @@
     <message>
         <location filename="build/_deps/ds-src/src/imports/compatibility/QtQuickUltralite/Extras/designer/ColorizedImageSpecifics.qml" line="237"/>
         <source>Smoothly filters the image when it is scaled or transformed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ConfirmShow</name>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="26"/>
+        <source>Insert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="27"/>
+        <source>Insert new pallet ?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="33"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="34"/>
+        <source>Save changes to the pallet ?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="40"/>
+        <source>Erase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="41"/>
+        <source>Erase this pallet from database ?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="47"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="55"/>
+        <source>Done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="56"/>
+        <source>Ok!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="113"/>
+        <source>Insert new pallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/ConfirmShow.qml" line="127"/>
+        <source>Insert new document to database ?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2311,49 +2369,59 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="387"/>
-        <source>Position :</source>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="104"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="131"/>
+        <source>Please input required fields</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="126"/>
-        <source>Merchandise :</source>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="114"/>
+        <source>Position field is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="139"/>
-        <source>Count :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="152"/>
-        <source>Height :</source>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="160"/>
+        <source>Added to queue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="RosQML2Content/MyGrid_queue.qml" line="165"/>
-        <source>Width :</source>
+        <source>Remove from queue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="178"/>
-        <source>Length :</source>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="231"/>
+        <source>Merchandise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="191"/>
-        <source>Type :</source>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="254"/>
+        <source>Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="210"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="233"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="258"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="283"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="308"/>
-        <location filename="RosQML2Content/MyGrid_queue.qml" line="333"/>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="279"/>
+        <source>Height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="304"/>
+        <source>Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="329"/>
+        <source>Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RosQML2Content/MyGrid_queue.qml" line="354"/>
+        <source>Pallet type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="RosQML2Content/MyGrid_queue.qml" line="414"/>
-        <source>Empty</source>
+        <source>Position</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2824,34 +2892,34 @@
 <context>
     <name>Screen01</name>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="149"/>
-        <location filename="RosQML2Content/Screen01.qml" line="149"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="147"/>
+        <location filename="RosQML2Content/Screen01.qml" line="147"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="164"/>
-        <location filename="RosQML2Content/Screen01.qml" line="164"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="162"/>
+        <location filename="RosQML2Content/Screen01.qml" line="162"/>
         <source>Message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="177"/>
-        <location filename="RosQML2Content/Screen01.qml" line="177"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="175"/>
+        <location filename="RosQML2Content/Screen01.qml" line="175"/>
         <source>Confirm</source>
         <translation>Xác nhận</translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="204"/>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="207"/>
-        <location filename="RosQML2Content/Screen01.qml" line="204"/>
-        <location filename="RosQML2Content/Screen01.qml" line="207"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="202"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="205"/>
+        <location filename="RosQML2Content/Screen01.qml" line="202"/>
+        <location filename="RosQML2Content/Screen01.qml" line="205"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="216"/>
-        <location filename="RosQML2Content/Screen01.qml" line="216"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="214"/>
+        <location filename="RosQML2Content/Screen01.qml" line="214"/>
         <source>Close</source>
         <translation type="unfinished">Trở về</translation>
     </message>
@@ -2864,158 +2932,158 @@
         <translation type="obsolete">Chiều_rộng</translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="292"/>
-        <location filename="RosQML2Content/Screen01.qml" line="292"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="288"/>
+        <location filename="RosQML2Content/Screen01.qml" line="288"/>
         <source>Initializing</source>
         <translation>Đang khởi tạo</translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="318"/>
-        <location filename="RosQML2Content/Screen01.qml" line="318"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="314"/>
+        <location filename="RosQML2Content/Screen01.qml" line="314"/>
         <source>Máy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="318"/>
-        <location filename="RosQML2Content/Screen01.qml" line="318"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="314"/>
+        <location filename="RosQML2Content/Screen01.qml" line="314"/>
         <source>cuốn</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="318"/>
-        <location filename="RosQML2Content/Screen01.qml" line="318"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="314"/>
+        <location filename="RosQML2Content/Screen01.qml" line="314"/>
         <source>phim</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="378"/>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="728"/>
-        <location filename="RosQML2Content/Screen01.qml" line="378"/>
-        <location filename="RosQML2Content/Screen01.qml" line="728"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="374"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="724"/>
+        <location filename="RosQML2Content/Screen01.qml" line="374"/>
+        <location filename="RosQML2Content/Screen01.qml" line="724"/>
         <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="399"/>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="746"/>
-        <location filename="RosQML2Content/Screen01.qml" line="399"/>
-        <location filename="RosQML2Content/Screen01.qml" line="746"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="395"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="742"/>
+        <location filename="RosQML2Content/Screen01.qml" line="395"/>
+        <location filename="RosQML2Content/Screen01.qml" line="742"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="419"/>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="762"/>
-        <location filename="RosQML2Content/Screen01.qml" line="419"/>
-        <location filename="RosQML2Content/Screen01.qml" line="762"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="415"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="758"/>
+        <location filename="RosQML2Content/Screen01.qml" line="415"/>
+        <location filename="RosQML2Content/Screen01.qml" line="758"/>
         <source>3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="440"/>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="779"/>
-        <location filename="RosQML2Content/Screen01.qml" line="440"/>
-        <location filename="RosQML2Content/Screen01.qml" line="779"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="436"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="775"/>
+        <location filename="RosQML2Content/Screen01.qml" line="436"/>
+        <location filename="RosQML2Content/Screen01.qml" line="775"/>
         <source>4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="459"/>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="797"/>
-        <location filename="RosQML2Content/Screen01.qml" line="459"/>
-        <location filename="RosQML2Content/Screen01.qml" line="797"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="455"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="793"/>
+        <location filename="RosQML2Content/Screen01.qml" line="455"/>
+        <location filename="RosQML2Content/Screen01.qml" line="793"/>
         <source>5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="479"/>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="815"/>
-        <location filename="RosQML2Content/Screen01.qml" line="479"/>
-        <location filename="RosQML2Content/Screen01.qml" line="815"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="475"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="811"/>
+        <location filename="RosQML2Content/Screen01.qml" line="475"/>
+        <location filename="RosQML2Content/Screen01.qml" line="811"/>
         <source>6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="499"/>
-        <location filename="RosQML2Content/Screen01.qml" line="499"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="495"/>
+        <location filename="RosQML2Content/Screen01.qml" line="495"/>
         <source>7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="522"/>
-        <location filename="RosQML2Content/Screen01.qml" line="522"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="518"/>
+        <location filename="RosQML2Content/Screen01.qml" line="518"/>
         <source>8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="543"/>
-        <location filename="RosQML2Content/Screen01.qml" line="543"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="539"/>
+        <location filename="RosQML2Content/Screen01.qml" line="539"/>
         <source>9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="564"/>
-        <location filename="RosQML2Content/Screen01.qml" line="564"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="560"/>
+        <location filename="RosQML2Content/Screen01.qml" line="560"/>
         <source>10</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="585"/>
-        <location filename="RosQML2Content/Screen01.qml" line="585"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="581"/>
+        <location filename="RosQML2Content/Screen01.qml" line="581"/>
         <source>11</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="605"/>
-        <location filename="RosQML2Content/Screen01.qml" line="605"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="601"/>
+        <location filename="RosQML2Content/Screen01.qml" line="601"/>
         <source>12</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="627"/>
-        <location filename="RosQML2Content/Screen01.qml" line="627"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="623"/>
+        <location filename="RosQML2Content/Screen01.qml" line="623"/>
         <source>13</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="646"/>
-        <location filename="RosQML2Content/Screen01.qml" line="646"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="642"/>
+        <location filename="RosQML2Content/Screen01.qml" line="642"/>
         <source>14</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="665"/>
-        <location filename="RosQML2Content/Screen01.qml" line="665"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="661"/>
+        <location filename="RosQML2Content/Screen01.qml" line="661"/>
         <source>15</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="717"/>
-        <location filename="RosQML2Content/Screen01.qml" line="717"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="713"/>
+        <location filename="RosQML2Content/Screen01.qml" line="713"/>
         <source>Hàng </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="717"/>
-        <location filename="RosQML2Content/Screen01.qml" line="717"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="713"/>
+        <location filename="RosQML2Content/Screen01.qml" line="713"/>
         <source>chờ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1168"/>
-        <location filename="RosQML2Content/Screen01.qml" line="1168"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1164"/>
+        <location filename="RosQML2Content/Screen01.qml" line="1164"/>
         <source>Change robot mode to AUTO</source>
         <translation>Chuyển sang chế độ tự động</translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1172"/>
-        <location filename="RosQML2Content/Screen01.qml" line="1172"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1168"/>
+        <location filename="RosQML2Content/Screen01.qml" line="1168"/>
         <source>Change robot mode to MANUAL</source>
         <translation>Chuyển sang chế độ thủ công</translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1175"/>
-        <location filename="RosQML2Content/Screen01.qml" line="1175"/>
+        <location filename="build/qml/RosQML2Content/Screen01.qml" line="1171"/>
+        <location filename="RosQML2Content/Screen01.qml" line="1171"/>
         <source>Data false</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3349,6 +3417,13 @@
         <location filename="build/_deps/ds-src/src/imports/compatibility/QtQuickUltralite/Layers/designer/SpriteLayerSpecifics.qml" line="57"/>
         <source>Depth</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StatusShow</name>
+    <message>
+        <source>Confirm</source>
+        <translation type="obsolete">Xác nhận</translation>
     </message>
 </context>
 <context>

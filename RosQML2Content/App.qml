@@ -10,13 +10,33 @@ import QtQuick.VirtualKeyboard 6.7
 // import backendqt 1.0
 
 Window {
+    id: window
     width: 1920
     height: 1080
-    id: window
     visible: true
     flags: Qt.FramelessWindowHint
     visibility: Window.FullScreen
     title: "HMI_appication"
+    Popup {
+        id: keyboardOverlay
+        height: parent.height * 0.5
+        width: parent.width
+        visible: Qt.inputMethod.visible
+
+        // Position the Popup at the bottom of the window
+        x: 0
+        y: parent.height - height  // Aligns the Popup's bottom edge with the window's bottom edge
+        contentItem: Rectangle {
+            anchors.fill: parent
+            color: "transparent"  // Ensure there's no background color interfering
+        }
+        Keyboard {
+            id: inputPanel
+            active: true
+            visible: true
+            anchors.fill: parent
+        }
+    }
 
     PropertyAnimation {
         id: fadeIn
@@ -247,12 +267,12 @@ Window {
             drag.target: null  // We're manually moving the window
             property real dragOffsetX: 0
             property real dragOffsetY: 0
-            
+
             onPressed: {
                 dragOffsetX = window.x - dragArea.mouseX;
                 dragOffsetY = window.y - dragArea.mouseY;
             }
-            
+
             onPositionChanged: {
                 if (window.visibility !== Window.FullScreen && drag.active) {
                     window.x = dragArea.mouseX + dragOffsetX;
@@ -260,7 +280,6 @@ Window {
                 }
             }
         }
-
 
         Button {
             id: close_button
@@ -311,7 +330,7 @@ Window {
             }
             onClicked: {
                 print("Zooming to:", window.screen.width, window.screen.height);
-                
+
                 if (window.visibility === Window.FullScreen) {
                     window.showNormal();  // Restore to normal size if currently fullscreen
                     window.width = window.screen.width / 1.5;
@@ -323,8 +342,6 @@ Window {
                 }
             }
         }
-
-
 
         Button {
             id: minimal_button

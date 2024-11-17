@@ -106,11 +106,9 @@ Page {
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
-        background: Rectangle {
-            color: "#F0F8FF"
-            radius: 20
-            border.color: "#F0F8FF"
-            border.width: 1
+        contentItem: Rectangle {
+            anchors.fill: parent
+            color: "transparent"  // Ensure there's no background color interfering
         }
         enter: Transition {
             ParallelAnimation {
@@ -240,18 +238,16 @@ Page {
         // y: -page1.height * 0.08
         anchors.centerIn: parent
         width: page1.width * 0.8
-        height: page1.height * 0.65
+        height: page1.height * 0.8
         opacity: 1
         visible: false
         modal: true
         dim: true
         closePolicy: Popup.NoAutoClose
         // closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-        background: Rectangle {
-            color: "#ddffffff"
-            border.color: "#db000000"
-            border.width: 5  // Đặt nền trong suốt
-            radius: 5
+        contentItem: Rectangle {
+            anchors.fill: parent
+            color: "transparent"  // Ensure there's no background color interfering
         }
 
         MyUserPopup {
@@ -1178,18 +1174,7 @@ Page {
         }
     }
 
-    // Thêm bàn phím ảo
-    Keyboard {
-        id: inputPanel
-        height: parent.height * 0.25
-        anchors.bottom: parent.bottom
-        anchors.leftMargin: parent.width * 0.15
-        anchors.rightMargin: parent.width * 0.15
-        visible: Qt.inputMethod.visible
-        anchors.left: parent.left
-        anchors.right: parent.right
-        parent: Overlay.overlay
-    }
+
 
     // Hiển thị bàn phím khi TextField nhận focus
     // Component.onCompleted: {
@@ -1271,14 +1256,14 @@ Page {
             pop_up_2.open();
             loadPopupType(0);
             console.log("queueID: " + queueId);
-            backend.setDataQueue(queueId);
+            backend.getDataQueue(queueId);
         }
         onBufferPalletRequest: {
             pop_up_2.open();
             loadPopupType(1);
             console.log("bufferID: " + bufferId);
             // var id = bufferId;
-            backend.setDataBuffer(bufferId);
+            backend.getDataBuffer(bufferId);
         }
     }
 }

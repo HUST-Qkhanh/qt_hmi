@@ -2,7 +2,8 @@ import QtQuick 6.2
 import QtQuick.Controls 6.2
 import QtQuick.Layouts 6.2
 import RosQML2
-import QtQuick3D.AssetUtils
+
+// import QtQuick3D.AssetUtils
 
 Item {
     id: grid_queue
@@ -20,6 +21,51 @@ Item {
 
     property string jsonQueue: ''
 
+    /*
+
+                             _        __          ___                                            _
+    ___ _ __ _ __ ___  _ __ (_)_ __  / _| ___    ( _ )     ___ _ __ _ __ ___  _ __  ___ ___   __| | ___
+   / _ \ '__| '__/ _ \| '__|| | '_ \| |_ / _ \   / _ \/\  / _ \ '__| '__/ _ \| '__|/ __/ _ \ / _` |/ _ \
+  |  __/ |  | | | (_) | |   | | | | |  _| (_) | | (_>  < |  __/ |  | | | (_) | |  | (_| (_) | (_| |  __/
+   \___|_|  |_|  \___/|_|___|_|_| |_|_|  \___/   \___/\/  \___|_|  |_|  \___/|_|___\___\___/ \__,_|\___|
+                       |_____|                                                |_____|
+
+*/
+
+    // property string errorAdd_code: ""
+    // property string errorSave_code: ""
+    // property string ErrorDelete_code: ""
+    // property string errorAdd_info: ""
+    // property string errorSave_info: ""
+    // property string errorDelete_info: ""
+
+    /*
+
+/*
+
+       _                   _
+   ___(_) __ _ _ __   __ _| |___
+  / __| |/ _` | '_ \ / _` | / __|
+  \__ \ | (_| | | | | (_| | \__ \
+  |___/_|\__, |_| |_|\__,_|_|___/
+         |___/
+
+*/
+
+    // signal showConfirm(int type, string info)
+    // signal addQueueDB(string jsonPallet)
+    // signal removeQueueDB(string jsonFilter)
+    // signal saveQueueDB(string jsonPallet)
+
+    /*    __                  _   _
+   / _|_   _ _ __   ___| |_(_) ___  _ __
+  | |_| | | | '_ \ / __| __| |/ _ \| '_ \
+  |  _| |_| | | | | (__| |_| | (_) | | | |
+  |_|  \__,_|_| |_|\___|\__|_|\___/|_| |_|
+
+
+*/
+
     function clearTextFields() {
         _merchandise = qsTr("");
         _count = qsTr("");
@@ -29,60 +75,80 @@ Item {
         _palletType = qsTr("");
         _id = qsTr("");
     }
-
+    //TODO:TESTED
     function updateQueuePallet(jsonStr) {
         var jsonObj = JSON.parse(jsonStr); // Parse the JSON string into a JavaScript object
 
         // Update the text fields with parsed data
         _merchandise = jsonObj.Merchandise || "";
         _count = jsonObj.Count || "";
-        _height = jsonObj.Height || "";
-        _width = jsonObj.Width || "";
-        _length = jsonObj.Length || "";
-        _palletType = jsonObj.PalletType || "";
+        _height = jsonObj.height || "";
+        _width = jsonObj.width || "";
+        _length = jsonObj.length || "";
+        _palletType = jsonObj.pallet_type || "";
         _id = jsonObj.queue || "";
 
         console.log("queue_id: " + jsonObj.queue);
     }
 
+    //TODO: TESTED
     function addQueuePallet() {
-        if (uuid_queue.text === "-----") {
-            jsonObject = {
-                "_id": uuid_queue.text,
-                "Id": _Id_.text,
-                "PalletInfo": _PalletInfo_.text,
-                "Model": _Model_.text,
-                "Merchandise": _Merchandise_.text,
-                "NameModel": _NameModel_.text,
-                "Destination": _Destination_.text,
-                "Count": _Count_.text,
-                "ZoneId": _ZoneId_.text,
-                "ColumnId": _ColumnId_.text,
-                "LocationId": _LocationId_.text,
-                "Barcode": _Barcode_.text,
-                // "Time": _Time_.text,
-                "queue": _queue_.text
+        if (_merchandise !== "" && _count !== "" && _id !== "") {
+            var jsonObject = {
+                "Merchandise": _merchandise,
+                "Count": _count,
+                "queue": _id
             };
-            // console.log(JSON.stringify(jsonObject, null, 2))
-
             backend.addDataQueue(JSON.stringify(jsonObject, null, 2));
         } else {
-            _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
+            confirmShow.info_text = qsTr("Please input required fields");
+            confirmShow.header_type = 3;
+            statusIndicate.open();
+        }
+    }
+    //TODO: TESTED
+    function deleteQueuePallet(queueId) {
+        if (_id !== "") {
+            backend.deleteDataQueue(_id);
+        } else {
+            confirmShow.info_text = qsTr("Position field is empty");
+            confirmShow.header_type = 3;
+            statusIndicate.open();
+        }
+    }
+    //TODO: TESTED
+    function saveQueuePallet(queueId) {
+        if (_merchandise !== "" && _count !== "" && _id !== "") {
+            var jsonObject = {
+                "Merchandise": _merchandise,
+                "Count": _count,
+                "queue": _id
+            };
+            backend.saveDataQueue(JSON.stringify(jsonObject, null, 2));
+        } else {
+            console.log("Error save to queue");
+            console.log("Please input required fields");
+            confirmShow.info_text = qsTr("Please input required fields");
+            confirmShow.header_type = 3;
+            // statusIndicate.open();
         }
     }
 
-    function deleteQueuePallet(queueId) {
-    // body...
-    }
+    /*
 
-    function saveQueuePallet(queueId) {
-    // body...
-    }
+                                   _   _
+    ___ ___  _ __  _ __   ___  ___| |_(_) ___  _ __  ___
+   / __/ _ \| '_ \| '_ \ / _ \/ __| __| |/ _ \| '_ \/ __|
+  | (_| (_) | | | | | | |  __/ (__| |_| | (_) | | | \__ \
+   \___\___/|_| |_|_| |_|\___|\___|\__|_|\___/|_| |_|___/
 
+
+*/
     Component.onCompleted: {
         clearTextFields();
     }
 
+    //TODO: connection for updating dataview when cell is pressed
     Connections {
         target: backend
         onQueueJsonChanged: {
@@ -90,15 +156,48 @@ Item {
             console.log("Fetched queue json:" + jsonQueue);
             updateQueuePallet(jsonQueue);
         }
+        onQueueJsonAdded: {
+            confirmShow.info_text = qsTr("Added to queue");
+            confirmShow.header_type = 4;
+            statusIndicate.open();
+        }
+        onQueueJsonDeleted: {
+            confirmShow.info_text = qsTr("Remove from queue");
+            confirmShow.header_type = 4;
+            statusIndicate.open();
+        }
     }
 
+    //NOTE: Handle the action when button is pressed
     Connections {
         target: userPopup
         onPopupLoaded: {
             clearTextFields();
         }
+        onAddDataRequest: {
+            console.log("queue get add request");
+            addQueuePallet();
+        }
+        onSaveDataRequest: {
+            console.log("queue get save request");
+            saveQueuePallet();
+        }
+        onDeleteDataRequest: {
+            console.log("queue get remove request");
+            deleteQueuePallet();
+        }
     }
 
+    /*
+
+   _____ _     _____ __  __ _____ _   _ _____ ____
+  | ____| |   | ____|  \/  | ____| \ | |_   _/ ___|
+  |  _| | |   |  _| | |\/| |  _| |  \| | | | \___ \
+  | |___| |___| |___| |  | | |___| |\  | | |  ___) |
+  |_____|_____|_____|_|  |_|_____|_| \_| |_| |____/
+
+
+*/
     RowLayout {
         id: rowLayout
         anchors.fill: parent
@@ -107,107 +206,29 @@ Item {
         anchors.topMargin: 5
         anchors.bottomMargin: 10
         spacing: 50
-        clip: true
+        clip: false
 
         GridLayout {
             id: parent_queue
+            Layout.margins: 5
+            Layout.leftMargin: 5
             Layout.fillWidth: true
             Layout.bottomMargin: 0
             Layout.maximumHeight: parent.height * 0.8
             layoutDirection: Qt.LeftToRight
             flow: GridLayout.TopToBottom
-            rowSpacing: 5
-            columnSpacing: 5
+            rowSpacing: 20
+            columnSpacing: 20
             rows: 5
             columns: 2
-
-            Text {
-                id: mechandise_text
-                text: qsTr("Merchandise :")
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignBottom
-                clip: true
-                font.pointSize: 18 * grid_queue.height / 600
-                font.family: "Ubuntu"
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                font.bold: false
-                Layout.row: 0
-                Layout.column: 0
-            }
-            Text {
-                text: qsTr("Count :")
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignBottom
-                clip: true
-                font.pointSize: 18 * grid_queue.height / 600
-                font.family: "Ubuntu"
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                font.bold: false
-                Layout.row: 2
-                Layout.column: 0
-            }
-            Text {
-                text: qsTr("Height :")
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignBottom
-                clip: true
-                font.pointSize: 18 * grid_queue.height / 600
-                font.family: "Ubuntu"
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                font.bold: false
-                Layout.row: 0
-                Layout.column: 1
-            }
-            Text {
-                text: qsTr("Width :")
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignBottom
-                clip: true
-                font.pointSize: 18 * grid_queue.height / 600
-                font.family: "Ubuntu"
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                font.bold: false
-                Layout.row: 2
-                Layout.column: 1
-            }
-            Text {
-                text: qsTr("Length :")
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignBottom
-                clip: true
-                font.pointSize: 18 * grid_queue.height / 600
-                font.family: "Ubuntu"
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                font.bold: false
-                Layout.row: 4
-                Layout.column: 1
-            }
-            Text {
-                text: qsTr("Type :")
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignBottom
-                clip: true
-                font.pointSize: 18 * grid_queue.height / 600
-                font.family: "Ubuntu"
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                font.bold: false
-                Layout.row: 6
-                Layout.column: 1
-            }
             TextField {
                 id: _Merchandise_
                 objectName: "_Merchandise__"
-                font.pixelSize: 10 * grid_queue.height / 300
+                font.pixelSize: 10 * _Merchandise_.height / 35
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                placeholderText: qsTr("Empty")
+                placeholderText: qsTr("Merchandise")
                 placeholderTextColor: Constants.textColorSecondary
                 text: qsTr("")
                 property bool isBold: false
@@ -230,7 +251,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 Layout.fillWidth: true
 
-                placeholderText: qsTr("Empty")
+                placeholderText: qsTr("Count")
                 placeholderTextColor: Constants.textColorSecondary
 
                 text: qsTr("")
@@ -255,7 +276,7 @@ Item {
                 font.pixelSize: 10 * _Merchandise_.height / 35
                 Layout.fillWidth: true
 
-                placeholderText: qsTr("Empty")
+                placeholderText: qsTr("Height")
                 placeholderTextColor: Constants.textColorSecondary
                 text: qsTr("")
                 Layout.preferredWidth: 300 * grid_queue.width / 1000
@@ -280,7 +301,7 @@ Item {
                 font.pixelSize: 10 * _Merchandise_.height / 35
                 Layout.fillWidth: true
 
-                placeholderText: qsTr("Empty")
+                placeholderText: qsTr("Width")
                 placeholderTextColor: Constants.textColorSecondary
                 text: qsTr("")
                 Layout.preferredWidth: 300 * grid_queue.width / 1000
@@ -305,7 +326,7 @@ Item {
                 font.pixelSize: 10 * _Merchandise_.height / 35
                 Layout.fillWidth: true
 
-                placeholderText: qsTr("Empty")
+                placeholderText: qsTr("Length")
                 placeholderTextColor: Constants.textColorSecondary
                 text: qsTr("")
                 Layout.preferredWidth: 300 * grid_queue.width / 1000
@@ -330,7 +351,7 @@ Item {
                 font.pixelSize: 10 * _Merchandise_.height / 35
                 Layout.fillWidth: true
 
-                placeholderText: qsTr("Empty")
+                placeholderText: qsTr("Pallet type")
                 placeholderTextColor: Constants.textColorSecondary
                 text: qsTr("")
                 Layout.preferredWidth: 300 * grid_queue.width / 1000
@@ -353,6 +374,8 @@ Item {
 
         ColumnLayout {
             id: columnLayout
+            Layout.margins: 5
+            Layout.rightMargin: 5
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             // Layout.fillWidth: true
             Layout.maximumHeight: parent.height * 0.8
@@ -376,55 +399,24 @@ Item {
                 fillMode: Image.PreserveAspectFit
             }
 
-            ColumnLayout {
-                id: columnLayout1
-                Layout.fillHeight: false
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
-                Layout.maximumWidth: parent.width * 0.5
-                Layout.preferredHeight: parent.height * 0.3
+            TextField {
+                id: _Id_
+                property real radius: 5
+                text: qsTr("")
+                font.pixelSize: 10 * _Merchandise_.height / 35
+                horizontalAlignment: Text.AlignHCenter
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                Layout.fillHeight: true
+                Layout.preferredWidth: parent.width * 0.5
+                Layout.maximumHeight: _Merchandise_.height
 
-                Text {
-                    text: qsTr("Position :")
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignBottom
-                    Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
-                    Layout.fillHeight: false
-                    // Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    // Layout.fillWidth: true
-                    font.pointSize: mechandise_text.font.pointSize
-                    font.family: "Ubuntu"
-                    font.bold: false
-                    clip: true
-                    Layout.row: 0
-                    Layout.column: 0
-                }
-
-                TextField {
-                    id: _Id_
-                    property real radius: 5
-                    text: qsTr("")
-                    font.pixelSize: 10 * _Merchandise_.height / 35
-                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    Layout.maximumHeight: _Merchandise_.height
-
-                    placeholderTextColor: Constants.textColorSecondary
-                    placeholderText: qsTr("Empty")
-                    objectName: "_Id__"
-                    property bool isBold: false
-                    focus: true
-                    background: Rectangle {
-                        radius: 5
-                        border.color: "#3850ff"
-                        anchors.fill: parent
-                    }
-                    Layout.row: 1
-
-                    // Layout.fillHeight: true
-                    Layout.column: 0
-                }
+                placeholderTextColor: Constants.textColorSecondary
+                placeholderText: qsTr("Position")
+                objectName: "_Id__"
+                property bool isBold: false
+                Layout.row: 1
+                // Layout.fillHeight: true
+                Layout.column: 0
             }
         }
     }

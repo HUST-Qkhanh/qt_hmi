@@ -3,76 +3,169 @@
 MongoDBClient *MongoDBClient::pinstance_{nullptr};
 std::mutex MongoDBClient::mutex_;
 
-MongoDBClient *MongoDBClient::getInstance(const std::string &value)
-{
+MongoDBClient *MongoDBClient::getInstance(const std::string &value) {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    if (pinstance_ == nullptr)
-    {
+    if (pinstance_ == nullptr) {
         pinstance_ = new MongoDBClient(value);
     }
     return pinstance_;
 }
 
-MongoDBClient::MongoDBClient(const std::string &value) : value_(value), client_(mongocxx::uri{})
-{
+MongoDBClient::MongoDBClient(const std::string &value)
+    : value_(value), dbClient_(mongocxx::uri{}) {
     std::cout << "MongoDB client initialized with default URI.\n";
     isInitialized_ = true;
 }
 
-void MongoDBClient::initialize(const std::string &uri)
-{
-    if (!isInitialized_)
-    {
-        client_ = mongocxx::client(mongocxx::uri{uri});
+void MongoDBClient::initialize(const std::string &uri) {
+    if (!isInitialized_) {
+        dbClient_ = mongocxx::client(mongocxx::uri{uri});
         isInitialized_ = true;
         std::cout << "MongoDB client initialized with URI: " << uri << "\n";
+    } else {
+        std::cerr
+            << "MongoDB client already initialized. Initialization skipped.\n";
     }
-    else
-    {
-        std::cout << "MongoDB client already initialized. Initialization skipped.\n";
-    }
 }
 
-mongocxx::database MongoDBClient::getDatabase(const std::string &dbName)
-{
-    return client_[dbName];
+mongocxx::database MongoDBClient::getDatabase(const std::string &dbName) {
+    return dbClient_[dbName];
 }
 
-void MongoDBClient::writeToCollection(const std::string &dbName, const std::string &collectionName, const bsoncxx::document::view_or_value &doc)
-{
-    auto collection = client_[dbName][collectionName];
-    collection.insert_one(doc);
-    std::cout << "Document inserted into " << dbName << "." << collectionName << "\n";
+void MongoDBClient::writeToCollection(const std::string &dbName,
+                                      const std::string &collectionName,
+                                      const std::string &doc) {
+    auto collection = dbClient_[dbName][collectionName];
+    auto bsonDoc = bsoncxx::from_json(doc);
+    collection.insert_one(bsonDoc.view());
+    std::cout << "Document inserted into " << dbName << "." << collectionName
+              << "\n";
 }
 
-void MongoDBClient::editInCollection(const std::string &dbName, const std::string &collectionName, const bsoncxx::document::view_or_value &filter, const bsoncxx::document::view_or_value &update)
-{
-    auto collection = client_[dbName][collectionName];
-    auto result = collection.update_one(filter, update);
-    if (result && result->matched_count() > 0)
-    {
+void MongoDBClient::editInCollection(const std::string &dbName,
+                                     const std::string &collectionName,
+                                     const std::string &filter,
+                                     const std::string &update) {
+    auto collection = dbClient_[dbName][collectionName];
+    auto bsonDoc = bsoncxx::from_json(update);
+    auto bsonFilter = bsoncxx::from_json(filter);
+    auto result = collection.update_one(bsonFilter.view(), bsonDoc.view());
+    if (result && result->matched_count() > 0) {
         std::cout << "Document updated successfully.\n";
-    }
-    else
-    {
+    } else {
         std::cout << "No document matched the given filter.\n";
     }
 }
 
-void MongoDBClient::eraseFromCollection(const std::string &dbName, const std::string &collectionName, const bsoncxx::document::view_or_value &filter)
-{
-    auto collection = client_[dbName][collectionName];
+void MongoDBClient::fetchFromCollection(const std::string &dbName,
+                                        const std::string &collectionName,
+                                        const std::string &filter,
+                                        std::string &fetchedStr) {
+    auto collection = dbClient_[dbName][collectionName];
+    auto bsonFilter = bsoncxx::from_json(filter);
+    auto result = collection.find_one(bsonFilter.view());
+    if (result) {
+        // Chuyển đổi tài liệu thành JSON
+        bsoncxx::document::view view = result->view();
+        fetchedStr = bsoncxx::to_json(view);
+        // std::cout << "Fetch document successfully: " << fetchedStr << "\n";
+        std::cout << "Fetch document successfully: \n";
+    } else {
+        std::cerr << "No document matched the given filter.\n";
+    }
+}
+void MongoDBClient::eraseFromCollection(const std::string &dbName,
+                                        const std::string &collectionName,
+                                        const std::string &filter) {
+    auto collection = dbClient_[dbName][collectionName];
+    auto bsonFilter = bsoncxx::from_json(filter);
 
     // Use delete_many to remove all documents matching the filter
-    auto result = collection.delete_many(filter);
+    auto result = collection.delete_many(bsonFilter.view());
 
-    if (result)
-    {
-        std::cout << "Deleted " << result->deleted_count() << " documents from " << dbName << "." << collectionName << "\n";
+    if (result) {
+        std::cout << "Deleted " << result->deleted_count() << " documents from "
+                  << dbName << "." << collectionName << "\n";
+    } else {
+        std::cerr << "No documents matched the filter.\n";
     }
-    else
-    {
-        std::cout << "No documents matched the filter.\n";
+}
+
+void MongoDBClient::addMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter, const std::string &doc) {
+    auto collection = dbClient_[dbName][collectionName];
+    // find the indexKey
+    json filterJson = json::parse(filter);
+    auto indexKey = filterJson.begin().key();
+    auto indexValue = filterJson.begin().value().get<int>();
+    std::cout << "filter: " << indexKey << " - " << indexValue << "\n";
+    std::cerr << "addMiddle of collection: " << dbName << "." << collectionName << " - indexKey: " << indexKey << "\n";
+
+    // find docs and increase all value of indexKey that larger than the added doc's indexKey
+    bsoncxx::builder::stream::document filter_builder, update_builder;
+
+    filter_builder << indexKey << bsoncxx::builder::stream::open_document
+                   << "$gte" << indexValue
+                   << bsoncxx::builder::stream::close_document;
+
+    update_builder << "$inc" << bsoncxx::builder::stream::open_document
+                   << indexKey << 1
+                   << bsoncxx::builder::stream::close_document;
+
+    auto result = collection.update_many(filter_builder.view(), update_builder.view());
+    if (result) {
+        std::cout << "Matched documents: " << result->matched_count() << std::endl;
+        std::cout << "Modified documents: " << result->modified_count() << std::endl;
+    } else {
+        std::cout << "Update operation failed." << std::endl;
+        return;
+    }
+    writeToCollection(dbName, collectionName, doc);
+}
+
+void MongoDBClient::removeMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter) {
+    auto collection = dbClient_[dbName][collectionName];
+    eraseFromCollection(dbName, collectionName, filter);
+    // find the indexKey
+    json filterJson = json::parse(filter);
+    auto indexKey = filterJson.begin().key();
+    auto indexValue = filterJson.begin().value().get<int>();
+    std::cout << "filter: " << indexKey << " - " << indexValue << "\n";
+    std::cerr << "addMiddle of collection: " << dbName << "." << collectionName << " - indexKey: " << indexKey << "\n";
+
+    // find docs and increase all value of indexKey that larger than the added doc's indexKey
+    bsoncxx::builder::stream::document filter_builder, update_builder;
+
+    filter_builder << indexKey << bsoncxx::builder::stream::open_document
+                   << "$gte" << indexValue
+                   << bsoncxx::builder::stream::close_document;
+
+    update_builder << "$inc" << bsoncxx::builder::stream::open_document
+                   << indexKey << -1
+                   << bsoncxx::builder::stream::close_document;
+
+    auto result = collection.update_many(filter_builder.view(), update_builder.view());
+    if (result) {
+        std::cout << "Matched documents: " << result->matched_count() << std::endl;
+        std::cout << "Modified documents: " << result->modified_count() << std::endl;
+    } else {
+        std::cout << "Update operation failed." << std::endl;
+        return;
+    }
+}
+
+bool MongoDBClient::checkChangeStream(const std::string &dbName, const std::string &collectionName) {
+    auto collection = dbClient_[dbName][collectionName];
+    try {
+        auto changeStream = collection.watch();
+        if (auto change = changeStream.begin(); change != changeStream.end()) {
+            std::cout << "changes detected in" << dbName << "." << collectionName << "\n";
+            return true;
+        }
+        return false;
+
+    } catch (const std::exception &e) {
+        std::cerr << "Error in change stream " << e.what() << '\n';
+        return false;
     }
 }
