@@ -21,8 +21,7 @@ void GetQueueTask::run() {
     }
 }
 void EditQueueTask::run() {
-    //qDebug() << "Model Query Task started on thread:"
-             << QThread::currentThread();
+    //qDebug() << "Model Query Task started on thread:" << QThread::currentThread();
 
     json modelFilter;
     std::string modelStr = "";  // fetched model
@@ -80,8 +79,7 @@ void EditQueueTask::run() {
 }
 // TODO: add queue_id for added document
 void AddQueueTask::run() {
-    //qDebug() << "AddQueueTask started on thread:"
-             << QThread::currentThread();
+    //qDebug() << "AddQueueTask started on thread:" << QThread::currentThread();
 
     json modelFilter;
     std::string modelStr = "";  // fetched model
@@ -141,8 +139,7 @@ void AddQueueTask::run() {
     emit taskFinished(PALLET_QUEUE_ADD, result);
 }
 void EraseQueueTask::run() {
-    //qDebug() << "EraseQueueTask started on thread:"
-             << QThread::currentThread();
+    //qDebug() << "EraseQueueTask started on thread:" << QThread::currentThread();
     json filter;
     filter["queue"] = id_;
 

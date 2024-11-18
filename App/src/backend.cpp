@@ -717,18 +717,16 @@ void Backend::deleteDataQueue(const int &id) {
 
 */
 
-// void Backend::getDataBuffer(const int &id) {
-//     ROS_ERROR_STREAM("set BUFFER for " << id);
-//     // ThreadPoolManager threadManager;
-//     connect(&threadManager, &ThreadPoolManager::getBufferTaskCompleted, this, &Backend::bufferJsonFetched, Qt::UniqueConnection);
+void Backend::getDataBuffer(const int &id) {
+    ROS_ERROR_STREAM("set BUFFER for " << id);
+    // ThreadPoolManager threadManager;
+    connect(&threadManager, &ThreadPoolManager::getBufferTaskCompleted, this, &Backend::bufferJsonFetched, Qt::UniqueConnection);
 
-//     json palletJson;
+    json palletJson;
 
-//     GetBufferTask *getBufferPallet = new GetBufferTask(dbClient_, id);
-//     threadManager.executeTask(getBufferPallet);
-
-//     //initColor();
-// }
+    GetBufferTask *getBufferPallet = new GetBufferTask(dbClient_, id);
+    threadManager.executeTask(getBufferPallet);
+}
 // void Backend::addDataBuffer(const int &id, const QString &jsonStr){
 //     connect(&threadManager, &ThreadPoolManager::addBufferTaskCompleted, this, &Backend::BufferDbAdded, Qt::UniqueConnection);
 

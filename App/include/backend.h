@@ -369,7 +369,7 @@ class Backend : public QObject {
     Q_INVOKABLE QString getIPServer();
     Q_INVOKABLE void initColor();
 
-    // Q_INVOKABLE void getDataBuffer(const int &id);
+    Q_INVOKABLE void getDataBuffer(const int &id);
     // Q_INVOKABLE void saveDataBuffer(QString jsonstring);
     // Q_INVOKABLE void addDataBuffer(QString jsonstring);
     // Q_INVOKABLE void deleteDataBuffer(QString jsonstring);
