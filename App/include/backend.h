@@ -128,6 +128,8 @@ class Backend : public QObject {
     void modelDbSaved(const QString &result) {
         emit modelJsonEdited();
     };
+    void colorPalletQueue(const std::vector<std::string> &result);
+    void colorPalletBuffer(const std::vector<std::string> &result);
 
    signals:
     void batteryPercentageChanged();
@@ -233,7 +235,7 @@ class Backend : public QObject {
     QString stateValueSystemStr;
     // std::string uri = "mongodb://localhost:27017";
     std::string uri = "mongodb://localhost:27017";
-    std::string database = "pallet_data";
+    std::string database = "admin";
     std::string collection = " pallet_buffer";
     std::string collection_queue = "pallet_queue";
     std::string collection_model = "pallet_model";
@@ -265,8 +267,6 @@ class Backend : public QObject {
     double vel_angular;
     json deleteObjQueue(int queue);
     void arrangeQueue();
-    void colorPalletQueue(mongocxx::collection coll, std::string prefix, std::string id_, std::string suffix);
-    void colorPallet(mongocxx::collection coll, std::string prefix, std::string id_, std::string suffix);
     void delayFunction(int milliseconds) {
         std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
     }
@@ -315,6 +315,7 @@ class Backend : public QObject {
     }
 
     int check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line);
+    std::string switchColorType(int type);
 
    public:
     explicit Backend(QObject *parent = nullptr);

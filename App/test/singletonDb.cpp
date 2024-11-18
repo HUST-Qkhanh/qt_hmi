@@ -42,7 +42,7 @@ void threadFoo() {
 
     bsoncxx::document::value update = bsoncxx::from_json(jsonData.dump());
 
-    client->editInCollection("pallet_data", "pallet_queue", filter.view(),
+    client->editInCollection("admin", "pallet_queue", filter.view(),
                              update.view());
 
     // client->
@@ -73,7 +73,7 @@ void threadBar() {
 
     // Convert JSON data to BSON document and insert into MongoDB
     bsoncxx::document::value doc = bsoncxx::from_json(jsonData.dump());
-    client->writeToCollection("pallet_data", "pallet_queue", doc.view());
+    client->writeToCollection("admin", "pallet_queue", doc.view());
 }
 
 void threadBone() {
@@ -101,7 +101,7 @@ void threadBone() {
 
     // Convert JSON data to BSON document and insert into MongoDB
     bsoncxx::document::value doc = bsoncxx::from_json(jsonData.dump());
-    client->writeToCollection("pallet_data", "pallet_queue", doc.view());
+    client->writeToCollection("admin", "pallet_queue", doc.view());
 }
 
 int main() {

@@ -69,7 +69,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
   /usr/local/lib/libbsoncxx.so
 
   # nlohmann_json::nlohmann_json
-  /usr/lib/x86_64-linux-gnu/libyaml-cpp.so
+  # /usr/lib/x86_64-linux-gnu/libyaml-cpp.so
 )
 
 

@@ -38,7 +38,7 @@ public:
             backend.initColor();
             ros::spinOnce();
             });
-        rosTimer->start(200); // Adjust the interval as needed
+        rosTimer->start(2000); // Adjust the interval as needed
     }
 
     hmiApp(int argc, char** argv);
@@ -83,7 +83,7 @@ hmiApp::hmiApp(int argc, char** argv)
     QInputMethod *inputMethod = QGuiApplication::inputMethod();
     inputMethod->show();
     backend.setEngine(&engine);
-    backend.initColor();
+    // backend.initColor();
     
     // Initialize ROS timer to process callbacks
     init_ros_timer();

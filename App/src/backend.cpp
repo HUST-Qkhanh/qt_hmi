@@ -21,9 +21,9 @@ Backend::Backend(QObject *parent)
     // Initialize the subscriber in the constructor
     // TODO:
     dbClient_->initialize(uri);
-    // collection = dbClient_["pallet_data"]["pallet_buffer"];
-    // collection_queue = dbClient_["pallet_data"]["pallet_queue"];
-    // collection_model = dbClient_["pallet_data"]["pallet_model"];
+    // collection = dbClient_["admin"]["pallet_buffer"];
+    // collection_queue = dbClient_["admin"]["pallet_queue"];
+    // collection_model = dbClient_["admin"]["pallet_model"];
 
     battery_percent_sub = nh.subscribe("/arduino_driver/float_param/battery_percent", 1, &Backend::batteryPercentCallback, this);
     battery_voltage_sub = nh.subscribe("/arduino_driver/float_param/battery_voltage", 1, &Backend::batteryVoltageCallback, this);
@@ -83,10 +83,11 @@ Backend::Backend(QObject *parent)
     //     ROS_WARN("Cannot get AGV name");
     // }
     // // getDataComboBox();
-    std::vector<std::string> collectionList = {"pallet_queue", "pallet_buffer"};
-    TrackDBChanges *trackDbchanges = new TrackDBChanges(dbClient_, collectionList);
-    std::lock_guard<std::mutex> lock(mutex_);
-    threadManager.executeTask(trackDbchanges);
+    // std::vector<std::string> collectionList = {"pallet_queue", "pallet_buffer"};
+    // TrackDBChanges *trackDbchanges = new TrackDBChanges(dbClient_, collectionList);
+    // std::lock_guard<std::mutex> lock(mutex_);
+    // threadManager.executeTask(trackDbchanges);
+    // initColor();
 }
 
 std::vector<std::string> Backend::splitString(std::string str, char delimiter) {
@@ -395,7 +396,7 @@ QString Backend::getIPServer() {
 */
 
 void Backend::palletStatusCallback(const std_msgs::Empty &msg) {
-    initColor();
+    // initColor();
 }
 
 // Hàm chuyển đổi số thực thành chuỗi với độ chính xác mong muốn
@@ -426,7 +427,7 @@ bool Backend::servicePopPalletCallback(std_stamped_msgs::StringService::Request 
     arrangeQueue();
     json delete_result = deleteObjQueue(1);
     res.respond = delete_result.dump();
-    initColor();
+    // initColor();
     return 1;
 }
 bool Backend::serviceLookupPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res) {
@@ -488,7 +489,7 @@ bool Backend::serviceAppendPalletCallback(std_stamped_msgs::StringService::Reque
         return false;
     }
 
-    initColor();
+    // initColor();
     res.respond = "service success";
     return true;
 }
@@ -553,150 +554,109 @@ void Backend::arrangeQueue() {
     //     collection_queue.update_one(filter.view(), update.view());
     // }
 }
-
-void Backend::colorPalletQueue(mongocxx::collection coll,
-                               std::string prefix,
-                               std::string id_,
-                               std::string suffix) {
-    mongocxx::cursor cursor = coll.find({});
+std::string Backend::switchColorType(int type) {
+    if (type == 0) {
+        return "#ffeb3b";
+    } else if (type == 1) {
+        return "#ff9800";
+    } else if (type == 3) {
+        return "#2196f3";
+    }
+    return "#4caf50";
+}
+void Backend::colorPalletQueue(const std::vector<std::string> &result) {
+    //qDebug() << "Now color pallet queue: " << result.size() << "\n";
     std::string color = "";
     rootObject = engine->rootObjects().first();
-    std::vector<int32_t> list_numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-    for (auto &&doc : cursor) {
-        // Create a function to process documents
-        std::string data_ = bsoncxx::to_json(doc);
-        json object_ = json::parse(data_);
 
-        // Determine color based on type
-        std::string model_pallet = object_["Merchandise"];
-        std::string count_pallet = object_["Count"];
-        // std::cout << count_pallet << std::endl;
-        json result_pallet = lookupPalletModel(model_pallet, count_pallet);
+    int index = 1;  // start from cell 1
 
-        float hig = 0;
-        if (!result_pallet.empty()) {
-            std::string high = result_pallet["pallet_type"].get<std::string>();
-            hig = stringToFloat(high);
+    for (auto &&doc : result) {
+        json palletJson = json::parse(doc);
+        if (!(palletJson.contains("pallet_type") && palletJson["pallet_type"].is_string())) {
+            //qDebug() << "Queue cell has invalid data. \n";
+            ++index;
+            continue;
         }
-        // std::cerr << result_pallet << std::endl;
 
-        if (hig == 0) {
-            color = "#FFEB3B";
-        } else if (hig == 1) {
-            color = "#FF9800";
-        } else if (hig == 3) {
-            color = "#2196F3";
-        } else {
-            color = "#4CAF50";
-        }
-        // Get the id and update color
-        std::string obj_ = "";
-        if (object_["queue"].is_number_integer()) {
-            int32_t queue_value = object_["queue"].get<int32_t>();
-            auto it = std::remove(list_numbers.begin(), list_numbers.end(), queue_value);
+        int type = std::stoi(palletJson["pallet_type"].get<std::string>());
 
-            // Xóa phần tử thừa sau khi dùng std::remove
-            list_numbers.erase(it, list_numbers.end());
-            // Tiếp tục xử lý với queue_value
-            obj_ = prefix + std::to_string(queue_value) + suffix;
-        } else {
-            // Xử lý trường hợp lỗi hoặc kiểu dữ liệu không phải là số nguyên
-            // std::cerr << "Error: queue is not an integer!" << std::endl;
-        }
+        // Switch color base on pallet_type
+        color = switchColorType(type);
+
+        // create object name
+        std::string obj_ = "zone_" + std::to_string(index) + "_queue";
 
         QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
-        if (item) {
-            item->setProperty("color", QColor(QString::fromStdString(color)));
+        if (!item) {
+            //qDebug() << "Can't find cell object_name: " << obj_ << "\n";
+            ++index;
+            continue;
         }
-    };
-    for (int i : list_numbers) {
-        // // std::cout << i << std::endl ;
-        std::string obj__ = prefix + std::to_string(i) + suffix;
-        QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj__));
-        if (item) {
-            item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
+        //qDebug() << "found " << obj_ << "\n";
+        item->setProperty("color", QColor(QString::fromStdString(color)));
+        ++index;
+    }
+    // set color for the rest of cell
+    int queueCells = 14;
+    for (size_t i = index; i < queueCells + 1; i++) {
+        std::string obj_ = "zone_" + std::to_string(i) + "_queue";
+        QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+        if (!item) {
+            //qDebug() << "Can't find empty cell object_name: " << obj_ << "\n";
+            continue;
         }
-    };
+        item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
+    }
 }
 
-void Backend::colorPallet(mongocxx::collection coll,
-                          std::string prefix,
-                          std::string id_,
-                          std::string suffix) {
+void Backend::colorPalletBuffer(const std::vector<std::string> &result) {
     std::string color = "";
-    mongocxx::cursor cursor = coll.find({});
-    std::vector<int32_t> list_numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     rootObject = engine->rootObjects().first();
-    for (auto &&doc : cursor) {
-        int32_t type = -1;
-        auto element = doc["type"];  // Lấy phần tử "type"
 
-        if (element) {
-            // Kiểm tra kiểu dữ liệu và trích xuất giá trị
-            if (element.type() == bsoncxx::type::k_int32) {
-                int32_t type_value = element.get_int32();
-                if (type_value == 0) {
-                    color = "#FFEB3B";
-                } else if (type_value == 1) {
-                    color = "#FF9800";
-                } else if (type_value == -1) {
-                    color = "#CFD8DC";
-                } else {
-                    color = "#4CAF50";
-                }
-                // // std::cout << "Type value: " << type_value << std::endl;
-            } else {
-                // std::cerr << "Expected int32 but got different type" << std::endl;
-            }
-        } else {
-            // std::cerr << "Element not found or is null" << std::endl;
+    int index = 1;  // start from cell 1
+
+    for (auto &&doc : result) {
+        json palletJson = json::parse(doc);
+        if (!(palletJson.contains("type") && palletJson["type"].is_number_integer())) {
+            qDebug() << "Buffer cell has invalid data. \n";
+            ++index;
+            continue;
         }
 
-        // Get the id and update color
-        std::string obj_ = "";
+        int type = palletJson["type"].get<int>();
 
-        auto element_ = doc["stt"];  // Lấy phần tử "type"
+        // Switch color base on pallet_type
+        color = switchColorType(type);
 
-        if (element_) {
-            // Kiểm tra kiểu dữ liệu và trích xuất giá trị
-            if (element_.type() == bsoncxx::type::k_int32) {
-                int32_t type_value = element_.get_int32();
-                auto it = std::remove(list_numbers.begin(), list_numbers.end(), type_value);
+        // create object name
+        std::string obj_ = "zone_" + std::to_string(index);
 
-                // Xóa phần tử thừa sau khi dùng std::remove
-                list_numbers.erase(it, list_numbers.end());
-                // Tiếp tục xử lý với queue_value
-                obj_ = prefix + std::to_string(type_value) + suffix;
-            } else {
-                // std::cerr << "Expected int32 but got different type" << std::endl;
-            }
-        } else {
-            // std::cerr << "element_ not found or is null" << std::endl;
-        }
-
-        // QObject *rootObject = engine->rootObjects().first();
         QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
-        if (item) {
-            item->setProperty("color", QColor(QString::fromStdString(color)));
+        if (!item) {
+            // qDebug() << "Can't find cell object_name: " << obj_ << "\n";
+            ++index;
+            continue;
         }
-    };
-    for (int i : list_numbers) {
-        // // std::cout << i << std::endl ;
-        std::string obj__ = prefix + std::to_string(i) + suffix;
-        QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj__));
-        if (item) {
-            item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
-        }
-    };
+        // qDebug() << "found " << obj_ << "\n";
+        item->setProperty("color", QColor(QString::fromStdString(color)));
+        ++index;
+    }
 }
 
+/**
+ * @brief color all pallet cells
+ *
+ */
 void Backend::initColor() {
-    // arrangeQueue();
-    // while (engine->rootObjects().isEmpty()) {
-    // };
-    // rootObject = engine->rootObjects().first();
-    // colorPallet(collection, "zone_", "zone_id", "");
-    // colorPalletQueue(collection_queue, "zone_", "queue", "_queue");
+    connect(&threadManager, &ThreadPoolManager::getAllQueueCompleted, this, &Backend::colorPalletQueue, Qt::UniqueConnection);
+    connect(&threadManager, &ThreadPoolManager::getAllBufferCompleted, this, &Backend::colorPalletBuffer, Qt::UniqueConnection);
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::vector<std::string> collectionList = {"pallet_queue", "pallet_buffer"};
+    GetCellsProperties *getAllQueue = new GetCellsProperties(dbClient_, collectionList);
+    // GetCellsProperties *getAllBuffer = new GetCellsProperties(dbClient_, "pallet_buffer");
+    threadManager.executeTask(getAllQueue);
+    // threadManager.executeTask(getAllBuffer);
 }
 
 /*
@@ -767,7 +727,7 @@ void Backend::deleteDataQueue(const int &id) {
 //     GetBufferTask *getBufferPallet = new GetBufferTask(dbClient_, id);
 //     threadManager.executeTask(getBufferPallet);
 
-//     initColor();
+//     //initColor();
 // }
 // void Backend::addDataBuffer(const int &id, const QString &jsonStr){
 //     connect(&threadManager, &ThreadPoolManager::addBufferTaskCompleted, this, &Backend::BufferDbAdded, Qt::UniqueConnection);
@@ -789,7 +749,7 @@ void Backend::deleteDataQueue(const int &id) {
 
 //     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
 //     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     initColor();
+//     //initColor();
 // }
 // void Backend::deleteDataBuffer(QString jsonstring) {
 //     // nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
@@ -803,7 +763,7 @@ void Backend::deleteDataQueue(const int &id) {
 
 //     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
 //     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     initColor();
+//     //initColor();
 // }
 
 /*
@@ -827,7 +787,7 @@ void Backend::deleteDataQueue(const int &id) {
 //     GetBufferTask *getBufferPallet = new GetBufferTask(dbClient_, id);
 //     threadManager.executeTask(getBufferPallet);
 
-//     initColor();
+//     //initColor();
 // }
 // void Backend::addModelBuffer(const int &id, const QString &jsonStr){
 //     connect(&threadManager, &ThreadPoolManager::addBufferTaskCompleted, this, &Backend::BufferDbAdded, Qt::UniqueConnection);
@@ -849,7 +809,7 @@ void Backend::deleteDataQueue(const int &id) {
 
 //     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
 //     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     initColor();
+//     //initColor();
 // }
 // void Backend::deleteModelBuffer(QString jsonstring) {
 //     // nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
@@ -863,7 +823,7 @@ void Backend::deleteDataQueue(const int &id) {
 
 //     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
 //     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     initColor();
+//     //initColor();
 // }
 
 void Backend::switchColorBuffer(mongocxx::collection coll, std::string old_id) {
@@ -1016,7 +976,7 @@ void Backend::updateComboBox(QString model, QString count) {
     //     }
     // }
     // std::cout << model_string << std::endl;
-    // initColor();
+    // //initColor();
 }
 
 QString Backend::openFileDialog() {
@@ -1024,7 +984,7 @@ QString Backend::openFileDialog() {
     // updateStatusStr = QString::fromStdString(status);
     // QString fileName = QFileDialog::getOpenFileName(nullptr, "Chọn file", "", "All Files (*)");
     // if (!fileName.isEmpty()) {
-    //     qDebug() << "Đường dẫn file đã chọn:" << fileName;
+    //     //qDebug() << "Đường dẫn file đã chọn:" << fileName;
     //     auto result = collection_model.delete_many({});
     //     if (result) {
     //         status = "Đã xóa " + std::to_string(result->deleted_count()) + " model.";

@@ -75,6 +75,28 @@ void MongoDBClient::fetchFromCollection(const std::string &dbName,
         std::cerr << "No document matched the given filter.\n";
     }
 }
+
+void MongoDBClient::fetchAllCollection(const std::string &dbName,
+                                       const std::string &collectionName,
+                                       const std::string &indexKey,
+                                       std::vector<std::string> &fetchedDocs) {
+    auto collection = dbClient_[dbName][collectionName];
+    auto sizeOfCollection = collection.count_documents({});
+    std::cout << "collection: " << collectionName << " - size: " << sizeOfCollection << "\n";
+    for (size_t i = 0; i < sizeOfCollection; i++) {
+        json filter;
+        filter[indexKey] = i + 1;
+        std::string cellProperties = "";
+        fetchFromCollection(dbName, collectionName, filter.dump(), cellProperties);
+        std::cout << "cell properties: " << cellProperties << "\n";
+        if (cellProperties == "") {
+            fetchedDocs.clear();  // if error empty the result
+            break;
+        };
+        fetchedDocs.push_back(cellProperties);
+    }
+}
+
 void MongoDBClient::eraseFromCollection(const std::string &dbName,
                                         const std::string &collectionName,
                                         const std::string &filter) {

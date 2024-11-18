@@ -20,6 +20,7 @@
 #include <mongocxx/uri.hpp>
 #include <nlohmann/json.hpp>
 #include <thread>
+#include <vector>
 
 /*
 
@@ -46,6 +47,9 @@ const int PALLET_BUFFER_ADD = 10;
 const int PALLET_MODEL_ADD = 11;
 const int PALLET_QUEUE_CHANGED = 12;
 const int PALLET_BUFFER_CHANGED = 13;
+const int PALLET_QUEUE_GET_ALL = 14;
+const int PALLET_BUFFER_GET_ALL = 15;
+
 
 using json = nlohmann::json;
 
@@ -59,7 +63,7 @@ class AsyncTask : public QObject, public QRunnable {
      * @param parent
      */
     explicit AsyncTask(QObject *parent = nullptr) : QObject(parent) {
-        qDebug() << "base";
+        //qDebug() << "base";
     }
     virtual ~AsyncTask() = default;
 
@@ -69,6 +73,7 @@ class AsyncTask : public QObject, public QRunnable {
 
    signals:
     void taskFinished(const int &task_id, const QString &result);
+    void vectorTaskFinished(const int &task_id, const std::vector<std::string> &result);
     void taskFailed(const int &task_id, const QString &errorCode);
 };
 /*
@@ -357,5 +362,24 @@ class TrackDBChanges : public AsyncTask {
    private:
     MongoDBClient *client_;
     std::vector<std::string> collectionList_;
+};
+
+class GetCellsProperties : public AsyncTask {
+    Q_OBJECT
+
+   public:
+    explicit GetCellsProperties(MongoDBClient *client,
+                                   const std::vector<std::string> &collectionList, QObject *parent = nullptr)
+        : AsyncTask(parent),
+          client_(client),
+          collectionList_(collectionList)
+    {
+        setAutoDelete(true);
+    };
+    void run() override;
+
+   private:
+    MongoDBClient *client_;
+    std::vector<std::string>collectionList_;
 };
 #endif  // ASYNCTASK_H

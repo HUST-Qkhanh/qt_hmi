@@ -4,6 +4,7 @@
 
 #include <QObject>
 #include <QThreadPool>
+#include <vector>
 
 #include "asyncTasks.h"
 
@@ -15,7 +16,6 @@ class ThreadPoolManager : public QObject {
     ~ThreadPoolManager();
 
     Q_INVOKABLE void executeTask(AsyncTask *task);
-
 
     /*
 
@@ -46,6 +46,9 @@ class ThreadPoolManager : public QObject {
     void addBufferTaskCompleted(const QString &result);
     void addModelTaskCompleted(const QString &result);
 
+    void getAllQueueCompleted(const std::vector<std::string> results);
+    void getAllBufferCompleted(const std::vector<std::string> results);
+
     void getQueueTaskFailed(const QString &error);
     void getBufferTaskFailed(const QString &error);
     void getModelTaskFailed(const QString &error);
@@ -64,6 +67,7 @@ class ThreadPoolManager : public QObject {
 
    public slots:
     void handleTaskFinished(const int &task_id, const QString &result);
+    void handleVectorTaskFinished(const int &task_id, const std::vector<std::string> &result);
     void handleTaskFailed(const int &task_id, const QString &error);
 };
 

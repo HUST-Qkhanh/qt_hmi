@@ -7,11 +7,12 @@
 #include <iostream>
 #include <mongocxx/client.hpp>
 #include <mongocxx/instance.hpp>
+#include <mongocxx/options/change_stream.hpp>
 #include <mongocxx/uri.hpp>
 #include <mutex>
 #include <nlohmann/json.hpp>
 #include <string>
-#include <mongocxx/options/change_stream.hpp>
+#include <vector>
 
 using json = nlohmann::json;
 
@@ -34,6 +35,16 @@ class MongoDBClient {
     void fetchFromCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter, std::string &fetchedStr);
 
     /**
+     * @brief Make a query of all documents in collection and return a json vector contains all documents
+     *
+     * @param dbName
+     * @param collectionName
+     * @param filter
+     * @param fetchedStr
+     */
+    void fetchAllCollection(const std::string &dbName, const std::string &collectionName, const std::string &indexKey, std::vector<std::string> &fetchedDocs);
+    
+    /**
      * @brief Add document in existed queue
      *
      * @param dbName
@@ -42,6 +53,7 @@ class MongoDBClient {
      * @param doc
      */
     void addMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter, const std::string &doc);
+    
     void removeMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter);
 
     bool checkChangeStream(const std::string &dbName, const std::string &collectionName);
@@ -66,8 +78,8 @@ class MongoDBClient {
     mongocxx::client dbClient_;    // MongoDB client to manage connections
     bool isInitialized_ = false;   // Track if client has been initialized
 
-    std::optional<bsoncxx::document::value> queueLatestResumeToken;
-    std::optional<bsoncxx::document::value> bufferLatestResumeToken;
+    // std::optional<bsoncxx::document::value> queueLatestResumeToken;
+    // std::optional<bsoncxx::document::value> bufferLatestResumeToken;
     // std::optional<bsoncxx::document::value> modelLatestResumeToken;
 };
 
