@@ -12,11 +12,12 @@ import RosQML2
 
 // import QtQuick.VirtualKeyboard.Components 6.7
 // import backendqt 1.0
-Page {
+import QtQuick.Studio.DesignEffects
+Rectangle {
     id: page1
     visible: true
-
-    // color: "#FAFAFA"
+    radius: Constants.borderRadiusMedium
+    color: "#00000000"
     property double batteryPercentage: 0
     property double batteryVoltage: 0
     property double batteryCurrent: 0
@@ -49,7 +50,7 @@ Page {
 
     signal queuePalletRequest(int queueId)
     signal bufferPalletRequest(int bufferId)
-    
+
     signal loadPopupType(int type)
 
     // property var model_pallet_: getListModel()
@@ -257,929 +258,252 @@ Page {
         }
     }
 
-    Page {
-        id: down_panel
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        height: (parent.height) * 0.45
-        anchors.leftMargin: 0
-        anchors.rightMargin: 0
-        anchors.topMargin: 0
-        anchors.bottomMargin: 0
+    ColumnLayout {
+        id: columnLayout
+        anchors.fill: parent
 
         Button {
             id: header
-            height: page1.height * 0.1
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 5
-            anchors.rightMargin: 5
-            anchors.topMargin: 10
+            Layout.bottomMargin: 0
+            Layout.margins: 20
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            Layout.fillWidth: true
+            Layout.preferredHeight: parent.height * 0.1
+
             background: Rectangle {
 
                 color: "#90CAF9"
-                radius: 25 * header.height / 94
+                radius: Constants.borderRadiusMedium
             }
 
             Text {
                 id: status_header
                 text: qsTr("Initializing")
                 anchors.fill: parent
-                font.pixelSize: 30 * parent.height / 48
+                font.pixelSize: 20 * parent.height / 48
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.italic: true
             }
         }
 
-        ColumnLayout {
-            id: may_cuon_phim
-            width: parent.width * 0.075
-            Rectangle {
-                anchors.fill: parent
-                color: "#F9A825"
-                radius: 30 * parent.width / 100
-                border.width: 1
-            }
-            anchors.left: parent.left
-            anchors.top: header.bottom
-            anchors.bottom: parent.bottom
-            anchors.leftMargin: 15
-            anchors.rightMargin: 15
-            anchors.topMargin: 75 * down_panel.height / 445
-            anchors.bottomMargin: 75 * down_panel.height / 445
-            Text {
-                text: qsTr("Máy") + '\n' + qsTr("cuốn") + '\n' + qsTr("phim")
-                anchors.fill: parent
-                font.pixelSize: 40 * parent.width / 125
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.italic: false
-            }
+        ConveyorShow {
+            id: rectangle5
         }
 
-        RowLayout {
-            id: bang_tai
-            anchors.left: may_cuon_phim.right
-            anchors.right: parent.right
-            anchors.top: header.bottom
-            anchors.bottom: parent.bottom
-            anchors.leftMargin: 15
-            anchors.rightMargin: 15
-            anchors.topMargin: 78 * down_panel.height / 445
-            anchors.bottomMargin: 78 * down_panel.height / 445
-            spacing: 0
-            layoutDirection: Qt.LeftToRight
 
-            Rectangle {
-                Layout.preferredWidth: parent.width * 0.4
-                Layout.preferredHeight: parent.height
-                color: "#64B5F6"
-                border.color: "#607D8B"
-                border.width: 2
-                Layout.fillHeight: false
-                Layout.fillWidth: true
-                Text {
-                    anchors.fill: parent
-                    text: "Băng tải chủ động"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignBottom
-                    font.pointSize: 20
-                }
-            }
-        }
+
+
+
+
+
+
 
         RowLayout {
-            id: bang_tai_
-            anchors.fill: bang_tai
-            anchors.leftMargin: 0
-            anchors.rightMargin: 0
-            anchors.topMargin: 0
-            anchors.bottomMargin: 0
-            spacing: 2
-
-            layoutDirection: Qt.RightToLeft
-
-            // Rectangle {
-            //     color: "#ae0808"
-            //     anchors.fill: parent
-
-            // }
-
-            Button {
-                id: palet_1
-
-                text: qsTr("1")
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-
-                background: Rectangle {
-                    objectName: "zone_1_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(1);
-                }
-            }
-            Button {
-                id: palet_2
-
-                text: qsTr("2")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-
-                background: Rectangle {
-                    objectName: "zone_2_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(2);
-                }
-            }
-            Button {
-                id: palet_3
-
-                text: qsTr("3")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-
-                background: Rectangle {
-                    objectName: "zone_3_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(3);
-                }
-            }
-            Button {
-                id: palet_4
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                text: qsTr("4")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-
-                background: Rectangle {
-                    objectName: "zone_4_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(4);
-                }
-            }
-            Button {
-                id: palet_5
-
-                text: qsTr("5")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-
-                background: Rectangle {
-                    objectName: "zone_5_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(5);
-                }
-            }
-            Button {
-                id: palet_6
-
-                text: qsTr("6")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-                visible: true
-                background: Rectangle {
-                    objectName: "zone_6_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(6);
-                }
-            }
-            Button {
-                id: palet_7
-
-                text: qsTr("7")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                visible: true
-
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-
-                background: Rectangle {
-                    objectName: "zone_7_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(7);
-                }
-            }
-            Button {
-                id: palet_8
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                text: qsTr("8")
-
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-
-                background: Rectangle {
-                    objectName: "zone_8_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(8);
-                }
-            }
-            Button {
-                id: palet_9
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                text: qsTr("9")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                visible: item_count > 8
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-
-                background: Rectangle {
-                    objectName: "zone_9_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(9);
-                }
-            }
-
-            Button {
-                id: palet_10
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                text: qsTr("10")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-                visible: item_count > 9
-                background: Rectangle {
-                    objectName: "zone_10_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(10);
-                }
-            }
-
-            Button {
-                id: palet_11
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                text: qsTr("11")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-                visible: item_count > 10
-                background: Rectangle {
-                    objectName: "zone_11_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(11);
-                }
-            }
-
-            Button {
-                id: palet_12
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                text: qsTr("12")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                visible: item_count > 11
-
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-
-                background: Rectangle {
-                    objectName: "zone_12_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(12);
-                }
-            }
-
-            Button {
-                id: palet_13
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                text: qsTr("13")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-                visible: item_count > 12
-                background: Rectangle {
-                    objectName: "zone_13_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(13);
-                }
-            }
-            Button {
-                id: palet_14
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                text: qsTr("14")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                visible: item_count > 13
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-                background: Rectangle {
-                    objectName: "zone_14_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(14);
-                }
-            }
-            Button {
-                id: palet_15
-                Layout.preferredHeight: width_current * parent.height / 167
-                Layout.preferredWidth: width_current * parent.height / 167
-                text: qsTr("15")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                visible: item_count > 14
-                font.bold: true
-                font.pointSize: 30 * parent.height / 155
-                background: Rectangle {
-                    objectName: "zone_14_queue"
-                    color: "#CFD8DC"
-                    border.color: "#FF9800"
-                    border.width: 2
-                }
-                onClicked: {
-                    queuePalletRequest(15);
-                }
-            }
-        }
-        // Image {
-        //     id: ready_icon
-        //     x: palet_1.x + palet_1.width * 0.25
-        //     y: palet_1.y - palet_1.width * 0.75
-        //     source: ready_icon_source
-        //     rotation: -180
-        //     fillMode: Image.PreserveAspectFit
-        //     visible: true
-        //     height: palet_1.height * 0.5
-        //     width: height
-        // }
-    }
-
-    Page {
-        id: up_panel
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: down_panel.bottom
-        anchors.bottom: parent.bottom
-
-        RowLayout {
-            id: waiting
-            height: waiting.width / 6.5
-            width: parent.width * 0.45
-            anchors.left: parent.left
-            anchors.top: parent.top
-
-            anchors.leftMargin: 20
-            anchors.topMargin: 25
-            // anchors.rightMargin: 230
+            visible: true
+            Layout.topMargin: 0
             spacing: 10
+            Layout.fillWidth: true
+            Layout.margins: 20
+            Layout.fillHeight: false
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+            Layout.preferredHeight: parent.height * 0.15
 
-            Rectangle {
-                id: none
-                anchors.fill: parent
-                Text {
-                    text: qsTr("Hàng ") + qsTr("chờ")
-                    anchors.bottom: parent.top
-                    anchors.left: parent.left
-                    font.pixelSize: 40 * parent.width / 800
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.italic: false
-                }
-            }
-            Button {
+            // rows: 3
+            // columns: 2
 
-                text: qsTr("1")
-
-                Layout.fillHeight: true
-                Layout.preferredWidth: waiting.height
-                font.bold: true
-                font.pointSize: 40 * parent.height / 150
-
-                background: Rectangle {
-                    objectName: "zone_1"
-                    color: "#CFD8DC"
-                }
-                onClicked: {
-                    bufferPalletRequest(1);
-                }
-            }
-
-            Button {
-
-                text: qsTr("2")
-                Layout.fillHeight: true
-                Layout.preferredWidth: waiting.height
-                font.bold: true
-                font.pointSize: 40 * parent.height / 150
-
-                background: Rectangle {
-                    objectName: "zone_2"
-                    color: "#CFD8DC"
-                }
-                onClicked: {
-                    bufferPalletRequest(2);
-                }
-            }
-            Button {
-
-                text: qsTr("3")
-
-                Layout.fillHeight: true
-                Layout.preferredWidth: waiting.height
-                font.bold: true
-                font.pointSize: 40 * parent.height / 150
-
-                background: Rectangle {
-                    objectName: "zone_3"
-                    color: "#CFD8DC"
-                }
-                onClicked: {
-                    bufferPalletRequest(3);
-                }
-            }
-            Button {
-
-                text: qsTr("4")
-
-                Layout.fillHeight: true
-                Layout.preferredWidth: waiting.height
-                font.bold: true
-                font.pointSize: 40 * parent.height / 150
-
-                background: Rectangle {
-                    objectName: "zone_4"
-                    color: "#CFD8DC"
-                }
-                onClicked: {
-                    bufferPalletRequest(4);
-                }
-            }
-
-            Button {
-
-                text: qsTr("5")
-
-                Layout.fillHeight: true
-                Layout.preferredWidth: waiting.height
-                font.bold: true
-                font.pointSize: 40 * parent.height / 150
-
-                background: Rectangle {
-                    objectName: "zone_5"
-                    color: "#CFD8DC"
-                }
-                onClicked: {
-                    bufferPalletRequest(5);
-                }
-            }
-
-            Button {
-
-                text: qsTr("6")
-
-                Layout.fillHeight: true
-                Layout.preferredWidth: waiting.height
-                font.bold: true
-                font.pointSize: 40 * parent.height / 150
-
-                background: Rectangle {
-                    objectName: "zone_6"
-                    color: "#CFD8DC"
-                }
-                onClicked: {
-                    bufferPalletRequest(6);
-                }
-            }
-        }
-        GridLayout {
-            id: note
-
-            // anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.right: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            // anchors.bottom: waiting.bottom
-            anchors.leftMargin: 20
-            anchors.rightMargin: -300
-            anchors.topMargin: 100
-            anchors.bottomMargin: 20
-            // anchors.bottomMargin: 0
-            ColumnLayout {
-                id: layout_note_1
-                Layout.preferredWidth: 50
-                Layout.fillHeight: true
+            RoundButton {
+                id: stop_button
+                text: stop_mode
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                spacing: 5
-                Rectangle {
-                    color: "#CFD8DC"
-                    Layout.preferredWidth: 50
-                    Layout.fillHeight: true
+                Layout.fillHeight: true
+                highlighted: false
+                font.bold: true
+                font.pointSize: 45 * parent.height / 420
+
+                background: Rectangle {
+                    color: "#AB47BC"
+                    radius: Constants.borderRadiusLarge
+                    border.color: stop_button.background.color
+                    border.width: 0
                 }
-                Rectangle {
-                    color: "#FFEB3B"
-                    Layout.preferredWidth: 50
-                    Layout.fillHeight: true
+                onClicked: {
+                    if (stop_mode === "STOP") {
+                        backend.requestStop("STOP");
+                    } else if (stop_mode === "PAUSED") {
+                        backend.requestStop("RUN");
+                    }
                 }
-                Rectangle {
-                    color: "#FF9800"
-                    Layout.preferredWidth: 50
-                    Layout.fillHeight: true
-                }
-                Rectangle {
+                // onPressedChanged: {
+                //     if (pressed) {
+                //         background.color = "#E1BEE7";
+                //     } else {
+                //         background.color = "#AB47BC";
+                //     }
+                // }
+            }
+
+            RoundButton {
+                id: reset_button
+                text: reset_mode
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                highlighted: false
+                font.bold: true
+                font.pointSize: 45 * parent.height / 420
+
+                background: Rectangle {
                     color: "#4CAF50"
-                    Layout.preferredWidth: 50
-                    Layout.fillHeight: true
+                    radius: Constants.borderRadiusLarge
+                    border.color: reset_button.background.color
+                    border.width: 0
                 }
-                Rectangle {
-                    color: "#2196F3"
-                    Layout.preferredWidth: 50
-                    Layout.fillHeight: true
-                }
-            }
-            ColumnLayout {
-                id: layout_note_2
-                anchors.left: layout_note_1.right
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.leftMargin: 0
-                // anchors.rightMargin: -150
-                anchors.topMargin: 0
-                anchors.bottomMargin: 0
-                spacing: 5
-                Text {
-                    Layout.preferredHeight: 50
-                    text: "Trống "
-                    font.pixelSize: 35 * up_panel.height / 588
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                }
+                onClicked: {
+                    popup_mode = 2;
+                    status_popup.text = state_system;
 
-                Text {
-
-                    Layout.preferredHeight: 50
-                    text: "Pallet thấp"
-                    font.pixelSize: 35 * up_panel.height / 588
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                }
-
-                Text {
-
-                    Layout.preferredHeight: 50
-                    text: "Pallet cao"
-                    font.pixelSize: 35 * up_panel.height / 588
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                }
-
-                Text {
-
-                    Layout.preferredHeight: 50
-                    text: "Pallet kép"
-                    font.pixelSize: 35 * up_panel.height / 588
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                }
-                Text {
-
-                    Layout.preferredHeight: 50
-                    text: "Pallet đơn"
-                    font.pixelSize: 35 * up_panel.height / 588
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                }
-            }
-        }
-
-        Slider {
-            id: slider
-
-            width: parent.width * 0.2
-            height: parent.height * 0.1
-            value: item_count
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.rightMargin: 20
-            anchors.bottomMargin: 10
-            live: true
-            stepSize: 1
-            to: 15
-            from: 8
-            onValueChanged: {
-                item_count = value;
-                width_current = 140 - (value - 8) * 7;
-                saveConfig(value);
-            }
-        }
-    }
-
-    ColumnLayout {
-        width: parent.width * 0.15
-        height: parent.height * 0.3
-        visible: true
-        anchors.right: parent.right
-        anchors.top: up_panel.top
-        // anchors.bottom: parent.bottom
-        anchors.rightMargin: 10
-        anchors.topMargin: 10
-        anchors.bottomMargin: 10
-        spacing: 10
-
-        // rows: 3
-        // columns: 2
-
-        Button {
-            id: stop_button
-            text: stop_mode
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            highlighted: false
-            font.bold: true
-            font.pointSize: 45 * parent.height / 420
-
-            background: Rectangle {
-                color: "#AB47BC"
-                radius: 30 * parent.height / 120
-                border.color: stop_button.background.color
-                border.width: 1
-            }
-            onClicked: {
-                if (stop_mode === "STOP") {
-                    backend.requestStop("STOP");
-                } else if (stop_mode === "PAUSED") {
-                    backend.requestStop("RUN");
-                }
-            }
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = "#E1BEE7";
-                } else {
-                    background.color = "#AB47BC";
-                }
-            }
-        }
-
-        Button {
-            id: reset_button
-            text: reset_mode
-
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            highlighted: false
-            font.bold: true
-            font.pointSize: 45 * parent.height / 420
-
-            background: Rectangle {
-                color: "#4CAF50"
-                radius: 30 * parent.height / 120
-                border.color: reset_button.background.color
-                border.width: 1
-            }
-            onClicked: {
-                popup_mode = 2;
-                status_popup.text = state_system;
-
-                popup_confirm_visible = true;
-
-                popup.open();
-            }
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = "#A5D6A7";
-                } else {
-                    background.color = "#4CAF50";
-                }
-            }
-        }
-
-        Button {
-            id: homming_button
-            text: homing_mode
-
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            highlighted: false
-            font.bold: true
-            font.pointSize: 45 * parent.height / 420
-
-            background: Rectangle {
-                color: "#FFFFFF"
-                radius: 30 * parent.height / 120
-                border.color: "#607D8B"
-                border.width: 2
-            }
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = "#A5D6A7";
-                } else {
-                    background.color = "#FFFFFF";
-                }
-            }
-            // onClicked: {
-            //     state_edit = 2
-            //     pop_up_2.open()
-            // }
-
-        }
-    }
-    RowLayout {
-        width: parent.width * 0.5
-        height: 25 + 75 * parent.height / 1200
-        visible: true
-        anchors.left: parent.left
-        anchors.bottom: down_panel.top
-        // anchors.bottom: parent.bottom
-        // anchors.rightMargin: 10
-        anchors.leftMargin: parent.width * 0.25
-        anchors.bottomMargin: 0
-        spacing: 10
-
-        // rows: 3
-        // columns: 2
-
-        Button {
-            id: control_button
-            text: qsTr(control_mode)
-            Layout.fillHeight: true
-            Layout.preferredWidth: parent.width * 0.3
-            highlighted: false
-            font.bold: true
-            font.pointSize: 40 * parent.height / 200
-
-            background: Rectangle {
-                color: "#2196F3"
-                radius: 30 * parent.height / 104
-                border.color: control_button.background.color
-                border.width: 1
-            }
-            onClicked: {
-                if (control_mode === "RUNNING") {
-                    backend.requestControl("STOP");
-                } else if (control_mode === "PAUSED") {
-                    backend.requestControl("RUN");
-                }
-            }
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = "#A5D6A7";
-                } else {
-                    background.color = "#4CAF50";
-                }
-            }
-        }
-        Button {
-            id: status_button
-            text: status_mode
-
-            Layout.fillHeight: true
-            Layout.preferredWidth: parent.width * 0.3
-            highlighted: false
-            font.bold: true
-            font.pointSize: 40 * parent.height / 200
-            background: Rectangle {
-                color: "white"
-                radius: 30 * parent.height / 104
-                border.color: status_button.background.color
-                border.width: 1
-            }
-            onClicked: {
-                popup_mode = 0;
-                if (status_mode === "ERROR") {
-                    status_popup.text = backend.robotError;
                     popup_confirm_visible = true;
-                } else {
-                    status_popup.text = backend.robotDetail;
-                    popup_confirm_visible = false;
+
+                    popup.open();
                 }
+                onPressedChanged: {
+                    if (pressed) {
+                        background.color = "#A5D6A7";
+                    } else {
+                        background.color = "#4CAF50";
+                    }
+                }
+            }
 
-                popup.open();
+            RoundButton {
+                id: homming_button
+                text: homing_mode
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                highlighted: false
+                font.bold: true
+                font.pointSize: 45 * parent.height / 420
+
+                background: Rectangle {
+                    color: "#FFFFFF"
+                    radius: Constants.borderRadiusLarge
+                    border.color: "#607D8B"
+                    border.width: 0
+                }
+                // onPressedChanged: {
+                //     if (pressed) {
+                //         background.color = "#A5D6A7";
+                //     } else {
+                //         background.color = "#FFFFFF";
+                //     }
+                // }
+                // onClicked: {
+                //     state_edit = 2
+                //     pop_up_2.open()
+                // }
+
+            }
+
+            RoundButton {
+                id: stop_button1
+                text: stop_mode
+                topPadding: 0
+                topInset: 0
+                rightPadding: 0
+                onPressedChanged: {
+                    if (pressed) {
+                        background.color = "#E1BEE7";
+                    } else {
+                        background.color = "#AB47BC";
+                    }
+                }
+                onClicked: {
+                    if (stop_mode === "STOP") {
+                        backend.requestStop("STOP");
+                    } else if (stop_mode === "PAUSED") {
+                        backend.requestStop("RUN");
+                    }
+                }
+                leftPadding: 0
+                highlighted: false
+                font.pointSize: 45 * parent.height / 420
+                font.bold: true
+                bottomPadding: 0
+                bottomInset: 0
+                background: Rectangle {
+                    color: "#ab47bc"
+                    radius: Constants.borderRadiusMedium
+                }
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+
+            RoundButton {
+                id: reset_button1
+                text: reset_mode
+                topPadding: 0
+                topInset: 0
+                rightPadding: 0
+                onPressedChanged: {
+                                        if (pressed) {
+                                            background.color = "#A5D6A7";
+                                        } else {
+                                            background.color = "#4CAF50";
+                                        }
+                }
+                onClicked: {
+                    popup_mode = 2;
+                    status_popup.text = state_system;
+
+                    popup_confirm_visible = true;
+
+                    popup.open();
+                }
+                leftPadding: 0
+                highlighted: false
+                font.pointSize: 45 * parent.height / 420
+                font.bold: true
+                bottomPadding: 0
+                bottomInset: 0
+                background: Rectangle {
+                    color: "#4caf50"
+                    radius: Constants.borderRadiusMedium
+                }
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+
+            RoundButton {
+                id: homming_button1
+                text: homing_mode
+                topPadding: 0
+                topInset: 0
+                rightPadding: 0
+                onPressedChanged: {
+                                        if (pressed) {
+                                            background.color = "#A5D6A7";
+                                        } else {
+                                            background.color = "#FFFFFF";
+                                        }
+                                    }
+                leftPadding: 0
+                highlighted: false
+                font.pointSize: 45 * parent.height / 420
+                font.bold: true
+                bottomPadding: 0
+                bottomInset: 0
+                background: Rectangle {
+                    color: "#0051ff"
+                    radius: Constants.borderRadiusMedium
+                }
+                Layout.fillWidth: true
+                Layout.fillHeight: true
             }
         }
-        Button {
-            id: mode_button
-            text: qsTr(mode_mode)
 
-            Layout.fillHeight: true
-            Layout.preferredWidth: parent.width * 0.3
-            highlighted: false
-            font.bold: true
-            font.pointSize: 40 * parent.height / 200
-            background: Rectangle {
-                color: "#4CAF50"
-                radius: 30 * parent.height / 104
-                border.color: mode_button.background.color
-                border.width: 1
-            }
-            onClicked: {
-                popup_mode = 1;
-                popup_confirm_visible = true;
-                if (mode_mode === "MANUAL") {
-                    // mode_mode ="AUTO"
-                    status_popup.text = qsTr("Change robot mode to AUTO");
-                    mode_button.background.color = "#4CAF50";
-                } else if (mode_mode === "AUTO") {
-                    // mode_mode =  "MANUAL"
-                    status_popup.text = qsTr("Change robot mode to MANUAL");
-                    mode_button.background.color = "#03A9F4";
-                } else
-                    status_popup.text = qsTr("Data false");
-                popup.open();
-            }
-        }
+
     }
 
-
-
-    // Hiển thị bàn phím khi TextField nhận focus
-    // Component.onCompleted: {
-    //     inputPanel.active = inputField.hasActiveFocus
-    // }
     Connections {
         target: backend
         onBatteryPercentageChanged: {
@@ -1266,4 +590,11 @@ Page {
             backend.getDataBuffer(bufferId);
         }
     }
+
+
+
+
+
 }
+
+

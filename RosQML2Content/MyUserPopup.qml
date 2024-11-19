@@ -205,7 +205,7 @@ Rectangle {
 
             RoundButton {
                 id: view_button
-                radius: 10
+                radius: Constants.borderRadiusMedium
                 // height: parent.height * 0.12
                 text: "Trở về"
                 rightInset: 0
@@ -242,7 +242,7 @@ Rectangle {
 
             RoundButton {
                 id: del_button
-                radius: 10
+                radius: Constants.borderRadiusMedium
                 // height: parent.height * 0.12
                 text: "Xóa"
                 Layout.preferredWidth: parent.width * 0.15
@@ -263,7 +263,7 @@ Rectangle {
             }
             RoundButton {
                 id: save_button
-                radius: 10
+                radius: Constants.borderRadiusMedium
                 // height: parent.height * 0.12
                 text: "Lưu"
                 rightInset: 0
@@ -288,7 +288,7 @@ Rectangle {
             }
             RoundButton {
                 id: add_button
-                radius: 10
+                radius: Constants.borderRadiusMedium
                 // height: parent.height * 0.12
                 text: "Thêm"
                 rightInset: 0
@@ -316,7 +316,7 @@ Rectangle {
             RoundButton {
                 id: model_button
                 visible: true
-                radius: 10
+                radius: Constants.borderRadiusMedium
                 // height: parent.height * 0.12
                 text: "Model"
                 rightInset: 0

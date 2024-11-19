@@ -18,25 +18,25 @@ QtObject {
                                                   pixelSize: Qt.application.font.pixelSize * 1.6
                                               })
     // Primary Colors
-    readonly property color primaryColor: "#6200EA" // Material Indigo
-    readonly property color primaryLightColor: "#BB86FC"
-    readonly property color primaryDarkColor: "#3700B3"
+    readonly property color primaryColor: "#4285F4" // Chrome Blue
+    readonly property color primaryLightColor: "#82B1FF"
+    readonly property color primaryDarkColor: "#3367D6"
 
     // Secondary Colors
-    readonly property color secondaryColor: "#03DAC6" // Material Teal
-    readonly property color secondaryLightColor: "#66FFF9"
-    readonly property color secondaryDarkColor: "#00A896"
+    readonly property color secondaryColor: "#1A73E8" // Secondary Blue
+    readonly property color secondaryLightColor: "#63A4FF"
+    readonly property color secondaryDarkColor: "#004BA0"
 
     // Surface Colors
-    readonly property color backgroundColor: "#FFFFFF"
-    readonly property color surfaceColor: "#F5F5F5"
-    readonly property color errorColor: "#B00020"
+    readonly property color backgroundColor: "#FFFFFF" // White for clean UI
+    readonly property color surfaceColor: "#F1F3F4" // Light Gray for surfaces
+    readonly property color errorColor: "#EA4335" // Chrome Red for errors
 
     // Text Colors
-    readonly property color textColorPrimary: "#212121" // Almost black
-    readonly property color textColorSecondary: "#757575" // Dark gray
-    readonly property color textColorOnPrimary: "#FFFFFF"
-    readonly property color textColorOnSecondary: "#000000"
+    readonly property color textColorPrimary: "#202124" // Dark Chrome Gray
+    readonly property color textColorSecondary: "#5F6368" // Lighter Gray
+    readonly property color textColorOnPrimary: "#FFFFFF" // White on primary
+    readonly property color textColorOnSecondary: "#FFFFFF" // White on secondary
 
     // Font Sizes (sp - scalable pixels)
     readonly property int fontSizeSmall: 12
@@ -70,6 +70,7 @@ QtObject {
     readonly property color buttonColorSecondary: secondaryColor
     readonly property color buttonTextColor: textColorOnPrimary
     readonly property color buttonPressedColor: primaryDarkColor
+
 
 
     property StudioApplication application: StudioApplication {

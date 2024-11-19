@@ -71,7 +71,7 @@ Item {
 
     Rectangle {
         color: "#ffffff"
-        radius: 10
+        radius: Constants.borderRadiusMedium
         border.width: 0
         anchors.fill: parent
         ColumnLayout {

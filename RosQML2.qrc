@@ -1,6 +1,6 @@
 
 <RCC>
-<qresource prefix="/">
+<qresource>
 <file>App/include/config.json</file>
 <file>RosQML2.qmlproject</file>
 <file>RosQML2/Constants.qml</file>
@@ -19,6 +19,7 @@
 <file>RosQML2Content/Screen01.qml</file>
 <file>RosQML2Content/Screen02.qml</file>
 <file>RosQML2Content/Screen03.qml</file>
+<file>RosQML2Content/asset/MeikoLogo.svg</file>
 <file>RosQML2Content/asset/Setting.svg</file>
 <file>RosQML2Content/asset/Vector 48 (Stroke).svg</file>
 <file>RosQML2Content/asset/add_square_fill.svg</file>

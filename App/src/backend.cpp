@@ -561,11 +561,13 @@ std::string Backend::switchColorType(int type) {
         return "#ff9800";
     } else if (type == 3) {
         return "#2196f3";
+    } else if (type == 4) {
+        return "#4caf50";
     }
-    return "#4caf50";
+    return "#CFD8DC";
 }
 void Backend::colorPalletQueue(const std::vector<std::string> &result) {
-    //qDebug() << "Now color pallet queue: " << result.size() << "\n";
+    // qDebug() << "Now color pallet queue: " << result.size() << "\n";
     std::string color = "";
     rootObject = engine->rootObjects().first();
 
@@ -574,7 +576,7 @@ void Backend::colorPalletQueue(const std::vector<std::string> &result) {
     for (auto &&doc : result) {
         json palletJson = json::parse(doc);
         if (!(palletJson.contains("pallet_type") && palletJson["pallet_type"].is_string())) {
-            //qDebug() << "Queue cell has invalid data. \n";
+            // qDebug() << "Queue cell has invalid data. \n";
             ++index;
             continue;
         }
@@ -589,11 +591,11 @@ void Backend::colorPalletQueue(const std::vector<std::string> &result) {
 
         QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
         if (!item) {
-            //qDebug() << "Can't find cell object_name: " << obj_ << "\n";
+            // qDebug() << "Can't find cell object_name: " << obj_ << "\n";
             ++index;
             continue;
         }
-        //qDebug() << "found " << obj_ << "\n";
+        // qDebug() << "found " << obj_ << "\n";
         item->setProperty("color", QColor(QString::fromStdString(color)));
         ++index;
     }
@@ -603,7 +605,7 @@ void Backend::colorPalletQueue(const std::vector<std::string> &result) {
         std::string obj_ = "zone_" + std::to_string(i) + "_queue";
         QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
         if (!item) {
-            //qDebug() << "Can't find empty cell object_name: " << obj_ << "\n";
+            // qDebug() << "Can't find empty cell object_name: " << obj_ << "\n";
             continue;
         }
         item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
