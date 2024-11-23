@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QTranslator>
 #include <QVariant>
+#include <QVariantList>
 #include <bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/json.hpp>
 #include <cmath>
@@ -79,6 +80,10 @@ class Backend : public QObject {
 
     Q_PROPERTY(QString fetchedQueueJson READ getQueueJson NOTIFY queueJsonChanged)
     Q_PROPERTY(QString addedQueueJson NOTIFY queueJsonAdded)
+
+    Q_PROPERTY(QVariantList pQueueListModel READ getQueueListModel NOTIFY pQueueListModelChanged)
+    Q_PROPERTY(bool isQueueListModelLoaded READ isQueueListModelLoaded NOTIFY isQueueListModelLoadedChanged)
+
 
    public slots:
     // QUEUE
@@ -164,6 +169,9 @@ class Backend : public QObject {
     void modelJsonAdded();
     void modelJsonEdited();
     void modelJsonDeleted();
+    void pQueueListModelChanged();
+    void PBufferListModelChanged();
+    void isQueueListModelLoadedChanged();
 
    private:
     ros::NodeHandle nh;
@@ -317,6 +325,10 @@ class Backend : public QObject {
     int check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line);
     std::string switchColorType(int type);
 
+    QVariantList PBufferListModel_;
+    QVariantList pQueueListModel_;
+    bool m_isQueueListModelLoaded;
+
    public:
     explicit Backend(QObject *parent = nullptr);
     QTranslator m_translator;
@@ -346,6 +358,10 @@ class Backend : public QObject {
     double getLinear() const;
     double getAngular() const;
 
+    QVariantList getQueueListModel() const;
+    QVariantList getBufferListModel() const;
+    bool isQueueListModelLoaded() const { return m_isQueueListModelLoaded; }
+
     // int getFastechRear(int index) const;
 
     // PUBLISHER
@@ -367,7 +383,7 @@ class Backend : public QObject {
     Q_INVOKABLE QString getNameAGV();
     Q_INVOKABLE QString getIP();
     Q_INVOKABLE QString getIPServer();
-    Q_INVOKABLE void initColor();
+    Q_INVOKABLE void updateFetchedList();
 
     Q_INVOKABLE void getDataBuffer(const int &id);
     // Q_INVOKABLE void saveDataBuffer(QString jsonstring);
@@ -395,10 +411,12 @@ class Backend : public QObject {
         return *counts;
     }
     Q_INVOKABLE void set_color() {
-        initColor();
+        updateFetchedList();
     }
     Q_INVOKABLE QString openFileDialog();
-    Q_INVOKABLE QString getQueuePallet();
+
+    Q_INVOKABLE void initQueueListModel(const std::vector<std::string> &result);
+    // Q_INVOKABLE void initBufferListModel(const std::vector<std::string> &result);
 };
 
 #endif  // BACKEND_H

@@ -10,7 +10,12 @@
 <file>RosQML2/qmldir</file>
 <file>RosQML2Content/App.qml</file>
 <file>RosQML2Content/ConfirmShow.qml</file>
+<file>RosQML2Content/ConveyorShow.qml</file>
+<file>RosQML2Content/ConveyorView.qml</file>
+<file>RosQML2Content/DraggableItem.qml</file>
+<file>RosQML2Content/DraggableItemDropArea.qml</file>
 <file>RosQML2Content/KeyboardStyle.qml</file>
+<file>RosQML2Content/List1.qml</file>
 <file>RosQML2Content/Mission.qml</file>
 <file>RosQML2Content/MyBuffer_item.qml</file>
 <file>RosQML2Content/MyGrid_queue.qml</file>

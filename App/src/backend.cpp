@@ -87,7 +87,7 @@ Backend::Backend(QObject *parent)
     // TrackDBChanges *trackDbchanges = new TrackDBChanges(dbClient_, collectionList);
     // std::lock_guard<std::mutex> lock(mutex_);
     // threadManager.executeTask(trackDbchanges);
-    // initColor();
+    // updateFetchedList();
 }
 
 std::vector<std::string> Backend::splitString(std::string str, char delimiter) {
@@ -396,7 +396,7 @@ QString Backend::getIPServer() {
 */
 
 void Backend::palletStatusCallback(const std_msgs::Empty &msg) {
-    // initColor();
+    // updateFetchedList();
 }
 
 // Hàm chuyển đổi số thực thành chuỗi với độ chính xác mong muốn
@@ -427,7 +427,7 @@ bool Backend::servicePopPalletCallback(std_stamped_msgs::StringService::Request 
     arrangeQueue();
     json delete_result = deleteObjQueue(1);
     res.respond = delete_result.dump();
-    // initColor();
+    // updateFetchedList();
     return 1;
 }
 bool Backend::serviceLookupPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res) {
@@ -489,7 +489,7 @@ bool Backend::serviceAppendPalletCallback(std_stamped_msgs::StringService::Reque
         return false;
     }
 
-    // initColor();
+    // updateFetchedList();
     res.respond = "service success";
     return true;
 }
@@ -650,15 +650,14 @@ void Backend::colorPalletBuffer(const std::vector<std::string> &result) {
  * @brief color all pallet cells
  *
  */
-void Backend::initColor() {
+void Backend::updateFetchedList() {
+    connect(&threadManager, &ThreadPoolManager::getAllQueueCompleted, this, &Backend::initQueueListModel, Qt::UniqueConnection);
     connect(&threadManager, &ThreadPoolManager::getAllQueueCompleted, this, &Backend::colorPalletQueue, Qt::UniqueConnection);
     connect(&threadManager, &ThreadPoolManager::getAllBufferCompleted, this, &Backend::colorPalletBuffer, Qt::UniqueConnection);
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<std::string> collectionList = {"pallet_queue", "pallet_buffer"};
     GetCellsProperties *getAllQueue = new GetCellsProperties(dbClient_, collectionList);
-    // GetCellsProperties *getAllBuffer = new GetCellsProperties(dbClient_, "pallet_buffer");
     threadManager.executeTask(getAllQueue);
-    // threadManager.executeTask(getAllBuffer);
 }
 
 /*
@@ -708,6 +707,27 @@ void Backend::deleteDataQueue(const int &id) {
     threadManager.executeTask(deleteQueuePallet);
 }
 
+QVariantList Backend::getQueueListModel() const {
+    qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
+    return pQueueListModel_;
+}
+
+void Backend::initQueueListModel(const std::vector<std::string> &result) {
+    pQueueListModel_.clear();
+
+    for (const auto &jsonString : result) {
+        QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString));
+        if (doc.isObject()) {
+            pQueueListModel_.append(doc.object().toVariantMap());
+        }
+    }
+    qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
+
+    m_isQueueListModelLoaded = true;
+    emit pQueueListModelChanged();
+    emit isQueueListModelLoadedChanged();
+}
+
 /*
 
    _            __  __             ____  ____    _                     _ _
@@ -749,7 +769,7 @@ void Backend::getDataBuffer(const int &id) {
 
 //     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
 //     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     //initColor();
+//     //updateFetchedList();
 // }
 // void Backend::deleteDataBuffer(QString jsonstring) {
 //     // nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
@@ -763,7 +783,7 @@ void Backend::getDataBuffer(const int &id) {
 
 //     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
 //     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     //initColor();
+//     //updateFetchedList();
 // }
 
 /*
@@ -787,7 +807,7 @@ void Backend::getDataBuffer(const int &id) {
 //     GetBufferTask *getBufferPallet = new GetBufferTask(dbClient_, id);
 //     threadManager.executeTask(getBufferPallet);
 
-//     //initColor();
+//     //updateFetchedList();
 // }
 // void Backend::addModelBuffer(const int &id, const QString &jsonStr){
 //     connect(&threadManager, &ThreadPoolManager::addBufferTaskCompleted, this, &Backend::BufferDbAdded, Qt::UniqueConnection);
@@ -809,7 +829,7 @@ void Backend::getDataBuffer(const int &id) {
 
 //     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
 //     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     //initColor();
+//     //updateFetchedList();
 // }
 // void Backend::deleteModelBuffer(QString jsonstring) {
 //     // nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
@@ -823,7 +843,7 @@ void Backend::getDataBuffer(const int &id) {
 
 //     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
 //     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     //initColor();
+//     //updateFetchedList();
 // }
 
 void Backend::switchColorBuffer(mongocxx::collection coll, std::string old_id) {
@@ -976,7 +996,7 @@ void Backend::updateComboBox(QString model, QString count) {
     //     }
     // }
     // std::cout << model_string << std::endl;
-    // //initColor();
+    // //updateFetchedList();
 }
 
 QString Backend::openFileDialog() {
@@ -1088,8 +1108,6 @@ QString Backend::openFileDialog() {
 
     // return fileName;
 }
-
-QString Backend::getQueuePallet() {}
 
 int Backend::check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line) {
     if (current_line[1] == pre_line[1]) {

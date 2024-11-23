@@ -70,7 +70,7 @@ void MongoDBClient::fetchFromCollection(const std::string &dbName,
         bsoncxx::document::view view = result->view();
         fetchedStr = bsoncxx::to_json(view);
         // std::cout << "Fetch document successfully: " << fetchedStr << "\n";
-        std::cout << "Fetch document successfully: \n";
+        // std::cout << "Fetch document successfully: \n";
     } else {
         std::cerr << "No document matched the given filter.\n";
     }
@@ -82,13 +82,13 @@ void MongoDBClient::fetchAllCollection(const std::string &dbName,
                                        std::vector<std::string> &fetchedDocs) {
     auto collection = dbClient_[dbName][collectionName];
     auto sizeOfCollection = collection.count_documents({});
-    std::cout << "collection: " << collectionName << " - size: " << sizeOfCollection << "\n";
+    // std::cout << "collection: " << collectionName << " - size: " << sizeOfCollection << "\n";
     for (size_t i = 0; i < sizeOfCollection; i++) {
         json filter;
         filter[indexKey] = i + 1;
         std::string cellProperties = "";
         fetchFromCollection(dbName, collectionName, filter.dump(), cellProperties);
-        std::cout << "cell properties: " << cellProperties << "\n";
+        // std::cout << "cell properties: " << cellProperties << "\n";
         if (cellProperties == "") {
             fetchedDocs.clear();  // if error empty the result
             break;

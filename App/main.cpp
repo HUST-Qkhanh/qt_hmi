@@ -35,7 +35,7 @@ public:
         connect(rosTimer, &QTimer::timeout, this, [this]() {
             hmi_msg.stamp = ros::Time::now();
             hmi_status_pub.publish(hmi_msg);
-            backend.initColor();
+            backend.updateFetchedList();
             ros::spinOnce();
             });
         rosTimer->start(2000); // Adjust the interval as needed
@@ -83,7 +83,7 @@ hmiApp::hmiApp(int argc, char** argv)
     QInputMethod *inputMethod = QGuiApplication::inputMethod();
     inputMethod->show();
     backend.setEngine(&engine);
-    // backend.initColor();
+    // backend.updateFetchedList();
     
     // Initialize ROS timer to process callbacks
     init_ros_timer();

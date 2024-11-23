@@ -287,17 +287,36 @@ Rectangle {
             }
         }
 
-        ConveyorShow {
-            id: rectangle5
+        // ConveyorShow {
+        //     id: rectangle5
+        // }
+
+
+
+
+
+
+
+
+
+        ConveyorView {
+            id: conveyorView
+            width: 594
+            height: 151
+            Layout.margins: 20
+            clip: true
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.fillWidth: true
         }
 
-
-
-
-
-
-
-
+        Rectangle {
+            id: rectangle
+            width: 200
+            height: 200
+            color: "#00ffffff"
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+        }
 
         RowLayout {
             visible: true
@@ -445,11 +464,11 @@ Rectangle {
                 topInset: 0
                 rightPadding: 0
                 onPressedChanged: {
-                                        if (pressed) {
-                                            background.color = "#A5D6A7";
-                                        } else {
-                                            background.color = "#4CAF50";
-                                        }
+                    if (pressed) {
+                        background.color = "#A5D6A7";
+                    } else {
+                        background.color = "#4CAF50";
+                    }
                 }
                 onClicked: {
                     popup_mode = 2;
@@ -480,12 +499,12 @@ Rectangle {
                 topInset: 0
                 rightPadding: 0
                 onPressedChanged: {
-                                        if (pressed) {
-                                            background.color = "#A5D6A7";
-                                        } else {
-                                            background.color = "#FFFFFF";
-                                        }
-                                    }
+                    if (pressed) {
+                        background.color = "#A5D6A7";
+                    } else {
+                        background.color = "#FFFFFF";
+                    }
+                }
                 leftPadding: 0
                 highlighted: false
                 font.pointSize: 45 * parent.height / 420
@@ -500,6 +519,8 @@ Rectangle {
                 Layout.fillHeight: true
             }
         }
+
+
 
 
     }
@@ -596,5 +617,7 @@ Rectangle {
 
 
 }
+
+
 
 
