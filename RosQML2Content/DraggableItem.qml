@@ -8,8 +8,9 @@ Item {
     property Item draggedItemParent
 
     signal moveItemRequested(int from, int to)
-    signal itemClicked(string name)
+    signal itemClicked
     signal itemReleased
+    signal dragItemLoaded() // New signal
 
     property int scrollEdgeSize: 6
     property int _scrollingDirection: 0
@@ -17,6 +18,10 @@ Item {
 
     width: leftPlaceholder.width + wrapperParent.width + rigthPlaceholder.width
     height: contentItem.height
+
+    Component.onCompleted: {
+        dragItemLoaded(); // Emit the signal
+    }
 
     onContentItemChanged: {
         contentItem.parent = contentItemWrapper;
@@ -67,8 +72,8 @@ Item {
                 }
                 onPressed: {
                     if (!drag.active) {
-                        console.log("Item clicked: ", model.name);
-                        itemClicked(model.name);
+                        console.log("Item clicked: ");
+                        itemClicked();
                     }
                 }
             }

@@ -708,7 +708,7 @@ void Backend::deleteDataQueue(const int &id) {
 }
 
 QVariantList Backend::getQueueListModel() const {
-    qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
+    // qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
     return pQueueListModel_;
 }
 
@@ -721,7 +721,7 @@ void Backend::initQueueListModel(const std::vector<std::string> &result) {
             pQueueListModel_.append(doc.object().toVariantMap());
         }
     }
-    qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
+    // qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
 
     m_isQueueListModelLoaded = true;
     emit pQueueListModelChanged();

@@ -43,7 +43,21 @@ Item {
                         id: boxItem
                         width: 120//textLabel.width * 2 // Adjust width for horizontal layout
                         height: listView.height   // Match ListView height
-                        color: "light grey"
+                        color: {
+                            var type = modelData["pallet_type"];
+                            switch (type) {
+                            case 0:
+                                return "#ffeb3b";
+                            case 1:
+                                return "#ff9800";
+                            case 3:
+                                return "#2196f3";
+                            case 4:
+                                return "#4caf50";
+                            default:
+                                return "lightgrey";
+                            }
+                        }
                         radius: 10
                         border.width: 1
 
@@ -71,18 +85,40 @@ Item {
                         listView.model.move(from, to, 1);
                         var updatedList = [];
                         for (var i = 0; i < listView.model.count; i++) {
-                            updatedList.push(listView.model.get(i).name);
+                            updatedList.push(listView.model.get(i));
                         }
 
                         console.log("updated list", updatedList);
                     }
                     onItemClicked: {
-                        boxItem.color = "light blue";
-                        console.log("request for: ", name);
+                        // boxItem.color = "light blue";
+                        console.log("request for: ", modelData["queue"]);
+                        queuePalletRequest(modelData["queue"]);
                     }
                     onItemReleased: {
-                        boxItem.color = "light grey";
+                        // boxItem.color = "light grey";
                     }
+                    // onDragItemLoaded: {
+                    //     console.log("pallet_type_view: " + modelData["pallet_type"]);
+                    //     var type = modelData["pallet_type"];
+                    //     switch (type) {
+                    //     case 0:
+                    //         boxItem.color = "#ffeb3b";
+                    //         break;
+                    //     case 1:
+                    //         boxItem.color = "#ff9800";
+                    //         break;
+                    //     case 3:
+                    //         boxItem.color = "#2196f3";
+                    //         break;
+                    //     case 4:
+                    //         boxItem.color = "#4caf50";
+                    //         break;
+                    //     default:
+                    //         boxItem.color = "lightgrey";
+                    //         break;
+                    //     }
+                    // }
                 }
                 Component.onCompleted: {
                     console.log("ListView initialized, waiting for model...");
