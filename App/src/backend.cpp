@@ -725,7 +725,42 @@ void Backend::initQueueListModel(const std::vector<std::string> &result) {
 
     m_isQueueListModelLoaded = true;
     emit pQueueListModelChanged();
-    emit isQueueListModelLoadedChanged();
+}
+
+void Backend::switchDocs(int from, int to) {
+    std::string currentDoc, destDoc;
+    json filter, update;
+
+    // Fetch doc at queue number
+    filter["queue"] = from + 1;
+    dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), currentDoc);
+    filter["queue"] = to + 1;
+    dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), destDoc);
+
+    json currentDoc_json = json::parse(currentDoc);
+    json destDoc_json = json::parse(destDoc);
+
+    std::cout << "currentDoc_json: " << currentDoc_json << "\n";
+    std::cout << "destDoc_json: " << destDoc_json << "\n";
+
+    // Switch queue number of destination doc and current doc
+    currentDoc_json["queue"] = to + 1;
+    destDoc_json["queue"] = from + 1;
+
+    filter = json::object();
+    // filter["_id"]["$oid"] = currentDoc_json["_id"]["$oid"].is_string()? currentDoc_json["_id"]["$oid"].get<std::string>(): currentDoc_json["_id"]["$oid"].get<int>();
+    filter["_id"]["$oid"] = currentDoc_json["_id"]["$oid"].is_string()
+                                ? currentDoc_json["_id"]["$oid"].get<std::string>()
+                                : std::to_string(currentDoc_json["_id"]["$oid"].get<int>());
+
+    std::cout << "currentDoc_json OID: " << filter.dump() << "\n";
+    dbClient_->editInCollection(database, collection_queue, filter.dump(), currentDoc_json.dump());
+
+    filter["_id"]["$oid"] = destDoc_json["_id"]["$oid"].get<std::string>();
+    dbClient_->editInCollection(database, collection_queue, filter.dump(), destDoc_json.dump());
+    
+    //Trigger update view
+    emit pQueueListModelChanged();
 }
 
 /*

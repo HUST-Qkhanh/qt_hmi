@@ -47,16 +47,34 @@ void MongoDBClient::editInCollection(const std::string &dbName,
                                      const std::string &collectionName,
                                      const std::string &filter,
                                      const std::string &update) {
-    auto collection = dbClient_[dbName][collectionName];
-    auto bsonDoc = bsoncxx::from_json(update);
-    auto bsonFilter = bsoncxx::from_json(filter);
-    auto result = collection.update_one(bsonFilter.view(), bsonDoc.view());
-    if (result && result->matched_count() > 0) {
-        std::cout << "Document updated successfully.\n";
-    } else {
-        std::cout << "No document matched the given filter.\n";
+    try {
+        auto collection = dbClient_[dbName][collectionName];
+        auto bsonFilter = bsoncxx::from_json(filter);
+        auto bsonDoc = bsoncxx::from_json(update);
+
+        // Check if the update document starts with an operator (i.e., '$')
+        if (std::string(bsonDoc.view().begin()->key())[0] != '$') {
+            // If not, add $set to the document
+            bsoncxx::builder::basic::document newDoc;
+            newDoc.append(bsoncxx::builder::basic::kvp("$set", bsonDoc.view()));
+
+            // Extract the BSON document value
+            bsonDoc = newDoc.extract();  // Now bsonDoc is a proper BSON document value
+        }
+
+        // Execute the update
+        auto result = collection.update_one(bsonFilter.view(), bsonDoc.view());
+        if (result && result->matched_count() > 0) {
+            std::cout << "Document updated successfully.\n";
+        } else {
+            std::cout << "No document matched the given filter.\n";
+        }
+    } catch (const std::exception &e) {
+        std::cerr << "Error updating document: " << e.what() << std::endl;
     }
 }
+
+
 
 void MongoDBClient::fetchFromCollection(const std::string &dbName,
                                         const std::string &collectionName,
@@ -68,6 +86,7 @@ void MongoDBClient::fetchFromCollection(const std::string &dbName,
     if (result) {
         // Chuyển đổi tài liệu thành JSON
         bsoncxx::document::view view = result->view();
+        //TODO:convert Object id to string
         fetchedStr = bsoncxx::to_json(view);
         // std::cout << "Fetch document successfully: " << fetchedStr << "\n";
         // std::cout << "Fetch document successfully: \n";

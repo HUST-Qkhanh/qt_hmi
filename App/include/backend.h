@@ -417,6 +417,15 @@ class Backend : public QObject {
 
     Q_INVOKABLE void initQueueListModel(const std::vector<std::string> &result);
     // Q_INVOKABLE void initBufferListModel(const std::vector<std::string> &result);
+
+    /**
+     * @brief swich position number of 2 docs
+     * 
+     * @param from 
+     * @param to 
+     * @return Q_INVOKABLE 
+     */
+    Q_INVOKABLE void switchDocs(int from, int to);
 };
 
 #endif  // BACKEND_H

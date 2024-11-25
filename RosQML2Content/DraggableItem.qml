@@ -70,7 +70,7 @@ Item {
                     }
                     itemReleased();
                 }
-                onPressed: {
+                onPressAndHold: {
                     if (!drag.active) {
                         console.log("Item clicked: ");
                         itemClicked();
@@ -224,6 +224,9 @@ Item {
             return;
         }
         root.moveItemRequested(model.index, dropIndex);
+        
+        console.log("index: " + model.index + "drop: " + dropIndex);
+        
 
         makeDroppedItemVisibleTimer.start();
     }
