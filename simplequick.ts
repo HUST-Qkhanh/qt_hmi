@@ -50,15 +50,41 @@
 <context>
     <name>App</name>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="61"/>
-        <location filename="RosQML2Content/App.qml" line="61"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="58"/>
+        <location filename="RosQML2Content/App.qml" line="58"/>
         <source>ENGLISH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="90"/>
-        <location filename="RosQML2Content/App.qml" line="90"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="87"/>
+        <location filename="RosQML2Content/App.qml" line="87"/>
         <source>JAPANESE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="build/qml/RosQML2Content/App.qml" line="157"/>
+        <location filename="RosQML2Content/App.qml" line="157"/>
+        <source>DASHBOARD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="build/qml/RosQML2Content/App.qml" line="199"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="264"/>
+        <location filename="RosQML2Content/App.qml" line="199"/>
+        <location filename="RosQML2Content/App.qml" line="264"/>
+        <source>MONITORING</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="build/qml/RosQML2Content/App.qml" line="238"/>
+        <location filename="RosQML2Content/App.qml" line="238"/>
+        <source>SETUP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="build/qml/RosQML2Content/App.qml" line="295"/>
+        <location filename="RosQML2Content/App.qml" line="295"/>
+        <source>SYSTEM</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

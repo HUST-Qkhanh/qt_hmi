@@ -18,9 +18,9 @@ QtObject {
                                                   pixelSize: Qt.application.font.pixelSize * 1.6
                                               })
     // Primary Colors
-    readonly property color primaryColor: "#4285F4" // Chrome Blue
-    readonly property color primaryLightColor: "#82B1FF"
-    readonly property color primaryDarkColor: "#3367D6"
+    readonly property color primaryColor: "#B0C4DE" // Chrome Blue
+    readonly property color primaryLightColor: "#D1E1F6"
+    readonly property color primaryDarkColor: "#4B505A"
 
     // Secondary Colors
     readonly property color secondaryColor: "#1A73E8" // Secondary Blue
@@ -28,8 +28,8 @@ QtObject {
     readonly property color secondaryDarkColor: "#004BA0"
 
     // Surface Colors
-    readonly property color backgroundColor: "#FFFFFF" // White for clean UI
-    readonly property color surfaceColor: "#F1F3F4" // Light Gray for surfaces
+    readonly property color backgroundColor: "white" // White for clean UI
+    readonly property color surfaceColor: "#D8D8D8" // Light Gray for surfaces
     readonly property color errorColor: "#EA4335" // Chrome Red for errors
 
     // Text Colors
@@ -66,8 +66,8 @@ QtObject {
     readonly property string fontFamily: "Roboto"
 
     // Button Colors and Styles
-    readonly property color buttonColorPrimary: primaryColor
-    readonly property color buttonColorSecondary: secondaryColor
+    readonly property color buttonColorPrimary: secondaryColor
+    readonly property color buttonColorSecondary: primaryColor
     readonly property color buttonTextColor: textColorOnPrimary
     readonly property color buttonPressedColor: primaryDarkColor
 

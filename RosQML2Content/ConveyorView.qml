@@ -82,7 +82,7 @@ Item {
                             Text {
                                 id: textLabel1
                                 // anchors.centerIn: parent
-                                text: modelData["pallet_type"]
+                                text: modelData["queue"]
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                                 font.pointSize: 10
@@ -94,7 +94,7 @@ Item {
                         Component.onCompleted: {
                             console.log("pallet_type_view: " + modelData["pallet_type"]);
                             var type = +modelData["pallet_type"];
-                            console.log("paleet type: " + type);
+                            // console.log("paleet type: " + type);
                             switch (type) {
                             case 0:
                                 boxItem.color = "#ffeb3b";

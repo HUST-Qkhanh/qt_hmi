@@ -38,7 +38,7 @@ public:
             backend.updateFetchedList();
             ros::spinOnce();
             });
-        rosTimer->start(2000); // Adjust the interval as needed
+        rosTimer->start(800); // Adjust the interval as needed
     }
 
     hmiApp(int argc, char** argv);

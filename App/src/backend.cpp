@@ -732,10 +732,19 @@ void Backend::switchDocs(int from, int to) {
     json filter, update;
 
     // Fetch doc at queue number
+    filter = json::object();
     filter["queue"] = from + 1;
     dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), currentDoc);
+    
+    filter = json::object();
     filter["queue"] = to + 1;
     dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), destDoc);
+
+    if (currentDoc == "" && destDoc == "")
+    {
+        std::cerr << "Fetch empty doc" << "\n";
+        return;
+    }
 
     json currentDoc_json = json::parse(currentDoc);
     json destDoc_json = json::parse(destDoc);
@@ -748,14 +757,11 @@ void Backend::switchDocs(int from, int to) {
     destDoc_json["queue"] = from + 1;
 
     filter = json::object();
-    // filter["_id"]["$oid"] = currentDoc_json["_id"]["$oid"].is_string()? currentDoc_json["_id"]["$oid"].get<std::string>(): currentDoc_json["_id"]["$oid"].get<int>();
-    filter["_id"]["$oid"] = currentDoc_json["_id"]["$oid"].is_string()
-                                ? currentDoc_json["_id"]["$oid"].get<std::string>()
-                                : std::to_string(currentDoc_json["_id"]["$oid"].get<int>());
-
+    filter["_id"]["$oid"] = currentDoc_json["_id"]["$oid"].get<std::string>();
     std::cout << "currentDoc_json OID: " << filter.dump() << "\n";
     dbClient_->editInCollection(database, collection_queue, filter.dump(), currentDoc_json.dump());
 
+    filter = json::object();
     filter["_id"]["$oid"] = destDoc_json["_id"]["$oid"].get<std::string>();
     dbClient_->editInCollection(database, collection_queue, filter.dump(), destDoc_json.dump());
     
