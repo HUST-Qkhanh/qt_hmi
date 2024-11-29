@@ -2,7 +2,7 @@
 
 void GetQueueTask::run() {
     std::lock_guard<std::mutex> lock(mtx_);
-    //qDebug() << "GetQueueTask started on thread:" << QThread::currentThread();
+    // qDebug() << "GetQueueTask started on thread:" << QThread::currentThread();
     json filter;
     filter["queue"] = id_;
     std::string fetchedStr = "";
@@ -14,16 +14,16 @@ void GetQueueTask::run() {
     if (fetchedStr != "") {
         QString result = QString::fromStdString(fetchedStr);
         QThread::msleep(200);
-        //qDebug() << "GetQueueTask Task finished.";
+        // qDebug() << "GetQueueTask Task finished.";
         emit taskFinished(PALLET_QUEUE_GET, result);
     } else {
-        //qDebug() << "task failed";
+        // qDebug() << "task failed";
         emit taskFailed(PALLET_QUEUE_GET, "GetQueueTask failed.");
     }
 }
 void EditQueueTask::run() {
     std::lock_guard<std::mutex> lock(mtx_);
-    //qDebug() << "Model Query Task started on thread:" << QThread::currentThread();
+    // qDebug() << "Model Query Task started on thread:" << QThread::currentThread();
 
     json modelFilter;
     std::string modelStr = "";  // fetched model
@@ -31,7 +31,7 @@ void EditQueueTask::run() {
     json jsonToSave;
     json filter;
 
-    //qDebug() << "request save: " << editStr_ << "\n";
+    // qDebug() << "request save: " << editStr_ << "\n";
 
     json editQueueData = json::parse(editStr_);
     if (!(editQueueData.contains("Merchandise") &&
@@ -46,12 +46,12 @@ void EditQueueTask::run() {
     try {
         client_->fetchFromCollection("admin", "pallet_model", modelFilter.dump(), modelStr);
     } catch (const std::exception& e) {
-        //qDebug() << e.what() << '\n';
+        // qDebug() << e.what() << '\n';
         emit taskFailed(PALLET_QUEUE_EDIT, "AddQueueTask failed.");
         return;
     }
     if (modelStr == "") {
-        //qDebug() << "MODEL IS NOT IN DataBase" << '\n';
+        // qDebug() << "MODEL IS NOT IN DataBase" << '\n';
         emit taskFailed(PALLET_QUEUE_EDIT, "AddQueueTask failed.");
         return;
     }
@@ -72,28 +72,28 @@ void EditQueueTask::run() {
                                   jsonToSave.dump());
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
-        //qDebug() << "task failed";
+        // qDebug() << "task failed";
         emit taskFailed(PALLET_QUEUE_EDIT, "EditQueueTask failed.");
     }
     QString result = "OK";
-    //qDebug() << "EditQueueTask finished.";
+    // qDebug() << "EditQueueTask finished.";
     emit taskFinished(PALLET_QUEUE_EDIT, result);
 }
 // TODO: add queue_id for added document
 void AddQueueTask::run() {
     std::lock_guard<std::mutex> lock(mtx_);
-    //qDebug() << "AddQueueTask started on thread:" << QThread::currentThread();
+    // qDebug() << "AddQueueTask started on thread:" << QThread::currentThread();
 
     json modelFilter;
     std::string modelStr = "";  // fetched model
     json jsonToSave;
     json queueFilter;
 
-    //qDebug() << "request save: " << editStr_ << "\n";
+    // qDebug() << "request save: " << editStr_ << "\n";
     json editQueueData = json::parse(editStr_);
     if (!(editQueueData.contains("Merchandise") &&
           editQueueData.contains("Count"))) {
-        //qDebug() << "No input merchandise and count to add";
+        // qDebug() << "No input merchandise and count to add";
         emit taskFailed(PALLET_QUEUE_ADD, "AddQueueTask failed.");
         return;
     }
@@ -105,12 +105,12 @@ void AddQueueTask::run() {
     try {
         client_->fetchFromCollection("admin", "pallet_model", modelFilter.dump(), modelStr);
     } catch (const std::exception& e) {
-        //qDebug() << e.what() << '\n';
+        // qDebug() << e.what() << '\n';
         emit taskFailed(PALLET_QUEUE_ADD, "AddQueueTask failed.");
         return;
     }
     if (modelStr == "") {
-        //qDebug() << "MODEL IS NOT IN DataBase" << '\n';
+        // qDebug() << "MODEL IS NOT IN DataBase" << '\n';
         emit taskFailed(PALLET_QUEUE_ADD, "AddQueueTask failed.");
         return;
     }
@@ -132,18 +132,18 @@ void AddQueueTask::run() {
     try {
         client_->addMidleCollection("admin", "pallet_queue", queueFilter.dump(), jsonToSave.dump());
     } catch (const std::exception& e) {
-        //qDebug() << e.what() << '\n';
+        // qDebug() << e.what() << '\n';
         emit taskFailed(PALLET_QUEUE_ADD, "AddQueueTask failed.");
         return;
     }
     QThread::msleep(2000);
     QString result = "OK";
-    //qDebug() << "AddQueueTask finished.";
+    // qDebug() << "AddQueueTask finished.";
     emit taskFinished(PALLET_QUEUE_ADD, result);
 }
 void EraseQueueTask::run() {
     std::lock_guard<std::mutex> lock(mtx_);
-    //qDebug() << "EraseQueueTask started on thread:" << QThread::currentThread();
+    // qDebug() << "EraseQueueTask started on thread:" << QThread::currentThread();
     json filter;
     filter["queue"] = id_;
 
@@ -151,17 +151,17 @@ void EraseQueueTask::run() {
         client_->removeMidleCollection("admin", "pallet_queue", filter.dump());
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
-        //qDebug() << "task failed";
+        // qDebug() << "task failed";
         emit taskFailed(PALLET_QUEUE_ERASE, "EraseQueueTask failed.");
     }
     QString result = "OK";
-    //qDebug() << "EraseQueueTask finished.";
+    // qDebug() << "EraseQueueTask finished.";
     emit taskFinished(PALLET_QUEUE_ERASE, result);
 }
 
 void GetBufferTask::run() {
     std::lock_guard<std::mutex> lock(mtx_);
-    //qDebug() << "GetBufferTask started on thread:" << QThread::currentThread();
+    // qDebug() << "GetBufferTask started on thread:" << QThread::currentThread();
     json filter;
     filter["stt"] = id_;
     std::string fetchedStr = "";
@@ -171,10 +171,10 @@ void GetBufferTask::run() {
     if (fetchedStr != "") {
         QString result = QString::fromStdString(fetchedStr);
         QThread::msleep(200);
-        //qDebug() << "GetBufferTask finished.";
+        // qDebug() << "GetBufferTask finished.";
         emit taskFinished(PALLET_BUFFER_GET, result);
     } else {
-        //qDebug() << "task failed";
+        // qDebug() << "task failed";
         emit taskFailed(PALLET_BUFFER_GET, "GetBufferTask failed.");
     }
 }
@@ -335,31 +335,37 @@ void TrackDBChanges::run() {
 }
 
 void GetCellsProperties::run() {
-    std::lock_guard<std::mutex> lock(mtx_);
+    // std::lock_guard<std::mutex> lock(mtx_);  // lock MongoDBClient
     qDebug() << "Start get cell properties \n";
     // TODO: get each query of collection and create json result "collection_name"
     for (auto&& collection : collectionList_) {
         if (collection == "pallet_queue") {
             std::string indexKey = "queue";
             std::vector<std::string> cellsProperties;
-            client_->fetchAllCollection("admin", collection, indexKey, cellsProperties);
+            try {
+                client_->fetchAllCollection("admin", collection, indexKey, cellsProperties);
+
+            } catch (const std::exception& e) {
+                std::cerr << e.what() << '\n';
+            }
+
             if (cellsProperties.empty()) {
-                //qDebug() << "task failed" << "\n";
+                // qDebug() << "task failed" << "\n";
                 emit taskFailed(PALLET_QUEUE_GET_ALL, "GetCellsProperties failed.");
                 return;
             }
-            //qDebug() << "vectortask finished: " << collection << "\n";
+            // qDebug() << "vectortask finished: " << collection << "\n";
             emit vectorTaskFinished(PALLET_QUEUE_GET_ALL, cellsProperties);
         } else if (collection == "pallet_buffer") {
             std::string indexKey = "stt";
             std::vector<std::string> cellsProperties;
             client_->fetchAllCollection("admin", collection, indexKey, cellsProperties);
             if (cellsProperties.empty()) {
-                //qDebug() << "task failed" << "\n";
+                // qDebug() << "task failed" << "\n";
                 emit taskFailed(PALLET_BUFFER_GET_ALL, "GetCellsProperties failed.");
                 return;
             }
-            //qDebug() << "vectortask finished: " << collection << "\n";
+            // qDebug() << "vectortask finished: " << collection << "\n";
             emit vectorTaskFinished(PALLET_BUFFER_GET_ALL, cellsProperties);
         }
     }
