@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import RosQML2
 
 Item {
     id: mainContent
@@ -21,29 +22,60 @@ Item {
             }
         }
 
-        ScrollView {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+        RowLayout {
+            id: rowLayout
+            width: 100
+            height: 100
 
-            ListView {
-                id: listView
-                spacing: 10
-                snapMode: ListView.SnapToItem
-                boundsBehavior: Flickable.StopAtBounds
-                flickableDirection: Flickable.HorizontalFlick
-                model: backend.isQueueListModelLoaded ? backend.pQueueListModel : null//List1 {}
-                orientation: ListView.Horizontal // Set to horizontal
 
-                // Adjust ScrollView content width for horizontal scrolling
-                contentWidth: contentItem.width
+            RoundButton {
+                id: button
+                radius: 5
+                rightInset: 0
+                leftInset: 0
+                bottomInset: 0
+                topInset: 0
+                padding: 12
+                text: qsTr("New")
+                flat: false
+                Layout.fillHeight: true
+                background: Rectangle {
+                    color: Constants.buttonColorPrimary
+                    // anchors.fill: parent
+                }
+                // Text {
+                //     text: "new"
+                //     anchors.fill: parent
+                //     horizontalAlignment: Text.AlignHCenter
+                //     verticalAlignment: Text.AlignVCenter
+                // }
+
+                Layout.preferredWidth: 0.1 * parent.width
+            }
+            ScrollView {
+                Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                delegate: DraggableItem {
-                    Rectangle {
-                        id: boxItem
-                        width: 120//textLabel.width * 2 // Adjust width for horizontal layout
-                        height: listView.height   // Match ListView height
-                        color: "lightGrey"/*{
+                ListView {
+                    id: listView
+                    clip: true
+                    spacing: 10
+                    snapMode: ListView.SnapToItem
+                    boundsBehavior: Flickable.StopAtBounds
+                    flickableDirection: Flickable.HorizontalFlick
+                    model: backend.isQueueListModelLoaded ? backend.pQueueListModel : null//List1 {}
+                    orientation: ListView.Horizontal // Set to horizontal
+
+                    // Adjust ScrollView content width for horizontal scrolling
+                    contentWidth: contentItem.width
+                    Layout.fillHeight: true
+
+                    delegate: DraggableItem {
+                        Rectangle {
+                            id: boxItem
+                            width: 120//textLabel.width * 2 // Adjust width for horizontal layout
+                            height: listView.height   // Match ListView height
+                            color: "lightGrey"/*{
                             var type = modelData["pallet_type"];
 
                             console.log("paleet type: " + modelData["pallet_type"]);
@@ -61,125 +93,127 @@ Item {
                                 return "lightgrey";
                             }
                         }*/
-                        radius: 10
-                        border.width: 1
-                        ColumnLayout {
-                            anchors.fill: parent
-                            anchors.leftMargin: 5
-                            anchors.rightMargin: 5
-                            anchors.topMargin: 5
-                            anchors.bottomMargin: 5
-                            Text {
-                                id: textLabel
-                                // anchors.centerIn: parent
-                                text: modelData["Merchandise"]
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                font.pointSize: 10
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
+                            radius: 10
+                            border.width: 1
+                            ColumnLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 5
+                                anchors.rightMargin: 5
+                                anchors.topMargin: 5
+                                anchors.bottomMargin: 5
+                                Text {
+                                    id: textLabel
+                                    // anchors.centerIn: parent
+                                    text: modelData["Merchandise"]
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    font.pointSize: 10
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                }
+                                Text {
+                                    id: textLabel1
+                                    // anchors.centerIn: parent
+                                    text: modelData["queue"]
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    font.pointSize: 10
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                }
                             }
-                            Text {
-                                id: textLabel1
-                                // anchors.centerIn: parent
-                                text: modelData["queue"]
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                font.pointSize: 10
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
+
+                            Component.onCompleted: {
+                                // console.log("pallet_type_view: " + modelData["pallet_type"]);
+                                var type = +modelData["pallet_type"];
+                                // console.log("paleet type: " + type);
+                                switch (type) {
+                                case 0:
+                                    boxItem.color = "#ffeb3b";
+                                    break;
+                                case 1:
+                                    boxItem.color = "#ff9800";
+                                    break;
+                                case 3:
+                                    boxItem.color = "#2196f3";
+                                    break;
+                                case 4:
+                                    boxItem.color = "#4caf50";
+                                    break;
+                                default:
+                                    boxItem.color = "#4caf50";
+                                    break;
+                                }
                             }
+
+                            // Right-side border for horizontal item separation
+                            // Rectangle {
+                            //     anchors {
+                            //         top: parent.top
+                            //         bottom: parent.bottom
+                            //         right: parent.right
+                            //     }
+                            //     width: 2
+                            //     color: "lightgrey"
+                            // }
                         }
 
-                        Component.onCompleted: {
-                            console.log("pallet_type_view: " + modelData["pallet_type"]);
-                            var type = +modelData["pallet_type"];
-                            // console.log("paleet type: " + type);
-                            switch (type) {
-                            case 0:
-                                boxItem.color = "#ffeb3b";
-                                break;
-                            case 1:
-                                boxItem.color = "#ff9800";
-                                break;
-                            case 3:
-                                boxItem.color = "#2196f3";
-                                break;
-                            case 4:
-                                boxItem.color = "#4caf50";
-                                break;
-                            default:
-                                boxItem.color = "#4caf50";
-                                break;
-                            }
-                        }
+                        draggedItemParent: mainContent
 
-                        // Right-side border for horizontal item separation
-                        // Rectangle {
-                        //     anchors {
-                        //         top: parent.top
-                        //         bottom: parent.bottom
-                        //         right: parent.right
+                        onMoveItemRequested: {
+                            // listView.model.move(from, to, 1);
+                            // var updatedList = [];
+                            // for (var i = 0; i < listView.model.count; i++) {
+                            //     updatedList.push(listView.model.get(i));
+                            // }
+
+                            // console.log("updated list", updatedList);
+                            backend.switchDocs(from, to)
+                        }
+                        onItemClicked: {
+                            // boxItem.color = "light blue";
+                            console.log("request for: ", modelData["queue"]);
+                            queuePalletRequest(modelData["queue"]);
+                        }
+                        // onItemReleased:
+                        // // boxItem.color = "light grey";
+                        // {}
+                        // onDragItemLoaded: {
+                        //     console.log("pallet_type_view: " + modelData["pallet_type"]);
+                        //     var type = modelData["pallet_type"];
+                        //     switch (type) {
+                        //     case 0:
+                        //         boxItem.color = "#ffeb3b";
+                        //         break;
+                        //     case 1:
+                        //         boxItem.color = "#ff9800";
+                        //         break;
+                        //     case 3:
+                        //         boxItem.color = "#2196f3";
+                        //         break;
+                        //     case 4:
+                        //         boxItem.color = "#4caf50";
+                        //         break;
+                        //     default:
+                        //         boxItem.color = "lightgrey";
+                        //         break;
                         //     }
-                        //     width: 2
-                        //     color: "lightgrey"
                         // }
                     }
-
-                    draggedItemParent: mainContent
-
-                    onMoveItemRequested: {
-                        // listView.model.move(from, to, 1);
-                        // var updatedList = [];
-                        // for (var i = 0; i < listView.model.count; i++) {
-                        //     updatedList.push(listView.model.get(i));
-                        // }
-
-                        // console.log("updated list", updatedList);
-                        backend.switchDocs(from, to)
+                    Component.onCompleted: {
+                        console.log("ListView initialized, waiting for model...");
                     }
-                    onItemClicked: {
-                        // boxItem.color = "light blue";
-                        console.log("request for: ", modelData["queue"]);
-                        queuePalletRequest(modelData["queue"]);
-                    }
-                    // onItemReleased:
-                    // // boxItem.color = "light grey";
-                    // {}
-                    // onDragItemLoaded: {
-                    //     console.log("pallet_type_view: " + modelData["pallet_type"]);
-                    //     var type = modelData["pallet_type"];
-                    //     switch (type) {
-                    //     case 0:
-                    //         boxItem.color = "#ffeb3b";
-                    //         break;
-                    //     case 1:
-                    //         boxItem.color = "#ff9800";
-                    //         break;
-                    //     case 3:
-                    //         boxItem.color = "#2196f3";
-                    //         break;
-                    //     case 4:
-                    //         boxItem.color = "#4caf50";
-                    //         break;
-                    //     default:
-                    //         boxItem.color = "lightgrey";
-                    //         break;
+
+                    // Connections {
+                    //     target: backend
+                    //     onPQueueListModelChanged: {
+                    //         console.log("Model updated, reloading ListView.");
+                    //         listView.model = backend.pQueueListModel;
                     //     }
                     // }
                 }
-                Component.onCompleted: {
-                    console.log("ListView initialized, waiting for model...");
-                }
-
-                Connections {
-                    target: backend
-                    onPQueueListModelChanged: {
-                        console.log("Model updated, reloading ListView.");
-                        listView.model = backend.pQueueListModel;
-                    }
-                }
             }
         }
+
     }
 }

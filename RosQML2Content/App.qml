@@ -140,7 +140,7 @@ Window {
             anchors.top: meikoLogo.bottom
             anchors.leftMargin: 10
             anchors.rightMargin: 10
-            anchors.topMargin: 30
+            anchors.topMargin: 50 * parent.height / 1080
             spacing: 20
             Layout.margins: 10
 
@@ -356,7 +356,7 @@ Window {
             Layout.preferredWidth: height
             icon.height: 200
             icon.width: 200
-            icon.source: "asset/minimize-8.svg"
+            icon.source: "qrc:/RosQML2Content/asset/minimize-8.svg"
             display: AbstractButton.IconOnly
             background: Rectangle {
                 color: Constants.surfaceColor
@@ -386,7 +386,7 @@ Window {
             icon.height: 200
             icon.width: 200
             display: AbstractButton.IconOnly
-            icon.source: "asset/close_round.svg"
+            icon.source: "qrc:/RosQML2Content/asset/close_round.svg"
             background: Rectangle {
                 color: Constants.surfaceColor
                 radius: Constants.borderRadiusMedium
@@ -409,7 +409,7 @@ Window {
             Layout.preferredWidth: height
             icon.height: 200
             icon.width: 200
-            icon.source: "asset/full.svg"
+            icon.source: "qrc:/RosQML2Content/asset/full.svg"
             display: AbstractButton.IconOnly
             background: Rectangle {
                 color: Constants.surfaceColor
@@ -432,44 +432,29 @@ Window {
         }
     }
 
-    ColumnLayout {
-        id: columnLayout1
+    Loader {
+        id: loader
+        x: 82
+        y: 71
+        anchors.topMargin: 10
+        anchors.bottomMargin: 10
+        source: "qrc:/RosQML2Content/Screen01.qml"
+        onLoaded: {
+            fadeIn.start(); // Start fade-in animation after content is loaded
+
+        }
+
+        // Property to control the opacity for animation
+        opacity: 0
         anchors.left: rectangle.right
         anchors.right: parent.right
-        anchors.top: parent.top
+        anchors.top: rowLayout3.bottom
         anchors.bottom: parent.bottom
-        anchors.margins: 10
-        spacing: 5
-
-        RowLayout {
-            id: rowLayout1
-            Layout.margins: 0
-            Layout.bottomMargin: 10
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            Layout.minimumWidth: parent.width
-            Layout.maximumHeight: parent.height * 0.08
-        }
-        StackView {
-            id: stackView
-            Layout.margins: 0
-            Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Loader {
-                id: loader
-                anchors.fill: parent
-                onLoaded: {
-                    fadeIn.start(); // Start fade-in animation after content is loaded
-
-                }
-
-                // Property to control the opacity for animation
-                opacity: 0
-            }
-
-            initialItem: loader.setSource("qrc:/RosQML2Content/Screen01.qml")
-        }
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
     }
+
+
 
 
 

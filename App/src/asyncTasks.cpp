@@ -1,6 +1,7 @@
 #include "asyncTasks.h"
 
 void GetQueueTask::run() {
+    std::lock_guard<std::mutex> lock(mtx_);
     //qDebug() << "GetQueueTask started on thread:" << QThread::currentThread();
     json filter;
     filter["queue"] = id_;
@@ -21,6 +22,7 @@ void GetQueueTask::run() {
     }
 }
 void EditQueueTask::run() {
+    std::lock_guard<std::mutex> lock(mtx_);
     //qDebug() << "Model Query Task started on thread:" << QThread::currentThread();
 
     json modelFilter;
@@ -79,6 +81,7 @@ void EditQueueTask::run() {
 }
 // TODO: add queue_id for added document
 void AddQueueTask::run() {
+    std::lock_guard<std::mutex> lock(mtx_);
     //qDebug() << "AddQueueTask started on thread:" << QThread::currentThread();
 
     json modelFilter;
@@ -139,6 +142,7 @@ void AddQueueTask::run() {
     emit taskFinished(PALLET_QUEUE_ADD, result);
 }
 void EraseQueueTask::run() {
+    std::lock_guard<std::mutex> lock(mtx_);
     //qDebug() << "EraseQueueTask started on thread:" << QThread::currentThread();
     json filter;
     filter["queue"] = id_;
@@ -156,6 +160,7 @@ void EraseQueueTask::run() {
 }
 
 void GetBufferTask::run() {
+    std::lock_guard<std::mutex> lock(mtx_);
     //qDebug() << "GetBufferTask started on thread:" << QThread::currentThread();
     json filter;
     filter["stt"] = id_;
@@ -310,26 +315,28 @@ void AddModelTask::run() {
 */
 
 void TrackDBChanges::run() {
-    while (true) {
-        for (auto collectionName : collectionList_) {
-            std::cout << "Checking change for " << collectionName << "\n";
-            auto status = client_->checkChangeStream("admin", collectionName);
-            if (collectionName == "pallet_queue" && status == true) {
-                QString result = "OK";
-                //qDebug() << "Pallet queue change";
-                emit taskFinished(PALLET_QUEUE_CHANGED, result);
-            } else if (collectionName == "pallet_buffer" && status == true) {
-                QString result = "OK";
-                //qDebug() << "Pallet buffer change";
-                emit taskFinished(PALLET_BUFFER_CHANGED, result);
-            }
-            QThread::msleep(2000);
-        }
-    }
+    // std::lock_guard<std::mutex> lock(mtx_);
+    // while (true) {
+    //     for (auto collectionName : collectionList_) {
+    //         std::cout << "Checking change for " << collectionName << "\n";
+    //         auto status = client_->checkChangeStream("admin", collectionName);
+    //         if (collectionName == "pallet_queue" && status == true) {
+    //             QString result = "OK";
+    //             //qDebug() << "Pallet queue change";
+    //             emit taskFinished(PALLET_QUEUE_CHANGED, result);
+    //         } else if (collectionName == "pallet_buffer" && status == true) {
+    //             QString result = "OK";
+    //             //qDebug() << "Pallet buffer change";
+    //             emit taskFinished(PALLET_BUFFER_CHANGED, result);
+    //         }
+    //         QThread::msleep(2000);
+    //     }
+    // }
 }
 
 void GetCellsProperties::run() {
-    //qDebug() << "Start get cell properties \n";
+    std::lock_guard<std::mutex> lock(mtx_);
+    qDebug() << "Start get cell properties \n";
     // TODO: get each query of collection and create json result "collection_name"
     for (auto&& collection : collectionList_) {
         if (collection == "pallet_queue") {

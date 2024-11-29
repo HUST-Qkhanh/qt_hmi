@@ -67,14 +67,12 @@ void MongoDBClient::editInCollection(const std::string &dbName,
         if (result && result->matched_count() > 0) {
             std::cout << "Document updated successfully.\n";
         } else {
-            std::cout << "No document matched the given filter.\n";
+            std::cerr << "No document matched the given filter.\n";
         }
     } catch (const std::exception &e) {
         std::cerr << "Error updating document: " << e.what() << std::endl;
     }
 }
-
-
 
 void MongoDBClient::fetchFromCollection(const std::string &dbName,
                                         const std::string &collectionName,
@@ -82,11 +80,11 @@ void MongoDBClient::fetchFromCollection(const std::string &dbName,
                                         std::string &fetchedStr) {
     auto collection = dbClient_[dbName][collectionName];
     auto bsonFilter = bsoncxx::from_json(filter);
+    // std::cout << "fetch filter: " << filter << "\n";
     auto result = collection.find_one(bsonFilter.view());
     if (result) {
         // Chuyển đổi tài liệu thành JSON
         bsoncxx::document::view view = result->view();
-        //TODO:convert Object id to string
         fetchedStr = bsoncxx::to_json(view);
         // std::cout << "Fetch document successfully: " << fetchedStr << "\n";
         // std::cout << "Fetch document successfully: \n";

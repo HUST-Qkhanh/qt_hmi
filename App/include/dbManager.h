@@ -3,6 +3,7 @@
 
 #include <bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/document/view_or_value.hpp>
+#include <mongocxx/pool.hpp>
 #include <bsoncxx/json.hpp>
 #include <iostream>
 #include <mongocxx/client.hpp>

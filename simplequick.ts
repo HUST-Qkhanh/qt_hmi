@@ -748,6 +748,14 @@
     </message>
 </context>
 <context>
+    <name>ConveyorView</name>
+    <message>
+        <location filename="RosQML2Content/ConveyorView.qml" line="39"/>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CornerRadiusSection</name>
     <message>
         <location filename="build/_deps/ds-src/src/imports/components/designer/CornerRadiusSection.qml" line="37"/>
