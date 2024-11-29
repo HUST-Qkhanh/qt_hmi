@@ -69,21 +69,21 @@
     </message>
     <message>
         <location filename="build/qml/RosQML2Content/App.qml" line="199"/>
-        <location filename="build/qml/RosQML2Content/App.qml" line="264"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="278"/>
         <location filename="RosQML2Content/App.qml" line="199"/>
-        <location filename="RosQML2Content/App.qml" line="264"/>
+        <location filename="RosQML2Content/App.qml" line="278"/>
         <source>MONITORING</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="238"/>
-        <location filename="RosQML2Content/App.qml" line="238"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="245"/>
+        <location filename="RosQML2Content/App.qml" line="245"/>
         <source>SETUP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="build/qml/RosQML2Content/App.qml" line="295"/>
-        <location filename="RosQML2Content/App.qml" line="295"/>
+        <location filename="build/qml/RosQML2Content/App.qml" line="316"/>
+        <location filename="RosQML2Content/App.qml" line="316"/>
         <source>SYSTEM</source>
         <translation type="unfinished"></translation>
     </message>

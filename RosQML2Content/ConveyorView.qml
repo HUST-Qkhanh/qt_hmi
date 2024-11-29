@@ -41,7 +41,15 @@ Item {
                 Layout.fillHeight: true
                 background: Rectangle {
                     color: Constants.buttonColorPrimary
+                    radius: Constants.borderRadiusMedium
                     // anchors.fill: parent
+                }
+                onPressedChanged: {
+                    if (pressed) {
+                        background.color = Constants.buttonPressedColor;
+                    } else {
+                        background.color = Constants.buttonColorPrimary;
+                    }
                 }
                 // Text {
                 //     text: "new"

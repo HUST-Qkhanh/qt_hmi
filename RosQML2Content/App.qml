@@ -62,7 +62,7 @@ Window {
 
                 display: AbstractButton.TextOnly
                 background: Rectangle {
-                    color: "#F5F5F5"
+                    color: Constants.buttonColorPrimary
                     radius: 20
                     border.color: "#FFFFFF"
                     border.width: 5
@@ -91,7 +91,7 @@ Window {
                 font.pointSize: 50
                 display: AbstractButton.TextOnly
                 background: Rectangle {
-                    color: "#F5F5F5"
+                    color: Constants.buttonColorPrimary
                     radius: 20
                     border.color: "#FFFFFF"
                     border.width: 5
@@ -163,7 +163,7 @@ Window {
                 topInset: 0
                 rightInset: 0
                 leftInset: 0
-                icon.color: Constants.buttonColorPrimary
+                icon.color: Constants.buttonTextColor
                 icon.height: 500
                 icon.width: 500
                 padding: 50 * parent.height / 1080
@@ -171,7 +171,7 @@ Window {
                 Layout.fillWidth: true
 
                 background: Rectangle {
-                    color: "#F5F5F5"
+                    color: Constants.buttonColorPrimary
                     radius: Constants.borderRadiusMedium
                 }
 
@@ -184,9 +184,9 @@ Window {
 
                 onPressedChanged: {
                     if (pressed) {
-                        background.color = "#B0BEC5";
+                        background.color = Constants.buttonPressedColor;
                     } else {
-                        background.color = "#F5F5F5";
+                        background.color = Constants.buttonColorPrimary;
                     }
                 }
             }
@@ -213,16 +213,23 @@ Window {
                 flat: false
                 font.family: "ubuntu"
                 font.bold: false
-                icon.color: Constants.buttonColorPrimary//"#1d1d1d"
+                icon.color: Constants.buttonTextColor//"#1d1d1d"
                 // icon.source: "qrc:/RosQML2Content/asset/dart-mission-goal-success-svgrepo-com.svg"
                 icon.source: "asset/dart-mission-goal-success-svgrepo-com.svg"
                 display: AbstractButton.IconOnly
 
                 background: Rectangle {
-                    color: "#F5F5F5"
+                    color: Constants.buttonColorPrimary
                     radius: Constants.borderRadiusMedium
                 }
                 onClicked: loader.setSource("qrc:/RosQML2Content/component_test.ui.qml")
+                onPressedChanged: {
+                    if (pressed) {
+                        background.color = Constants.buttonPressedColor;
+                    } else {
+                        background.color = Constants.buttonColorPrimary;
+                    }
+                }
             }
 
             RoundButton {
@@ -231,7 +238,7 @@ Window {
                 radius: Constants.borderRadiusSmall
                 font.bold: false
                 font.family: "ubuntu"
-                icon.color: Constants.buttonColorPrimary
+                icon.color: Constants.buttonTextColor
                 // icon.source: "qrc:/RosQML2Content/asset/setup.svg"
                 icon.source: "asset/setup.svg"
                 display: AbstractButton.IconOnly
@@ -251,10 +258,17 @@ Window {
                 icon.width: 500
                 Layout.fillWidth: true
                 background: Rectangle {
-                    color: "#F5F5F5"
+                    color: Constants.buttonColorPrimary
                     radius: Constants.borderRadiusMedium
                 }
                 onClicked: loader.setSource("qrc:/RosQML2Content/Screen02.qml")
+                onPressedChanged: {
+                    if (pressed) {
+                        background.color = Constants.buttonPressedColor;
+                    } else {
+                        background.color = Constants.buttonColorPrimary;
+                    }
+                }
             }
 
             RoundButton {
@@ -278,16 +292,23 @@ Window {
                 palette.buttonText: Constants.buttonColorPrimary
                 font.family: "ubuntu"
                 font.bold: false
-                icon.color: Constants.buttonColorPrimary
+                icon.color: Constants.buttonTextColor
                 // icon.source: "qrc:/RosQML2Content/asset/tv.svg"
                 icon.source: "asset/tv.svg"
                 display: AbstractButton.IconOnly
 
                 background: Rectangle {
-                    color: "#F5F5F5"
+                    color: Constants.buttonColorPrimary
                     radius: Constants.borderRadiusMedium
                 }
                 onClicked: loader.setSource("qrc:/RosQML2Content/Screen03.qml")
+                onPressedChanged: {
+                    if (pressed) {
+                        background.color = Constants.buttonPressedColor;
+                    } else {
+                        background.color = Constants.buttonColorPrimary;
+                    }
+                }
             }
 
             RoundButton {
@@ -314,13 +335,20 @@ Window {
                 font.bold: false
                 // icon.source: "qrc:/RosQML2Content/asset/Setting.svg"
                 icon.source: "asset/Setting.svg"
-                icon.color: Constants.buttonColorPrimary
+                icon.color: Constants.buttonTextColor
                 display: AbstractButton.IconOnly
                 background: Rectangle {
-                    color: "#F5F5F5"
+                    color: Constants.buttonColorPrimary
                     radius: Constants.borderRadiusMedium
                 }
                 onClicked: loader.setSource("qrc:/RosQML2Content/component_test_2.ui.qml")
+                onPressedChanged: {
+                    if (pressed) {
+                        background.color = Constants.buttonPressedColor;
+                    } else {
+                        background.color = Constants.buttonColorPrimary;
+                    }
+                }
             }
         }
 
@@ -345,7 +373,7 @@ Window {
         anchors.topMargin: 5
         Button {
             id: minimal_button
-            icon.color: Constants.buttonColorPrimary
+            icon.color: Constants.buttonTextColor
             bottomInset: 0
             topInset: 0
             rightPadding: 0
@@ -359,7 +387,7 @@ Window {
             icon.source: "qrc:/RosQML2Content/asset/minimize-8.svg"
             display: AbstractButton.IconOnly
             background: Rectangle {
-                color: Constants.surfaceColor
+                color: Constants.buttonColorPrimary
                 radius: Constants.borderRadiusMedium
             }
             onClicked: {
@@ -370,11 +398,18 @@ Window {
                 window.y = (window.screen.height - window.height) / 2;
                 window.showMinimized();
             }
+            onPressedChanged: {
+                if (pressed) {
+                    background.color = Constants.buttonPressedColor;
+                } else {
+                    background.color = Constants.buttonColorPrimary;
+                }
+            }
         }
 
         Button {
             id: close_button
-            icon.color: Constants.buttonColorPrimary
+            icon.color: Constants.buttonTextColor
             bottomInset: 0
             topInset: 0
             rightPadding: 0
@@ -388,17 +423,24 @@ Window {
             display: AbstractButton.IconOnly
             icon.source: "qrc:/RosQML2Content/asset/close_round.svg"
             background: Rectangle {
-                color: Constants.surfaceColor
+                color: Constants.buttonColorPrimary
                 radius: Constants.borderRadiusMedium
             }
             onClicked: {
                 Qt.quit();
             }
+            onPressedChanged: {
+                if (pressed) {
+                    background.color = Constants.buttonPressedColor;
+                } else {
+                    background.color = Constants.buttonColorPrimary;
+                }
+            }
         }
 
         Button {
             id: zoom_button
-            icon.color: Constants.buttonColorPrimary
+            icon.color: Constants.buttonTextColor
             bottomInset: 0
             topInset: 0
             rightPadding: 0
@@ -412,7 +454,7 @@ Window {
             icon.source: "qrc:/RosQML2Content/asset/full.svg"
             display: AbstractButton.IconOnly
             background: Rectangle {
-                color: Constants.surfaceColor
+                color: Constants.buttonColorPrimary
                 radius: Constants.borderRadiusMedium
 
             }
@@ -427,6 +469,13 @@ Window {
                     window.y = (window.screen.height - window.height) / 2;
                 } else {
                     window.visibility = Window.FullScreen;
+                }
+            }
+            onPressedChanged: {
+                if (pressed) {
+                    background.color = Constants.buttonPressedColor;
+                } else {
+                    background.color = Constants.buttonColorPrimary;
                 }
             }
         }

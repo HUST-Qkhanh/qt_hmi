@@ -348,7 +348,7 @@ void GetCellsProperties::run() {
                 emit taskFailed(PALLET_QUEUE_GET_ALL, "GetCellsProperties failed.");
                 return;
             }
-            //qDebug() << "vectortask finished: " << collection << "\n";
+            qDebug() << "vectortask finished: " << collection << "\n";
             emit vectorTaskFinished(PALLET_QUEUE_GET_ALL, cellsProperties);
         } else if (collection == "pallet_buffer") {
             std::string indexKey = "stt";
@@ -359,7 +359,7 @@ void GetCellsProperties::run() {
                 emit taskFailed(PALLET_BUFFER_GET_ALL, "GetCellsProperties failed.");
                 return;
             }
-            //qDebug() << "vectortask finished: " << collection << "\n";
+            qDebug() << "vectortask finished: " << collection << "\n";
             emit vectorTaskFinished(PALLET_BUFFER_GET_ALL, cellsProperties);
         }
     }
