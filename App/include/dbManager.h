@@ -21,13 +21,13 @@ using json = nlohmann::json;
 class MongoDBClient {
    public:
     // Static method to get the singleton instance
-    static MongoDBClient *getInstance(const std::string &value);
+    static MongoDBClient *getInstance();
 
     // Method to initialize the MongoDB client with a custom URI (optional)
-    void initialize(const std::string &uri = "mongodb://localhost:27017");
+    void initialize(const std::string &uri = "mongodb://localhost:27017/?minPoolSize=3&maxPoolSize=3");
 
     // Get a client from the pool
-    std::shared_ptr<mongocxx::client> getClient();
+    mongocxx::pool::entry getClient();
 
     mongocxx::database getDatabase(const std::string &dbName);
 
@@ -69,7 +69,7 @@ class MongoDBClient {
 
    private:
     // Private constructor for Singleton pattern
-    MongoDBClient(const std::string &value);
+    MongoDBClient();
 
     // Delete copy constructor and assignment operator to prevent copies
     MongoDBClient(const MongoDBClient &) = delete;
@@ -81,7 +81,9 @@ class MongoDBClient {
 
     mongocxx::instance instance_;  // MongoDB driver instance
     mongocxx::client dbClient_;    // MongoDB client to manage connections
-    std::unique_ptr<mongocxx::pool> pool_;
+    std::string uri_ = "mongodb://localhost:27017/?minPoolSize=3&maxPoolSize=3";
+    // mongocxx::pool pool_;
+    std::shared_ptr<mongocxx::pool> pool_;
     bool isInitialized_ = false;  // Track if client has been initialized
 
     // std::optional<bsoncxx::document::value> queueLatestResumeToken;
