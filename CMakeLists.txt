@@ -13,8 +13,8 @@ message(STATUS "BUILDING PROJECT: ${CMAKE_PROJECT_NAME}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_PREFIX_PATH "/opt/ros/noetic")
-# list(APPEND CMAKE_PREFIX_PATH "/home/khanh/mav_ws/devel" "/usr/local/lib" "/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6")
-list(APPEND CMAKE_PREFIX_PATH "/home/mkac/amr_ws/devel" "/usr/local/lib")
+list(APPEND CMAKE_PREFIX_PATH "/home/khanh/mav_ws/devel" "/usr/local/lib" "/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6")
+# list(APPEND CMAKE_PREFIX_PATH "/home/mkac/amr_ws/devel" "/usr/local/lib")
 
 
 set(CMAKE_AUTOMOC ON)
@@ -26,19 +26,7 @@ set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
     FORCE
 )
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Qml Quick LinguistTools Widgets)
-qt_create_translation(QM_FILES ${CMAKE_CURRENT_SOURCE_DIR} simplequick.ts)
-message(STATUS "QM_FILES: ${QM_FILES}")
-configure_file(/home/mkac/qt_ws/qt_hmi/simplequick.qm ${CMAKE_SOURCE_DIR}/Generated/translation.qm COPYONLY)
-# configure_file(/home/khanh/qt_ws/qt_hmi/simplequick.qm ${CMAKE_SOURCE_DIR}/Generated/translation.qm COPYONLY)
-
-# foreach(QM_FILE ${QM_FILES})
-#     configure_file(
-#         ${QM_FILE}
-#         ${CMAKE_CURRENT_SOURCE_DIR} # Destination directory
-#         COPYONLY
-#     )
-# endforeach()
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Qml Quick Widgets)
 
 
 if (Qt6_VERSION VERSION_GREATER_EQUAL 6.3)
