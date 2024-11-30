@@ -3,40 +3,62 @@
 MongoDBClient *MongoDBClient::pinstance_{nullptr};
 std::mutex MongoDBClient::mutex_;
 
-MongoDBClient *MongoDBClient::getInstance(const std::string &value) {
+MongoDBClient *MongoDBClient::getInstance() {
     std::lock_guard<std::mutex> lock(mutex_);
 
     if (pinstance_ == nullptr) {
-        pinstance_ = new MongoDBClient(value);
+        pinstance_ = new MongoDBClient();
     }
     return pinstance_;
 }
+// MongoDBClient::~MongoDBClient() {
+//     if (pinstance_) {
+//         delete pinstance_;
+//         pinstance_ = nullptr;
+//     }
+// }
 
-MongoDBClient::MongoDBClient(const std::string &value)
-    : value_(value), dbClient_(mongocxx::uri{}) {
-    std::cout << "MongoDB client initialized with default URI.\n";
-    isInitialized_ = true;
+MongoDBClient::MongoDBClient() {
+    std::cout << "Created new MongoDB Client.\n";
 }
 
 void MongoDBClient::initialize(const std::string &uri) {
     if (!isInitialized_) {
-        dbClient_ = mongocxx::client(mongocxx::uri{uri});
+        try {
+            pool_ = std::make_shared<mongocxx::pool>(mongocxx::uri{uri});
+            // dbClient_ = mongocxx::client(mongocxx::uri{uri});
+        } catch (const std::exception &e) {
+            std::cerr << "mongoDb init error: " << e.what() << '\n';
+            return;
+        }
+
         isInitialized_ = true;
-        std::cout << "MongoDB client initialized with URI: " << uri << "\n";
+        std::cout << "MongoDB pool initialized with URI: " << uri << "\n";
     } else {
         std::cerr
             << "MongoDB client already initialized. Initialization skipped.\n";
     }
 }
 
+mongocxx::pool::entry MongoDBClient::getClient() {  // Synchronize pool access
+    if (!isInitialized_) {
+        throw std::runtime_error("MongoDB pool not initialized.");
+    }
+    auto client = pool_->acquire();
+    return client;
+}
+
 mongocxx::database MongoDBClient::getDatabase(const std::string &dbName) {
-    return dbClient_[dbName];
+    auto client = getClient();
+    return client->database(dbName);
 }
 
 void MongoDBClient::writeToCollection(const std::string &dbName,
                                       const std::string &collectionName,
                                       const std::string &doc) {
-    auto collection = dbClient_[dbName][collectionName];
+    auto client = getClient();
+    auto db = client->database(dbName);
+    auto collection = db[collectionName];
     auto bsonDoc = bsoncxx::from_json(doc);
     collection.insert_one(bsonDoc.view());
     std::cout << "Document inserted into " << dbName << "." << collectionName
@@ -48,7 +70,9 @@ void MongoDBClient::editInCollection(const std::string &dbName,
                                      const std::string &filter,
                                      const std::string &update) {
     try {
-        auto collection = dbClient_[dbName][collectionName];
+        auto client = getClient();
+        auto db = client->database(dbName);
+        auto collection = db[collectionName];
         auto bsonFilter = bsoncxx::from_json(filter);
         auto bsonDoc = bsoncxx::from_json(update);
 
@@ -78,7 +102,9 @@ void MongoDBClient::fetchFromCollection(const std::string &dbName,
                                         const std::string &collectionName,
                                         const std::string &filter,
                                         std::string &fetchedStr) {
-    auto collection = dbClient_[dbName][collectionName];
+    auto client = getClient();
+    auto db = client->database(dbName);
+    auto collection = db[collectionName];
     auto bsonFilter = bsoncxx::from_json(filter);
     // std::cout << "fetch filter: " << filter << "\n";
     auto result = collection.find_one(bsonFilter.view());
@@ -97,9 +123,11 @@ void MongoDBClient::fetchAllCollection(const std::string &dbName,
                                        const std::string &collectionName,
                                        const std::string &indexKey,
                                        std::vector<std::string> &fetchedDocs) {
-    auto collection = dbClient_[dbName][collectionName];
+    auto client = getClient();
+    auto db = client->database(dbName);
+    auto collection = db[collectionName];
     auto sizeOfCollection = collection.count_documents({});
-    // std::cout << "collection: " << collectionName << " - size: " << sizeOfCollection << "\n";
+    std::cout << "collection: " << collectionName << " - size: " << sizeOfCollection << "\n";
     for (size_t i = 0; i < sizeOfCollection; i++) {
         json filter;
         filter[indexKey] = i + 1;
@@ -117,7 +145,9 @@ void MongoDBClient::fetchAllCollection(const std::string &dbName,
 void MongoDBClient::eraseFromCollection(const std::string &dbName,
                                         const std::string &collectionName,
                                         const std::string &filter) {
-    auto collection = dbClient_[dbName][collectionName];
+    auto client = getClient();
+    auto db = client->database(dbName);
+    auto collection = db[collectionName];
     auto bsonFilter = bsoncxx::from_json(filter);
 
     // Use delete_many to remove all documents matching the filter
@@ -132,7 +162,9 @@ void MongoDBClient::eraseFromCollection(const std::string &dbName,
 }
 
 void MongoDBClient::addMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter, const std::string &doc) {
-    auto collection = dbClient_[dbName][collectionName];
+    auto client = getClient();
+    auto db = client->database(dbName);
+    auto collection = db[collectionName];
     // find the indexKey
     json filterJson = json::parse(filter);
     auto indexKey = filterJson.begin().key();
@@ -163,7 +195,9 @@ void MongoDBClient::addMidleCollection(const std::string &dbName, const std::str
 }
 
 void MongoDBClient::removeMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter) {
-    auto collection = dbClient_[dbName][collectionName];
+    auto client = getClient();
+    auto db = client->database(dbName);
+    auto collection = db[collectionName];
     eraseFromCollection(dbName, collectionName, filter);
     // find the indexKey
     json filterJson = json::parse(filter);
@@ -194,7 +228,9 @@ void MongoDBClient::removeMidleCollection(const std::string &dbName, const std::
 }
 
 bool MongoDBClient::checkChangeStream(const std::string &dbName, const std::string &collectionName) {
-    auto collection = dbClient_[dbName][collectionName];
+    auto client = getClient();
+    auto db = client->database(dbName);
+    auto collection = db[collectionName];
     try {
         auto changeStream = collection.watch();
         if (auto change = changeStream.begin(); change != changeStream.end()) {

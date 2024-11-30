@@ -224,7 +224,7 @@ class Backend : public QObject {
     void systemStatusCallback(const std_stamped_msgs::StringStamped::ConstPtr &msg);
     // void standardIoCallback(const std_stamped_msgs::StringStamped &msg);
 
-    MongoDBClient *dbClient_ = MongoDBClient::getInstance("BACKEND");
+    MongoDBClient *dbClient_ = MongoDBClient::getInstance();
     std::mutex mutex_;
 
     double batteryVoltageStr;
