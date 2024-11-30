@@ -68,8 +68,9 @@ QtObject {
     // Button Colors and Styles
     readonly property color buttonColorPrimary: "#F5F5F5"
     readonly property color buttonColorSecondary: primaryColor
-    readonly property color buttonTextColor: textColorOnSecondary
-    readonly property color buttonPressedColor: "#B0BEC5"
+    readonly property color buttonTextColor: textColorOnPrimary
+    readonly property color buttonTextColorSecondary: textColorPrimary
+    readonly property color buttonPressedColor: primaryDarkColor
 
 
 

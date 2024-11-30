@@ -138,8 +138,8 @@ Window {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: meikoLogo.bottom
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
+            anchors.leftMargin: 5
+            anchors.rightMargin: 5
             anchors.topMargin: 50 * parent.height / 1080
             spacing: 20
             Layout.margins: 10
@@ -152,9 +152,10 @@ Window {
                 font.family: "ubuntu"
                 // icon.source: "qrc:/RosQML2Content/asset/Vector 48 (Stroke).svg"
                 icon.source: "asset/Vector 48 (Stroke).svg"
-                display: AbstractButton.IconOnly
+                display: AbstractButton.TextUnderIcon
 
                 text: qsTr("DASHBOARD")
+                flat: true
                 font.weight: Font.Normal
                 font.pointSize: 6
                 spacing: 0
@@ -170,24 +171,16 @@ Window {
                 highlighted: false
                 Layout.fillWidth: true
 
-                background: Rectangle {
-                    color: Constants.buttonColorPrimary
-                    radius: Constants.borderRadiusMedium
-                }
+                // background: Rectangle {
+                //     color: "#F5F5F5"
+                //     radius: Constants.borderRadiusMedium
+                // }
 
                 onClicked: {
                     loader.setSource("qrc:/RosQML2Content/Screen01.qml");
                     Qt.callLater(function () {
                         backend.updateFetchedList();
                     });
-                }
-
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = Constants.buttonPressedColor;
-                    } else {
-                        background.color = Constants.buttonColorPrimary;
-                    }
                 }
             }
 
@@ -210,18 +203,13 @@ Window {
                 icon.width: 500
                 Layout.fillWidth: true
                 highlighted: false
-                flat: false
+                flat: true
                 font.family: "ubuntu"
                 font.bold: false
                 icon.color: Constants.buttonTextColor//"#1d1d1d"
                 // icon.source: "qrc:/RosQML2Content/asset/dart-mission-goal-success-svgrepo-com.svg"
                 icon.source: "asset/dart-mission-goal-success-svgrepo-com.svg"
                 display: AbstractButton.IconOnly
-
-                background: Rectangle {
-                    color: Constants.buttonColorPrimary
-                    radius: Constants.borderRadiusMedium
-                }
                 onClicked: loader.setSource("qrc:/RosQML2Content/component_test.ui.qml")
                 onPressedChanged: {
                     if (pressed) {
@@ -243,6 +231,7 @@ Window {
                 icon.source: "asset/setup.svg"
                 display: AbstractButton.IconOnly
                 text: qsTr("SETUP")
+                flat: true
                 font.weight: Font.Normal
                 font.pointSize: 5
                 spacing: 0
@@ -257,10 +246,6 @@ Window {
                 icon.height: 500
                 icon.width: 500
                 Layout.fillWidth: true
-                background: Rectangle {
-                    color: Constants.buttonColorPrimary
-                    radius: Constants.borderRadiusMedium
-                }
                 onClicked: loader.setSource("qrc:/RosQML2Content/Screen02.qml")
                 onPressedChanged: {
                     if (pressed) {
@@ -276,6 +261,7 @@ Window {
                 Layout.preferredHeight: width//(toolBar.height - 120) * 0.2
                 radius: Constants.borderRadiusSmall
                 text: qsTr("MONITORING")
+                flat: true
                 font.weight: Font.Normal
                 font.pointSize: 5
                 spacing: 0
@@ -296,11 +282,6 @@ Window {
                 // icon.source: "qrc:/RosQML2Content/asset/tv.svg"
                 icon.source: "asset/tv.svg"
                 display: AbstractButton.IconOnly
-
-                background: Rectangle {
-                    color: Constants.buttonColorPrimary
-                    radius: Constants.borderRadiusMedium
-                }
                 onClicked: loader.setSource("qrc:/RosQML2Content/Screen03.qml")
                 onPressedChanged: {
                     if (pressed) {
@@ -314,6 +295,7 @@ Window {
             RoundButton {
                 id: system_button
                 text: qsTr("SYSTEM")
+                flat: true
                 font.weight: Font.Normal
                 font.pointSize: 5
                 spacing: 0
@@ -337,10 +319,6 @@ Window {
                 icon.source: "asset/Setting.svg"
                 icon.color: Constants.buttonTextColor
                 display: AbstractButton.IconOnly
-                background: Rectangle {
-                    color: Constants.buttonColorPrimary
-                    radius: Constants.borderRadiusMedium
-                }
                 onClicked: loader.setSource("qrc:/RosQML2Content/component_test_2.ui.qml")
                 onPressedChanged: {
                     if (pressed) {
@@ -366,14 +344,19 @@ Window {
 
     RowLayout {
         id: rowLayout3
-        height: 50 * parent.height / 1080
+        height: 30 * parent.height / 1080
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.rightMargin: 5
         anchors.topMargin: 5
-        Button {
+        RoundButton {
             id: minimal_button
-            icon.color: Constants.buttonTextColor
+            radius: Constants.borderRadiusMedium
+            flat: true
+            rightInset: 0
+            leftInset: 0
+            padding: 0
+            icon.color: Constants.buttonColorPrimary
             bottomInset: 0
             topInset: 0
             rightPadding: 0
@@ -384,12 +367,8 @@ Window {
             Layout.preferredWidth: height
             icon.height: 200
             icon.width: 200
-            icon.source: "qrc:/RosQML2Content/asset/minimize-8.svg"
             display: AbstractButton.IconOnly
-            background: Rectangle {
-                color: Constants.buttonColorPrimary
-                radius: Constants.borderRadiusMedium
-            }
+            icon.source: "asset/minimize-8.svg"
             onClicked: {
                 window.showNormal();  // Restore to normal size if currently fullscreen
                 window.width = window.screen.width / 1.5;
@@ -407,9 +386,14 @@ Window {
             }
         }
 
-        Button {
+        RoundButton {
             id: close_button
-            icon.color: Constants.buttonTextColor
+            radius: Constants.borderRadiusMedium
+            flat: true
+            rightInset: 0
+            leftInset: 0
+            padding: 0
+            icon.color: Constants.buttonColorPrimary
             bottomInset: 0
             topInset: 0
             rightPadding: 0
@@ -421,11 +405,7 @@ Window {
             icon.height: 200
             icon.width: 200
             display: AbstractButton.IconOnly
-            icon.source: "qrc:/RosQML2Content/asset/close_round.svg"
-            background: Rectangle {
-                color: Constants.buttonColorPrimary
-                radius: Constants.borderRadiusMedium
-            }
+            icon.source: "asset/close_round.svg"
             onClicked: {
                 Qt.quit();
             }
@@ -438,9 +418,14 @@ Window {
             }
         }
 
-        Button {
+        RoundButton {
             id: zoom_button
-            icon.color: Constants.buttonTextColor
+            radius: Constants.borderRadiusMedium
+            flat: true
+            rightInset: 0
+            leftInset: 0
+            padding: 0
+            icon.color: Constants.buttonColorPrimary
             bottomInset: 0
             topInset: 0
             rightPadding: 0
@@ -451,13 +436,8 @@ Window {
             Layout.preferredWidth: height
             icon.height: 200
             icon.width: 200
-            icon.source: "qrc:/RosQML2Content/asset/full.svg"
             display: AbstractButton.IconOnly
-            background: Rectangle {
-                color: Constants.buttonColorPrimary
-                radius: Constants.borderRadiusMedium
-
-            }
+            icon.source: "asset/full.svg"
             onClicked: {
                 print("Zooming to:", window.screen.width, window.screen.height);
 
