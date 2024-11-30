@@ -259,236 +259,285 @@ Rectangle {
         }
     }
 
+    RoundButton {
+        id: header
+        height: parent.height * 0.07
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        anchors.topMargin: 10
+        rightInset: 0
+        leftInset: 0
+        bottomInset: 0
+        topInset: 0
+        padding: 0
+        rightPadding: 0
+        leftPadding: 0
+        bottomPadding: 0
+        topPadding: 0
+        Layout.bottomMargin: 0
+        Layout.margins: 20
+        Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+        Layout.fillWidth: true
+        Layout.preferredHeight: parent.height * 0.1
+        background: Rectangle {
+
+            color: "#90CAF9"
+            radius: Constants.borderRadiusSmall
+        }
+
+        Text {
+            id: status_header
+            text: qsTr("Initializing")
+            anchors.fill: parent
+            font.pixelSize: 20 * parent.height / 48
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.italic: true
+        }
+    }
+
     ColumnLayout {
         id: columnLayout
-        anchors.fill: parent
-
-        Button {
-            id: header
-            Layout.bottomMargin: 0
-            Layout.margins: 20
-            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-            Layout.fillWidth: true
-            Layout.preferredHeight: parent.height * 0.1
-
-            background: Rectangle {
-
-                color: "#90CAF9"
-                radius: Constants.borderRadiusMedium
-            }
-
-            Text {
-                id: status_header
-                text: qsTr("Initializing")
-                anchors.fill: parent
-                font.pixelSize: 20 * parent.height / 48
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.italic: true
-            }
-        }
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: header.bottom
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
+        anchors.topMargin: 20
+        spacing: 0
+        height: parent.height * 0.5
 
         ConveyorView {
             id: conveyorView
-            Layout.margins: 20
+            Layout.fillHeight: true
+            Layout.rightMargin: 20
+            Layout.leftMargin: 20
+            Layout.bottomMargin: 5
+            Layout.topMargin: 5
+            Layout.margins: 0
             clip: true
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: true
             Layout.preferredHeight: parent.height * 0.2
         }
 
-        Rectangle {
-            id: rectangle
-            width: 200
-            height: 200
-            color: "#00ffffff"
+        // Rectangle {
+        //     id: rectangle
+        //     width: 200
+        //     height: 200
+        //     color: "#00ffffff"
+        //     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+        //     Layout.fillWidth: true
+        //     Layout.preferredHeight: parent.height * 0.2
+        // }
+
+        BufferView {
+            id: bufferView
             Layout.fillHeight: true
+            Layout.rightMargin: 20
+            Layout.leftMargin: 20
+            Layout.bottomMargin: 5
+            Layout.topMargin: 5
             Layout.fillWidth: true
+            Layout.margins: 0
+            Layout.preferredHeight: parent.height * 0.2
+            // Layout.preferredWidth: parent.width * 0.7
         }
 
-        RowLayout {
-            visible: true
-            Layout.topMargin: 0
-            spacing: 10
+    }
+
+    RowLayout {
+        height: parent.height  * 0.1
+        visible: true
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        anchors.bottomMargin: 10
+        Layout.bottomMargin: 0
+        Layout.topMargin: 0
+        spacing: 0
+        Layout.fillWidth: true
+        Layout.margins: 20
+        Layout.fillHeight: true
+        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+        Layout.preferredHeight: parent.height * 0.15
+        RoundButton {
+            id: stop_button
+            text: stop_mode
             Layout.fillWidth: true
-            Layout.margins: 20
-            Layout.fillHeight: false
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            Layout.preferredHeight: parent.height * 0.15
-            RoundButton {
-                id: stop_button
-                text: stop_mode
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                highlighted: false
-                font.bold: true
-                font.pointSize: 45 * parent.height / 420
+            Layout.fillHeight: true
+            highlighted: false
+            font.bold: true
+            font.pointSize: 45 * parent.height / 420
 
-                background: Rectangle {
-                    color: "#AB47BC"
-                    radius: Constants.borderRadiusLarge
-                    border.color: stop_button.background.color
-                    border.width: 0
-                }
-                onClicked: {
-                    if (stop_mode === "STOP") {
-                        backend.requestStop("STOP");
-                    } else if (stop_mode === "PAUSED") {
-                        backend.requestStop("RUN");
-                    }
-                }
-                // onPressedChanged: {
-                //     if (pressed) {
-                //         background.color = "#E1BEE7";
-                //     } else {
-                //         background.color = "#AB47BC";
-                //     }
-                // }
+            background: Rectangle {
+                color: "#AB47BC"
+                radius: Constants.borderRadiusLarge
+                border.color: stop_button.background.color
+                border.width: 0
             }
-
-            RoundButton {
-                id: reset_button
-                text: reset_mode
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                highlighted: false
-                font.bold: true
-                font.pointSize: 45 * parent.height / 420
-
-                background: Rectangle {
-                    color: "#4CAF50"
-                    radius: Constants.borderRadiusLarge
-                    border.color: reset_button.background.color
-                    border.width: 0
-                }
-                onClicked: {
-                    popup_mode = 2;
-                    status_popup.text = state_system;
-
-                    popup_confirm_visible = true;
-
-                    popup.open();
-                }
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#A5D6A7";
-                    } else {
-                        background.color = "#4CAF50";
-                    }
+            onClicked: {
+                if (stop_mode === "STOP") {
+                    backend.requestStop("STOP");
+                } else if (stop_mode === "PAUSED") {
+                    backend.requestStop("RUN");
                 }
             }
+            // onPressedChanged: {
+            //     if (pressed) {
+            //         background.color = "#E1BEE7";
+            //     } else {
+            //         background.color = "#AB47BC";
+            //     }
+            // }
+        }
 
-            RoundButton {
-                id: homming_button
-                text: homing_mode
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                highlighted: false
-                font.bold: true
-                font.pointSize: 45 * parent.height / 420
+        RoundButton {
+            id: reset_button
+            text: reset_mode
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            highlighted: false
+            font.bold: true
+            font.pointSize: 45 * parent.height / 420
 
-                background: Rectangle {
-                    color: "#FFFFFF"
-                    radius: Constants.borderRadiusLarge
-                    border.color: "#607D8B"
-                    border.width: 0
+            background: Rectangle {
+                color: "#4CAF50"
+                radius: Constants.borderRadiusLarge
+                border.color: reset_button.background.color
+                border.width: 0
+            }
+            onClicked: {
+                popup_mode = 2;
+                status_popup.text = state_system;
+
+                popup_confirm_visible = true;
+
+                popup.open();
+            }
+            onPressedChanged: {
+                if (pressed) {
+                    background.color = "#A5D6A7";
+                } else {
+                    background.color = "#4CAF50";
                 }
             }
+        }
 
-            RoundButton {
-                id: stop_button1
-                text: stop_mode
-                topPadding: 0
-                topInset: 0
-                rightPadding: 0
-                leftPadding: 0
-                highlighted: false
-                font.pointSize: 45 * parent.height / 420
-                font.bold: true
-                bottomPadding: 0
-                bottomInset: 0
-                background: Rectangle {
-                    color: "#ab47bc"
-                    radius: Constants.borderRadiusMedium
-                }
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#E1BEE7";
-                    } else {
-                        background.color = "#AB47BC";
-                    }
-                }
-                onClicked: {
-                    if (stop_mode === "STOP") {
-                        backend.requestStop("STOP");
-                    } else if (stop_mode === "PAUSED") {
-                        backend.requestStop("RUN");
-                    }
+        RoundButton {
+            id: homming_button
+            text: homing_mode
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            highlighted: false
+            font.bold: true
+            font.pointSize: 45 * parent.height / 420
+
+            background: Rectangle {
+                color: "#FFFFFF"
+                radius: Constants.borderRadiusLarge
+                border.color: "#607D8B"
+                border.width: 0
+            }
+        }
+
+        RoundButton {
+            id: stop_button1
+            text: stop_mode
+            topPadding: 0
+            topInset: 0
+            rightPadding: 0
+            leftPadding: 0
+            highlighted: false
+            font.pointSize: 45 * parent.height / 420
+            font.bold: true
+            bottomPadding: 0
+            bottomInset: 0
+            background: Rectangle {
+                color: "#ab47bc"
+                radius: Constants.borderRadiusMedium
+            }
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            onPressedChanged: {
+                if (pressed) {
+                    background.color = "#E1BEE7";
+                } else {
+                    background.color = "#AB47BC";
                 }
             }
-
-            RoundButton {
-                id: reset_button1
-                text: reset_mode
-                topPadding: 0
-                topInset: 0
-                rightPadding: 0
-
-                leftPadding: 0
-                highlighted: false
-                font.pointSize: 45 * parent.height / 420
-                font.bold: true
-                bottomPadding: 0
-                bottomInset: 0
-                background: Rectangle {
-                    color: "#4caf50"
-                    radius: Constants.borderRadiusMedium
-                }
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#A5D6A7";
-                    } else {
-                        background.color = "#4CAF50";
-                    }
-                }
-                onClicked: {
-                    popup_mode = 2;
-                    status_popup.text = state_system;
-
-                    popup_confirm_visible = true;
-
-                    popup.open();
+            onClicked: {
+                if (stop_mode === "STOP") {
+                    backend.requestStop("STOP");
+                } else if (stop_mode === "PAUSED") {
+                    backend.requestStop("RUN");
                 }
             }
+        }
 
-            RoundButton {
-                id: homming_button1
-                text: homing_mode
-                topPadding: 0
-                topInset: 0
-                rightPadding: 0
-                leftPadding: 0
-                highlighted: false
-                font.pointSize: 45 * parent.height / 420
-                font.bold: true
-                bottomPadding: 0
-                bottomInset: 0
-                background: Rectangle {
-                    color: "#0051ff"
-                    radius: Constants.borderRadiusMedium
+        RoundButton {
+            id: reset_button1
+            text: reset_mode
+            topPadding: 0
+            topInset: 0
+            rightPadding: 0
+
+            leftPadding: 0
+            highlighted: false
+            font.pointSize: 45 * parent.height / 420
+            font.bold: true
+            bottomPadding: 0
+            bottomInset: 0
+            background: Rectangle {
+                color: "#4caf50"
+                radius: Constants.borderRadiusMedium
+            }
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            onPressedChanged: {
+                if (pressed) {
+                    background.color = "#A5D6A7";
+                } else {
+                    background.color = "#4CAF50";
                 }
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#A5D6A7";
-                    } else {
-                        background.color = "#FFFFFF";
-                    }
+            }
+            onClicked: {
+                popup_mode = 2;
+                status_popup.text = state_system;
+
+                popup_confirm_visible = true;
+
+                popup.open();
+            }
+        }
+
+        RoundButton {
+            id: homming_button1
+            text: homing_mode
+            topPadding: 0
+            topInset: 0
+            rightPadding: 0
+            leftPadding: 0
+            highlighted: false
+            font.pointSize: 45 * parent.height / 420
+            font.bold: true
+            bottomPadding: 0
+            bottomInset: 0
+            background: Rectangle {
+                color: "#0051ff"
+                radius: Constants.borderRadiusMedium
+            }
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            onPressedChanged: {
+                if (pressed) {
+                    background.color = "#A5D6A7";
+                } else {
+                    background.color = "#FFFFFF";
                 }
             }
         }
@@ -580,4 +629,6 @@ Rectangle {
             backend.getDataBuffer(bufferId);
         }
     }
+
+
 }

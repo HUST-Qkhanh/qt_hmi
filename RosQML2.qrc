@@ -9,6 +9,7 @@
 <file>RosQML2/EventListSimulator.qml</file>
 <file>RosQML2/qmldir</file>
 <file>RosQML2Content/App.qml</file>
+<file>RosQML2Content/BufferView.qml</file>
 <file>RosQML2Content/ConfirmShow.qml</file>
 <file>RosQML2Content/ConveyorShow.qml</file>
 <file>RosQML2Content/ConveyorView.qml</file>
@@ -53,6 +54,7 @@
 <file>RosQML2Content/asset/minimize.svg</file>
 <file>RosQML2Content/asset/mute.svg</file>
 <file>RosQML2Content/asset/pallet (1).png</file>
+<file>RosQML2Content/asset/search_light.svg</file>
 <file>RosQML2Content/asset/setup.svg</file>
 <file>RosQML2Content/asset/sound.svg</file>
 <file>RosQML2Content/asset/svg.svg</file>

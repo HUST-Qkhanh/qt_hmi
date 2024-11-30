@@ -205,14 +205,14 @@ void ThreadPoolManager::executeTask(AsyncTask *task) {
             &ThreadPoolManager::handleVectorTaskFinished, Qt::UniqueConnection);
 
         if (finishedConnection & failedConnection && finishedVectorConnection) {
-            qWarning("Connected taskFinished signal");
+            // qWarning("Connected taskFinished signal");
         }
         emit taskStarted();
         QThreadPool::globalInstance()->start(
             task);  // Execute the task in the thread pool
         // task->setAutoDelete(true);
         // handleTaskFinished();
-        qWarning("Added task to thread pool");
+        // qWarning("Added task to thread pool");
     } else {
         qWarning("Deleted task from thread pool");
         delete task;  // Clean up if the task can't be executed

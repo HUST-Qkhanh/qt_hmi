@@ -336,7 +336,7 @@ void TrackDBChanges::run() {
 
 void GetCellsProperties::run() {
     // std::lock_guard<std::mutex> lock(mtx_);  // lock MongoDBClient
-    qDebug() << "Start get cell properties \n";
+    // qDebug() << "Start get cell properties \n";
     // TODO: get each query of collection and create json result "collection_name"
     for (auto&& collection : collectionList_) {
         if (collection == "pallet_queue") {

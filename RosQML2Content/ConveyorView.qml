@@ -23,8 +23,7 @@ Item {
             anchors.fill: parent
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            font.pointSize: 0.15 * height
-            fontSizeMode: Text.VerticalFit
+            font.pointSize: 0.3 * height
 
         }
     }
@@ -52,7 +51,7 @@ Item {
             text: qsTr("Add")
             Layout.fillHeight: true
             Layout.preferredWidth: height
-            font.pointSize: 0.05 * height
+            font.pointSize: 0.1 * height
             display: AbstractButton.TextUnderIcon
             icon.height: 0.3 * height
             icon.width: 0.3 * height
@@ -85,10 +84,11 @@ Item {
 
             ListView {
                 id: listView
+                boundsMovement: Flickable.StopAtBounds
                 clip: true
                 spacing: 10
                 snapMode: ListView.SnapToItem
-                boundsBehavior: Flickable.StopAtBounds
+                boundsBehavior: Flickable.OvershootBounds
                 flickableDirection: Flickable.HorizontalFlick
                 model: backend.isQueueListModelLoaded ? backend.pQueueListModel : null//List1 {}
                 orientation: ListView.Horizontal // Set to horizontal

@@ -127,7 +127,7 @@ void MongoDBClient::fetchAllCollection(const std::string &dbName,
     auto db = client->database(dbName);
     auto collection = db[collectionName];
     auto sizeOfCollection = collection.count_documents({});
-    std::cout << "collection: " << collectionName << " - size: " << sizeOfCollection << "\n";
+    // std::cout << "collection: " << collectionName << " - size: " << sizeOfCollection << "\n";
     for (size_t i = 0; i < sizeOfCollection; i++) {
         json filter;
         filter[indexKey] = i + 1;
@@ -251,6 +251,6 @@ int MongoDBClient::getCollectionSize(const std::string &dbName, const std::strin
     auto db = client->database(dbName);
     auto collection = db[collectionName];
     auto count = collection.count_documents({});
-    std::cout << "Collection size: " << count << " documents" << std::endl;
+    // std::cout << "Collection size: " << count << " documents" << std::endl;
     return count;
 }
