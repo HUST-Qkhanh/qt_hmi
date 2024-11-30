@@ -244,3 +244,13 @@ bool MongoDBClient::checkChangeStream(const std::string &dbName, const std::stri
         return false;
     }
 }
+
+int MongoDBClient::getCollectionSize(const std::string &dbName, const std::string &collectionName) {
+    // Count all documents in the collection
+    auto client = getClient();
+    auto db = client->database(dbName);
+    auto collection = db[collectionName];
+    auto count = collection.count_documents({});
+    std::cout << "Collection size: " << count << " documents" << std::endl;
+    return count;
+}

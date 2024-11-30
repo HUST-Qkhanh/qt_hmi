@@ -13,6 +13,7 @@ import RosQML2
 // import QtQuick.VirtualKeyboard.Components 6.7
 // import backendqt 1.0
 import QtQuick.Studio.DesignEffects
+
 Rectangle {
     id: page1
     visible: true
@@ -287,26 +288,13 @@ Rectangle {
             }
         }
 
-        // ConveyorShow {
-        //     id: rectangle5
-        // }
-
-
-
-
-
-
-
-
-
         ConveyorView {
             id: conveyorView
-            width: 594
-            height: 151
             Layout.margins: 20
             clip: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: true
+            Layout.preferredHeight: parent.height * 0.2
         }
 
         Rectangle {
@@ -327,10 +315,6 @@ Rectangle {
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
             Layout.preferredHeight: parent.height * 0.15
-
-            // rows: 3
-            // columns: 2
-
             RoundButton {
                 id: stop_button
                 text: stop_mode
@@ -409,18 +393,6 @@ Rectangle {
                     border.color: "#607D8B"
                     border.width: 0
                 }
-                // onPressedChanged: {
-                //     if (pressed) {
-                //         background.color = "#A5D6A7";
-                //     } else {
-                //         background.color = "#FFFFFF";
-                //     }
-                // }
-                // onClicked: {
-                //     state_edit = 2
-                //     pop_up_2.open()
-                // }
-
             }
 
             RoundButton {
@@ -429,6 +401,18 @@ Rectangle {
                 topPadding: 0
                 topInset: 0
                 rightPadding: 0
+                leftPadding: 0
+                highlighted: false
+                font.pointSize: 45 * parent.height / 420
+                font.bold: true
+                bottomPadding: 0
+                bottomInset: 0
+                background: Rectangle {
+                    color: "#ab47bc"
+                    radius: Constants.borderRadiusMedium
+                }
+                Layout.fillWidth: true
+                Layout.fillHeight: true
                 onPressedChanged: {
                     if (pressed) {
                         background.color = "#E1BEE7";
@@ -443,18 +427,6 @@ Rectangle {
                         backend.requestStop("RUN");
                     }
                 }
-                leftPadding: 0
-                highlighted: false
-                font.pointSize: 45 * parent.height / 420
-                font.bold: true
-                bottomPadding: 0
-                bottomInset: 0
-                background: Rectangle {
-                    color: "#ab47bc"
-                    radius: Constants.borderRadiusMedium
-                }
-                Layout.fillWidth: true
-                Layout.fillHeight: true
             }
 
             RoundButton {
@@ -463,6 +435,19 @@ Rectangle {
                 topPadding: 0
                 topInset: 0
                 rightPadding: 0
+
+                leftPadding: 0
+                highlighted: false
+                font.pointSize: 45 * parent.height / 420
+                font.bold: true
+                bottomPadding: 0
+                bottomInset: 0
+                background: Rectangle {
+                    color: "#4caf50"
+                    radius: Constants.borderRadiusMedium
+                }
+                Layout.fillWidth: true
+                Layout.fillHeight: true
                 onPressedChanged: {
                     if (pressed) {
                         background.color = "#A5D6A7";
@@ -478,18 +463,6 @@ Rectangle {
 
                     popup.open();
                 }
-                leftPadding: 0
-                highlighted: false
-                font.pointSize: 45 * parent.height / 420
-                font.bold: true
-                bottomPadding: 0
-                bottomInset: 0
-                background: Rectangle {
-                    color: "#4caf50"
-                    radius: Constants.borderRadiusMedium
-                }
-                Layout.fillWidth: true
-                Layout.fillHeight: true
             }
 
             RoundButton {
@@ -498,13 +471,6 @@ Rectangle {
                 topPadding: 0
                 topInset: 0
                 rightPadding: 0
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = "#A5D6A7";
-                    } else {
-                        background.color = "#FFFFFF";
-                    }
-                }
                 leftPadding: 0
                 highlighted: false
                 font.pointSize: 45 * parent.height / 420
@@ -517,12 +483,15 @@ Rectangle {
                 }
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                onPressedChanged: {
+                    if (pressed) {
+                        background.color = "#A5D6A7";
+                    } else {
+                        background.color = "#FFFFFF";
+                    }
+                }
             }
         }
-
-
-
-
     }
 
     Connections {
@@ -611,13 +580,4 @@ Rectangle {
             backend.getDataBuffer(bufferId);
         }
     }
-
-
-
-
-
 }
-
-
-
-

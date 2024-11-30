@@ -391,6 +391,7 @@ class Backend : public QObject {
     // Q_INVOKABLE void deleteDataBuffer(QString jsonstring);
 
     Q_INVOKABLE void getDataQueue(const int &id);
+    Q_INVOKABLE void expandQueue();
     Q_INVOKABLE void addDataQueue(const QString &jsonStr);
     Q_INVOKABLE void saveDataQueue(const QString &jsonstr);
     Q_INVOKABLE void deleteDataQueue(const int &id);
@@ -416,6 +417,7 @@ class Backend : public QObject {
     Q_INVOKABLE QString openFileDialog();
 
     Q_INVOKABLE void initQueueListModel(const std::vector<std::string> &result);
+    Q_INVOKABLE void searchModel(const QString &merchandise, const QString &count);
     // Q_INVOKABLE void initBufferListModel(const std::vector<std::string> &result);
 
     /**

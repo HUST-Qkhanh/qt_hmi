@@ -164,9 +164,9 @@ Window {
                 topInset: 0
                 rightInset: 0
                 leftInset: 0
-                icon.color: Constants.buttonTextColor
-                icon.height: 500
-                icon.width: 500
+                icon.color: Constants.secondaryColor
+                icon.height: 1000
+                icon.width: 1000
                 padding: 50 * parent.height / 1080
                 highlighted: false
                 Layout.fillWidth: true
@@ -199,25 +199,18 @@ Window {
                 bottomInset: 0
                 topInset: 0
                 padding: 50 * parent.height / 1080
-                icon.height: 500
-                icon.width: 500
+                icon.height: 1000
+                icon.width: 1000
                 Layout.fillWidth: true
                 highlighted: false
                 flat: true
                 font.family: "ubuntu"
                 font.bold: false
-                icon.color: Constants.buttonTextColor//"#1d1d1d"
+                icon.color: Constants.secondaryColor//"#1d1d1d"
                 // icon.source: "qrc:/RosQML2Content/asset/dart-mission-goal-success-svgrepo-com.svg"
                 icon.source: "asset/dart-mission-goal-success-svgrepo-com.svg"
                 display: AbstractButton.IconOnly
                 onClicked: loader.setSource("qrc:/RosQML2Content/component_test.ui.qml")
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = Constants.buttonPressedColor;
-                    } else {
-                        background.color = Constants.buttonColorPrimary;
-                    }
-                }
             }
 
             RoundButton {
@@ -226,7 +219,7 @@ Window {
                 radius: Constants.borderRadiusSmall
                 font.bold: false
                 font.family: "ubuntu"
-                icon.color: Constants.buttonTextColor
+                icon.color: Constants.secondaryColor
                 // icon.source: "qrc:/RosQML2Content/asset/setup.svg"
                 icon.source: "asset/setup.svg"
                 display: AbstractButton.IconOnly
@@ -247,13 +240,6 @@ Window {
                 icon.width: 500
                 Layout.fillWidth: true
                 onClicked: loader.setSource("qrc:/RosQML2Content/Screen02.qml")
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = Constants.buttonPressedColor;
-                    } else {
-                        background.color = Constants.buttonColorPrimary;
-                    }
-                }
             }
 
             RoundButton {
@@ -278,18 +264,11 @@ Window {
                 palette.buttonText: Constants.buttonColorPrimary
                 font.family: "ubuntu"
                 font.bold: false
-                icon.color: Constants.buttonTextColor
+                icon.color: Constants.secondaryColor
                 // icon.source: "qrc:/RosQML2Content/asset/tv.svg"
                 icon.source: "asset/tv.svg"
                 display: AbstractButton.IconOnly
                 onClicked: loader.setSource("qrc:/RosQML2Content/Screen03.qml")
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = Constants.buttonPressedColor;
-                    } else {
-                        background.color = Constants.buttonColorPrimary;
-                    }
-                }
             }
 
             RoundButton {
@@ -309,7 +288,6 @@ Window {
                 icon.width: 500
                 Layout.preferredHeight: width
                 Layout.fillWidth: true
-                palette.buttonText: Constants.buttonColorPrimary
                 height: (toolBar.height - 120) * 0.2
                 radius: Constants.borderRadiusSmall
                 font.family: "ubuntu"
@@ -317,16 +295,9 @@ Window {
                 font.bold: false
                 // icon.source: "qrc:/RosQML2Content/asset/Setting.svg"
                 icon.source: "asset/Setting.svg"
-                icon.color: Constants.buttonTextColor
+                icon.color: Constants.secondaryColor
                 display: AbstractButton.IconOnly
                 onClicked: loader.setSource("qrc:/RosQML2Content/component_test_2.ui.qml")
-                onPressedChanged: {
-                    if (pressed) {
-                        background.color = Constants.buttonPressedColor;
-                    } else {
-                        background.color = Constants.buttonColorPrimary;
-                    }
-                }
             }
         }
 
@@ -351,12 +322,12 @@ Window {
         anchors.topMargin: 5
         RoundButton {
             id: minimal_button
-            radius: Constants.borderRadiusMedium
+            radius: Constants.borderRadiusSmall
             flat: true
             rightInset: 0
             leftInset: 0
             padding: 0
-            icon.color: Constants.buttonColorPrimary
+            icon.color: Constants.textColorOnPrimary
             bottomInset: 0
             topInset: 0
             rightPadding: 0
@@ -377,23 +348,16 @@ Window {
                 window.y = (window.screen.height - window.height) / 2;
                 window.showMinimized();
             }
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = Constants.buttonPressedColor;
-                } else {
-                    background.color = Constants.buttonColorPrimary;
-                }
-            }
         }
 
         RoundButton {
             id: close_button
-            radius: Constants.borderRadiusMedium
+            radius: Constants.borderRadiusSmall
             flat: true
             rightInset: 0
             leftInset: 0
             padding: 0
-            icon.color: Constants.buttonColorPrimary
+            icon.color: Constants.textColorOnPrimary
             bottomInset: 0
             topInset: 0
             rightPadding: 0
@@ -409,23 +373,16 @@ Window {
             onClicked: {
                 Qt.quit();
             }
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = Constants.buttonPressedColor;
-                } else {
-                    background.color = Constants.buttonColorPrimary;
-                }
-            }
         }
 
         RoundButton {
             id: zoom_button
-            radius: Constants.borderRadiusMedium
+            radius: Constants.borderRadiusSmall
             flat: true
             rightInset: 0
             leftInset: 0
             padding: 0
-            icon.color: Constants.buttonColorPrimary
+            icon.color: Constants.textColorOnPrimary
             bottomInset: 0
             topInset: 0
             rightPadding: 0
@@ -449,13 +406,6 @@ Window {
                     window.y = (window.screen.height - window.height) / 2;
                 } else {
                     window.visibility = Window.FullScreen;
-                }
-            }
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = Constants.buttonPressedColor;
-                } else {
-                    background.color = Constants.buttonColorPrimary;
                 }
             }
         }

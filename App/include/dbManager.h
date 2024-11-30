@@ -63,6 +63,7 @@ class MongoDBClient {
 
     bool checkChangeStream(const std::string &dbName, const std::string &collectionName);
 
+    int getCollectionSize(const std::string &dbName, const std::string &collectionName);
     std::string value() const {
         return value_;
     }

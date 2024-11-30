@@ -21,9 +21,6 @@ Backend::Backend(QObject *parent)
     // Initialize the subscriber in the constructor
     // TODO:
     dbClient_->initialize(uri);
-    // collection = dbClient_["admin"]["pallet_buffer"];
-    // collection_queue = dbClient_["admin"]["pallet_queue"];
-    // collection_model = dbClient_["admin"]["pallet_model"];
 
     battery_percent_sub = nh.subscribe("/arduino_driver/float_param/battery_percent", 1, &Backend::batteryPercentCallback, this);
     battery_voltage_sub = nh.subscribe("/arduino_driver/float_param/battery_voltage", 1, &Backend::batteryVoltageCallback, this);
@@ -83,7 +80,7 @@ Backend::Backend(QObject *parent)
     //     ROS_WARN("Cannot get AGV name");
     // }
     // // getDataComboBox();
-    // std::vector<std::string> collectionList = {"pallet_queue", "pallet_buffer"};
+    // std::vector<std::string> collectionList = {collection_queue, "pallet_buffer"};
     // TrackDBChanges *trackDbchanges = new TrackDBChanges(dbClient_, collectionList);
     // std::lock_guard<std::mutex> lock(mutex_);
     // threadManager.executeTask(trackDbchanges);
@@ -655,7 +652,7 @@ void Backend::updateFetchedList() {
     connect(&threadManager, &ThreadPoolManager::getAllQueueCompleted, this, &Backend::colorPalletQueue, Qt::UniqueConnection);
     connect(&threadManager, &ThreadPoolManager::getAllBufferCompleted, this, &Backend::colorPalletBuffer, Qt::UniqueConnection);
     std::lock_guard<std::mutex> lock(mutex_);
-    std::vector<std::string> collectionList = {"pallet_queue", "pallet_buffer"};
+    std::vector<std::string> collectionList = {collection_queue, "pallet_buffer"};
     GetCellsProperties *getAllQueue = new GetCellsProperties(dbClient_, collectionList);
     threadManager.executeTask(getAllQueue);
 }
@@ -722,9 +719,39 @@ void Backend::initQueueListModel(const std::vector<std::string> &result) {
         }
     }
     // qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
-
-    m_isQueueListModelLoaded = true;
     emit pQueueListModelChanged();
+}
+
+void Backend::searchModel(const QString &merchandise, const QString &count) {
+    std::cout << "search\n";
+    json filter;
+    filter["Merchandise"] = merchandise.toStdString();
+    filter["Count"] = count.toStdString();
+    std::string fetchedStr = "";
+    std::lock_guard<std::mutex> lock(mutex_);
+    dbClient_->fetchFromCollection(database, collection_model, filter.dump(),
+                                   fetchedStr);
+
+    // set the position index to max
+    json fetchedJson = json::parse(fetchedStr);
+    auto queueSize = dbClient_->getCollectionSize(database, collection_queue);
+
+    // TODO: keep the current queue being displayed
+    std::string obj_ = "_Id__";
+    QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+    if (item) {
+        QVariant current_queue = item->property("text");
+        fetchedJson["queue"] = current_queue.isValid() ? current_queue.toInt() : (queueSize + 1);
+    }
+    // Output a string to be update on screen
+    queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
+}
+
+void Backend::expandQueue() {
+    auto queueSize = dbClient_->getCollectionSize(database, collection_queue);
+    json fetchedJson;
+    fetchedJson["queue"] = queueSize + 1;
+    queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
 }
 
 void Backend::switchDocs(int from, int to) {
@@ -735,13 +762,12 @@ void Backend::switchDocs(int from, int to) {
     filter = json::object();
     filter["queue"] = from + 1;
     dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), currentDoc);
-    
+
     filter = json::object();
     filter["queue"] = to + 1;
     dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), destDoc);
 
-    if (currentDoc == "" && destDoc == "")
-    {
+    if (currentDoc == "" && destDoc == "") {
         std::cerr << "Fetch empty doc" << "\n";
         return;
     }
@@ -764,8 +790,8 @@ void Backend::switchDocs(int from, int to) {
     filter = json::object();
     filter["_id"]["$oid"] = destDoc_json["_id"]["$oid"].get<std::string>();
     dbClient_->editInCollection(database, collection_queue, filter.dump(), destDoc_json.dump());
-    
-    //Trigger update view
+
+    // Trigger update view
     emit pQueueListModelChanged();
 }
 

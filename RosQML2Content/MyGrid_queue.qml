@@ -56,6 +56,7 @@ Item {
     // signal addQueueDB(string jsonPallet)
     // signal removeQueueDB(string jsonFilter)
     // signal saveQueueDB(string jsonPallet)
+    signal searchModel(string merchandise, string count)
 
     /*    __                  _   _
    / _|_   _ _ __   ___| |_(_) ___  _ __
@@ -188,6 +189,17 @@ Item {
         }
     }
 
+    Connections {
+        target: conveyorView
+        function onAddNew() {
+            console.log("Add newsdsd");
+            pop_up_2.open();
+            loadPopupType(0);
+        // console.log("queueID: " + queueId);
+        backend.expandQueue();
+        }
+    }
+
     /*
 
    _____ _     _____ __  __ _____ _   _ _____ ____
@@ -230,7 +242,6 @@ Item {
 
                 placeholderText: qsTr("Merchandise")
                 placeholderTextColor: Constants.textColorSecondary
-                text: qsTr("")
                 property bool isBold: false
                 property real radius: 5
                 Layout.preferredWidth: 300 * grid_queue.width / 1000
@@ -369,6 +380,20 @@ Item {
                     radius: 5
                     border.color: "#3850ff"
                 }*/
+            }
+
+            RoundButton {
+                id: roundButton
+                radius: Constants.borderRadiusSmall
+                text: qsTr("Search")
+                icon.source: "asset/search_light.svg"
+                Layout.fillWidth: true
+                Layout.preferredWidth: 300 * grid_queue.width / 1000
+                Layout.preferredHeight: 50 * grid_queue.height / 600
+                Layout.fillHeight: true
+                Layout.row: 5
+                Layout.column: 0
+                onClicked: backend.searchModel(_Merchandise_.text, _Count_.text)
             }
         }
 
