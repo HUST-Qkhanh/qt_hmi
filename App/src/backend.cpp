@@ -704,11 +704,21 @@ void Backend::deleteDataQueue(const int &id) {
     threadManager.executeTask(deleteQueuePallet);
 }
 
+/**
+ * @brief Getter for QVariantList
+ *
+ * @return QVariantList
+ */
 QVariantList Backend::getQueueListModel() const {
     // qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
     return pQueueListModel_;
 }
 
+/**
+ * @brief Update the QVariantList base on the result
+ *
+ * @param result
+ */
 void Backend::initQueueListModel(const std::vector<std::string> &result) {
     pQueueListModel_.clear();
 
@@ -722,6 +732,12 @@ void Backend::initQueueListModel(const std::vector<std::string> &result) {
     emit pQueueListModelChanged();
 }
 
+/**
+ * @brief Search model base on Merchandise and count
+ *
+ * @param merchandise
+ * @param count
+ */
 void Backend::searchModel(const QString &merchandise, const QString &count) {
     std::cout << "search\n";
     json filter;
@@ -747,6 +763,10 @@ void Backend::searchModel(const QString &merchandise, const QString &count) {
     queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
 }
 
+/**
+ * @brief Increase size of queue collection
+ *
+ */
 void Backend::expandQueue() {
     auto queueSize = dbClient_->getCollectionSize(database, collection_queue);
     json fetchedJson;
@@ -754,6 +774,12 @@ void Backend::expandQueue() {
     queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
 }
 
+/**
+ * @brief Change index of 2 documents for switching their position in Listview
+ *
+ * @param from
+ * @param to
+ */
 void Backend::switchDocs(int from, int to) {
     std::string currentDoc, destDoc;
     json filter, update;
@@ -816,42 +842,184 @@ void Backend::getDataBuffer(const int &id) {
     GetBufferTask *getBufferPallet = new GetBufferTask(dbClient_, id);
     threadManager.executeTask(getBufferPallet);
 }
-// void Backend::addDataBuffer(const int &id, const QString &jsonStr){
-//     connect(&threadManager, &ThreadPoolManager::addBufferTaskCompleted, this, &Backend::BufferDbAdded, Qt::UniqueConnection);
 
-//     std::string palletStr = QString::toStdString(jsonStr);
+/**
+ * @brief Add new data to buffer collection
+ * 
+ * @param id 
+ * @param jsonStr 
+ */
+void Backend::addDataBuffer(const QString &jsonStr) {
+    std::lock_guard<std::mutex> lock(mutex_);
 
-//     AddBufferTask *addBufferPallet = new AddBufferTask(dbClient_, id, palletStr);
-//     threadManager.executeTask(addBufferPallet);
-// }
-// void Backend::saveDataBuffer(QString jsonstring) {
-//     // nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-//     // jsonObj["Buffer"] = std::stoi(jsonObj["Buffer"].get<std::string>());
-//     // mongocxx::cursor cursor = collection_Buffer.find({});
+    json modelFilter;
+    std::string modelStr = "";  // fetched model
+    json jsonToSave;
+    json bufferFilter;
 
-//     // std::string id_ = jsonObj["_id"].get<std::string>();
-//     // bsoncxx::oid id(id_);  // Thay bằng _id thực tế của bạn
-//     // bsoncxx::builder::stream::document filter_builder;
-//     // filter_builder << "_id" << id;
+    // qDebug() << "request save: " << editStr_ << "\n";
+    json addBufferData = json::parse(jsonStr);
+    if (!(addBufferData.contains("Merchandise") &&
+          addBufferData.contains("Count"))) {
+        // qDebug() << "No input merchandise and count to add";
+        emit bufferJsonAddFail(QString::fromStdString("No input merchandise and count to add"));
+        return;
+    }
+    modelFilter["Merchandise"] = addBufferData["Merchandise"];
+    modelFilter["Count"] = addBufferData["Count"];
+    // Search for model
+    try {
+        dbClient_->fetchFromCollection("admin", "pallet_model", modelFilter.dump(), modelStr);
+    } catch (const std::exception &e) {
+        // qDebug() << e.what() << '\n';
 
-//     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
-//     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     //updateFetchedList();
-// }
-// void Backend::deleteDataBuffer(QString jsonstring) {
-//     // nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-//     // jsonObj["Buffer"] = std::stoi(jsonObj["Buffer"].get<std::string>());
-//     // mongocxx::cursor cursor = collection_Buffer.find({});
+        emit bufferJsonAddFail(QString::fromStdString(e.what()));
+        return;
+    }
+    if (modelStr == "") {
+        // qDebug() << "MODEL IS NOT IN DataBase" << '\n';
+        emit bufferJsonAddFail(QString::fromStdString("MODEL IS NOT IN DATABASE"));
+        return;
+    }
+    json modelJson = json::parse(modelStr);
 
-//     // std::string id_ = jsonObj["_id"].get<std::string>();
-//     // bsoncxx::oid id(id_);  // Thay bằng _id thực tế của bạn
-//     // bsoncxx::builder::stream::document filter_builder;
-//     // filter_builder << "_id" << id;
+    // TODO: concat request save json and model json to make a json which will be saved
+    jsonToSave["Merchandise"] = addBufferData["Merchandise"];
+    jsonToSave["Count"] = addBufferData["Count"];
+    jsonToSave["stt"] = addBufferData["stt"].get<int>();
+    jsonToSave["height"] = modelJson["height"];
+    jsonToSave["width"] = modelJson["width"];
+    jsonToSave["length"] = modelJson["length"];
+    jsonToSave["pallet_type"] = modelJson["pallet_type"];
+    jsonToSave["zone_id"] = modelJson["zone_id"];
+    jsonToSave["column_id"] = modelJson["column_id"];
+    jsonToSave["location_id"] = modelJson["location_id"];
+    jsonToSave["PalletInfo"] = modelJson["PalletInfo"];
+    //TODO: add position params
 
-//     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
-//     // modelupdate.update(collection_Buffer, filter_builder.view());
-//     //updateFetchedList();
-// }
+    // TODO: when add to queue -> check the size of collection -> insert new doc to collection -> increase the queue of doc which queue > inserted doc's queue
+    queueFilter["stt"] = std::stoi(addBufferData["stt"].get<std::string>());
+
+    try {
+        dbClient_->addMidleCollection("admin", "pallet_queue", bufferFilter.dump(), jsonToSave.dump());
+    } catch (const std::exception &e) {
+        // qDebug() << e.what() << '\n';
+        emit bufferJsonAddFail(QString::fromStdString(e.what()));
+        return;
+    }
+    // qDebug() << "AddQueueTask finished.";
+    emit bufferJsonAdded();
+}
+void Backend::saveDataBuffer(const QString &jsonstring) {
+    // nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
+    // jsonObj["Buffer"] = std::stoi(jsonObj["Buffer"].get<std::string>());
+    // mongocxx::cursor cursor = collection_Buffer.find({});
+
+    // std::string id_ = jsonObj["_id"].get<std::string>();
+    // bsoncxx::oid id(id_);  // Thay bằng _id thực tế của bạn
+    // bsoncxx::builder::stream::document filter_builder;
+    // filter_builder << "_id" << id;
+
+    // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
+    // modelupdate.update(collection_Buffer, filter_builder.view());
+    // updateFetchedList();
+
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    json modelFilter;
+    std::string modelStr = "";  // fetched model
+    json jsonToFilter;
+    json jsonToSave;
+    json filter;
+
+    // qDebug() << "request save: " << editStr_ << "\n";
+
+    json editBufferData = json::parse(editStr_);
+    if (!(editBufferData.contains("Merchandise") &&
+          editBufferData.contains("Count"))) {
+        emit bufferJsonEditFailed(QString::fromStdString("No input merchandise and count to save"));
+        return;
+    }
+    modelFilter["Merchandise"] = editBufferData["Merchandise"];
+    modelFilter["Count"] = editBufferData["Count"];
+    // Search for model
+    try {
+        client_->fetchFromCollection("admin", "pallet_model", modelFilter.dump(), modelStr);
+    } catch (const std::exception &e) {
+        // qDebug() << e.what() << '\n';
+        emit bufferJsonEditFailed(QString::fromStdString(e.what()));
+        return;
+    }
+    if (modelStr == "") {
+        // qDebug() << "MODEL IS NOT IN DataBase" << '\n';
+        emit bufferJsonEditFailed(QString::fromStdString("MODEL IS NOT IN DATABASE"));
+        return;
+    }
+
+    json modelJson = json::parse(modelStr);
+    // TODO: concat request save json and model json to make a json which will be saved
+    jsonToSave["$set"] = {
+        {"Merchandise", editBufferData["Merchandise"]},
+        {"Count", editBufferData["Count"]},
+        {"height", modelJson["height"]},
+        {"width", modelJson["width"]},
+        {"length", modelJson["length"]},
+        {"pallet_type", modelJson["pallet_type"]}};
+
+    filter["queue"] = std::stoi(editBufferData["queue"].get<std::string>());
+    try {
+        client_->editInCollection("admin", "pallet_queue", filter.dump(),
+                                  jsonToSave.dump());
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << '\n';
+        // qDebug() << "task failed";
+        emit taskFailed(PALLET_QUEUE_EDIT, "EditQueueTask failed.");
+    }
+    QString result = "OK";
+    // qDebug() << "EditQueueTask finished.";
+    emit taskFinished(PALLET_QUEUE_EDIT, result);
+}
+void Backend::deleteDataBuffer(const QString &jsonstring) {
+    nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
+    jsonObj["Buffer"] = std::stoi(jsonObj["Buffer"].get<std::string>());
+    mongocxx::cursor cursor = collection_Buffer.find({});
+
+    std::string id_ = jsonObj["_id"].get<std::string>();
+    bsoncxx::oid id(id_);  // Thay bằng _id thực tế của bạn
+    bsoncxx::builder::stream::document filter_builder;
+    filter_builder << "_id" << id;
+
+    ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
+    modelupdate.update(collection_Buffer, filter_builder.view());
+    updateFetchedList();
+}
+/**
+ * @brief Getter for QVariantList
+ *
+ * @return QVariantList
+ */
+QVariantList Backend::getBufferListModel() const {
+    // qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
+    return pQueueListModel_;
+}
+
+/**
+ * @brief Update the QVariantList base on the result
+ *
+ * @param result
+ */
+void Backend::initBufferListModel(const std::vector<std::string> &result) {
+    pQueueListModel_.clear();
+
+    for (const auto &jsonString : result) {
+        QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString));
+        if (doc.isObject()) {
+            pQueueListModel_.append(doc.object().toVariantMap());
+        }
+    }
+    // qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
+    emit pQueueListModelChanged();
+}
 
 /*
 
