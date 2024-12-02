@@ -110,18 +110,18 @@ Item {
             backend.updateMerchandiseList();
             backend.updateCountList();
         }
-        onAddDataRequest: {
-            console.log("model get add request");
-            addModelPallet();
-        }
-        onSaveDataRequest: {
-            console.log("model get save request");
-            saveModelPallet();
-        }
-        onDeleteModelRequest: {
-            console.log("model get remove request");
-            deleteModelPallet();
-        }
+        // onAddDataRequest: {
+        //     console.log("model get add request");
+        //     addModelPallet();
+        // }
+        // onSaveDataRequest: {
+        //     console.log("model get save request");
+        //     saveModelPallet();
+        // }
+        // onDeleteModelRequest: {
+        //     console.log("model get remove request");
+        //     deleteModelPallet();
+        // }
     }
 
     RowLayout {
@@ -187,12 +187,7 @@ Item {
                 }
 
                 Component.onCompleted: {
-                    // Khởi tạo danh sách ban đầu
-                    for (var i = 0; i < count_pallet.length; i++) {
-                        list_count_pallet.append({
-                            "text": count_pallet[i]
-                        });
-                    }
+                    backend.updateCountList();
                 }
                 onEditTextChanged: {
                     count_data = editText;
@@ -234,13 +229,7 @@ Item {
                 }
 
                 Component.onCompleted:
-                // // Khởi tạo danh sách ban đầu
-                // for (var i = 0; i < model_pallet_.length; i++) {
-                //     list_model_pallet.append({
-                //         "text": model_pallet_[i]
-                //     });
-                // }
-                {}
+                    backend.updateMerchandiseList();
                 onEditTextChanged: {
                     model_data = editText;
                     // __id__.text = "-----";

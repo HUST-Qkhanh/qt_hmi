@@ -268,13 +268,15 @@ void MongoDBClient::getUniqueList(const std::string &dbName,
     auto cursor = collection.distinct(key, {});
 
     // Iterate over the distinct values
-    for (const auto &element : cursor) {
-        uniqueList.push_back(bsoncxx::to_json(element));
+    json list = json::parse(bsoncxx::to_json(element));
+    std::vector<std::string> value = list.get<std::vector<std::string>>();
+    for (const auto &element : value) {
+        uniqueList.push_back();
     }
 
-    // Print the unique values
-    std::cout << "Unique " << key << " values:" << std::endl;
-    for (const auto &val : uniqueList) {
-        std::cout << val << std::endl;
-    }
+    // // Print the unique values
+    // std::cout << "Unique " << key << " values:" << std::endl;
+    // for (const auto &val : uniqueList) {
+    //     std::cout << val << std::endl;
+    // }
 }
