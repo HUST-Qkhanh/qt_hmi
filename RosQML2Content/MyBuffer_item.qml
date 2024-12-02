@@ -56,35 +56,51 @@ Item {
         console.log("buffer_id: " + _id);
     }
 
-    function addBufferPallet() {
-        if (___id.text === "-----") {
-            jsonObject = {
-                "_id": ___id.text,
-                "id": _id.text,
-                "id_hang": _id_hang.text,
-                "status": _status.text,
-                "stt": _stt.text,
-                "type": _type.text,
-                "height": _height.text,
-                "width": _width.text,
-                "length": _length.text,
-                "zone_id": _zone_id.text,
-                "column_id": _column_id.text,
-                "location_id": _location_id.text
-            };
-            backend.addDataBuffer(JSON.stringify(jsonObject, null, 2));
+    // function addBufferPallet() {
+    //     if (___id.text === "-----") {
+    //         jsonObject = {
+    //             "_id": ___id.text,
+    //             "id": _id.text,
+    //             "id_hang": _id_hang.text,
+    //             "status": _status.text,
+    //             "stt": _stt.text,
+    //             "type": _type.text,
+    //             "height": _height.text,
+    //             "width": _width.text,
+    //             "length": _length.text,
+    //             "zone_id": _zone_id.text,
+    //             "column_id": _column_id.text,
+    //             "location_id": _location_id.text
+    //         };
+    //         backend.addDataBuffer(JSON.stringify(jsonObject, null, 2));
+    //     } else {
+    //         _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
+    //     }
+    // }
+
+    function deleteBufferPallet(bufferId) {
+        if (_id !== "") {
+            backend.deleteDataBuffer(_id);
         } else {
-            _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
+            confirmShow.info_text = qsTr("Position field is empty");
+            confirmShow.header_type = 3;
+            statusIndicate.open();
         }
     }
 
-    function deleteBufferPallet(queueId) {
-        // body...
+    function saveBufferPallet(queueId) {
     }
 
-    function saveBufferPallet(queueId) {
-        // body...
-    }
+    /*
+
+                                   _   _
+    ___ ___  _ __  _ __   ___  ___| |_(_) ___  _ __  ___
+   / __/ _ \| '_ \| '_ \ / _ \/ __| __| |/ _ \| '_ \/ __|
+  | (_| (_) | | | | | | |  __/ (__| |_| | (_) | | | \__ \
+   \___\___/|_| |_|_| |_|\___|\___|\__|_|\___/|_| |_|___/
+
+
+*/
 
     Component.onCompleted: {
         clearTextFields();
@@ -97,6 +113,11 @@ Item {
             console.log("Fetched buffer json:" + jsonBuffer);
             updateBufferPallet(jsonBuffer);
         }
+        onBufferJsonDeleted: {
+            confirmShow.info_text = qsTr("Removed from buffer");
+            confirmShow.header_type = 4;
+            statusIndicate.open();
+        }
     }
 
     Connections {
@@ -104,7 +125,18 @@ Item {
         onPopupLoaded: {
             clearTextFields();
         }
-        // on:
+        // onAddDataRequest: {
+        //     console.log("queue get add request");
+        //     addBufferPallet();
+        // }
+        onSaveDataRequest: {
+            console.log("buffer get save request");
+            saveBufferPallet();
+        }
+        onDeleteDataRequest: {
+            console.log("buffer get remove request");
+            deleteBufferPallet();
+        }
     }
 
     RowLayout {
@@ -242,6 +274,7 @@ Item {
                 id: _status
                 objectName: "___status"
                 font.pixelSize: 25 * buffer_item.height / 600
+                horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 activeFocusOnPress: true
                 cursorVisible: false
@@ -276,14 +309,65 @@ Item {
                 property real radius: 5
                 visible: true
                 Layout.column: 0
-                Layout.row: 2
-                placeholderText: qsTr("Type")
+                Layout.row: 3
+                placeholderText: qsTr("Pallet Type")
                 placeholderTextColor: Constants.textColorSecondary
                 /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
                     border.color: "#3850ff"
                 }*/
+            }
+
+            // TextField {
+            //     id: _palletInfo
+            //     objectName: "___palletInfo"
+            //     font.pixelSize: 25 * buffer_item.height / 600
+            //     verticalAlignment: Text.AlignVCenter
+            //     activeFocusOnPress: true
+            //     cursorVisible: false
+            //     Layout.fillHeight: true
+            //     Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            //     Layout.fillWidth: true
+            //     Layout.preferredWidth: 300 * parent.width / 1000
+            //     Layout.preferredHeight: 90 * parent.height / 600
+            //     property bool isBold: false
+            //     property real radius: 5
+            //     Layout.column: 0
+            //     Layout.row: 3
+            //     placeholderText: qsTr("Pallet info")
+            //     placeholderTextColor: Constants.textColorSecondary
+
+            //     // background: Rectangle {
+            //     //     anchors.fill: parent
+            //     //     radius: 5
+            //     //     border.color: "#3850ff"
+            //     // }
+            // }
+            TextField {
+                id: _count
+                objectName: "___Count"
+                font.pixelSize: 25 * buffer_item.height / 600
+                verticalAlignment: Text.AlignVCenter
+                activeFocusOnPress: true
+                cursorVisible: false
+                Layout.fillHeight: true
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                Layout.fillWidth: true
+                Layout.preferredWidth: 300 * parent.width / 1000
+                Layout.preferredHeight: 90 * parent.height / 600
+                property bool isBold: false
+                property real radius: 5
+                Layout.column: 0
+                Layout.row: 2
+                placeholderText: qsTr("Count")
+                placeholderTextColor: Constants.textColorSecondary
+
+                // background: Rectangle {
+                //     anchors.fill: parent
+                //     radius: 5
+                //     border.color: "#3850ff"
+                // }
             }
 
             TextField {
@@ -301,7 +385,7 @@ Item {
                 placeholderTextColor: Constants.textColorSecondary
                 visible: true
                 Layout.column: 1
-                Layout.row: 0
+                Layout.row: 1
 
                 // background: Rectangle {
                 //     anchors.fill: parent
@@ -323,7 +407,7 @@ Item {
                 property real radius: 5
                 visible: true
                 Layout.column: 1
-                Layout.row: 1
+                Layout.row: 2
                 placeholderText: qsTr("Width")
                 placeholderTextColor: Constants.textColorSecondary
                 /* background: Rectangle {
@@ -346,7 +430,7 @@ Item {
                 property real radius: 5
                 visible: true
                 Layout.column: 1
-                Layout.row: 2
+                Layout.row: 3
                 placeholderText: qsTr("Length")
                 placeholderTextColor: Constants.textColorSecondary
                 /* background: Rectangle {
@@ -369,7 +453,7 @@ Item {
                 property real radius: 5
                 visible: true
                 Layout.column: 2
-                Layout.row: 0
+                Layout.row: 1
                 placeholderText: qsTr("Zone ID")
                 placeholderTextColor: Constants.textColorSecondary
                 /* background: Rectangle {
@@ -392,7 +476,7 @@ Item {
                 property real radius: 5
                 visible: true
                 Layout.column: 2
-                Layout.row: 1
+                Layout.row: 2
                 placeholderText: qsTr("Column ID")
                 placeholderTextColor: Constants.textColorSecondary
                 /* background: Rectangle {
@@ -423,7 +507,7 @@ Item {
                 property real radius: 5
                 visible: true
                 Layout.column: 2
-                Layout.row: 2
+                Layout.row: 3
                 placeholderText: qsTr("Location ID")
                 placeholderTextColor: Constants.textColorSecondary
                 /* background: Rectangle {

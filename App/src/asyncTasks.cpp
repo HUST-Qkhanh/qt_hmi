@@ -357,11 +357,12 @@ void GetCellsProperties::run() {
             // qDebug() << "vectortask finished: " << collection << "\n";
             emit vectorTaskFinished(PALLET_QUEUE_GET_ALL, cellsProperties);
         } else if (collection == "pallet_buffer") {
+            // qDebug() << "fetch buffer\n";
             std::string indexKey = "stt";
             std::vector<std::string> cellsProperties;
             client_->fetchAllCollection("admin", collection, indexKey, cellsProperties);
             if (cellsProperties.empty()) {
-                // qDebug() << "task failed" << "\n";
+                qDebug() << "task failed" << "\n";
                 emit taskFailed(PALLET_BUFFER_GET_ALL, "GetCellsProperties failed.");
                 return;
             }

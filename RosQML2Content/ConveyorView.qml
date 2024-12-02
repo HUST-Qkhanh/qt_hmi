@@ -7,7 +7,7 @@ Item {
     id: root
     clip: true
 
-    signal addNew()
+    signal addNew
 
     Rectangle {
         id: rectangle
@@ -24,7 +24,6 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             font.pointSize: 0.3 * height
-
         }
     }
 
@@ -38,7 +37,6 @@ Item {
         anchors.rightMargin: 0
         anchors.topMargin: 5
         anchors.bottomMargin: 0
-
 
         RoundButton {
             id: button
@@ -58,25 +56,9 @@ Item {
             icon.color: Constants.textColorOnSecondary
             icon.source: "asset/add_square_light.svg"
             flat: false
-            // onPressedChanged: {
-            //     if (pressed) {
-            //         // background.color = Constants.buttonPressedColor;
-            //         button.text = "new";
-            //     } else {
-            //         // background.color = Constants.buttonColorPrimary;
-            //         button.text = "nesdaw";
-            //     }
-            // }
-            // Text {
-            //     text: "new"
-            //     anchors.fill: parent
-            //     horizontalAlignment: Text.AlignHCenter
-            //     verticalAlignment: Text.AlignVCenter
-            // }
             onClicked: {
                 root.addNew();
             }
-
         }
         ScrollView {
             Layout.fillWidth: true
@@ -90,7 +72,7 @@ Item {
                 snapMode: ListView.SnapToItem
                 boundsBehavior: Flickable.OvershootBounds
                 flickableDirection: Flickable.HorizontalFlick
-                model: backend.isQueueListModelLoaded ? backend.pQueueListModel : null//List1 {}
+                model: backend.pQueueListModel
                 orientation: ListView.Horizontal // Set to horizontal
 
                 // Adjust ScrollView content width for horizontal scrolling
@@ -102,24 +84,7 @@ Item {
                         id: boxItem
                         width: height//textLabel.width * 2 // Adjust width for horizontal layout
                         height: listView.height   // Match ListView height
-                        color: "lightGrey"/*{
-                        var type = modelData["pallet_type"];
-
-                        console.log("paleet type: " + modelData["pallet_type"]);
-
-                        switch (type) {
-                        case 0:
-                            return "#ffeb3b";
-                        case 1:
-                            return "#ff9800";
-                        case 3:
-                            return "#2196f3";
-                        case 4:
-                            return "#4caf50";
-                        default:
-                            return "lightgrey";
-                        }
-                    }*/
+                        color: "lightGrey"
                         radius: Constants.borderRadiusSmall
                         // border.width: 1
                         ColumnLayout {
@@ -131,7 +96,7 @@ Item {
                                 text: modelData["Merchandise"]
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
-                                font.pointSize: 45 * listView.height  / 425
+                                font.pointSize: 45 * listView.height / 425
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                             }
@@ -141,7 +106,7 @@ Item {
                                 text: modelData["queue"]
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
-                                font.pointSize: 45 * listView.height  / 425
+                                font.pointSize: 45 * listView.height / 425
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                             }
@@ -169,74 +134,23 @@ Item {
                                 break;
                             }
                         }
-
-                        // Right-side border for horizontal item separation
-                        // Rectangle {
-                        //     anchors {
-                        //         top: parent.top
-                        //         bottom: parent.bottom
-                        //         right: parent.right
-                        //     }
-                        //     width: 2
-                        //     color: "lightgrey"
-                        // }
                     }
 
                     draggedItemParent: root
 
                     onMoveItemRequested: {
-                        // listView.model.move(from, to, 1);
-                        // var updatedList = [];
-                        // for (var i = 0; i < listView.model.count; i++) {
-                        //     updatedList.push(listView.model.get(i));
-                        // }
-
-                        // console.log("updated list", updatedList);
-                        backend.switchDocs(from, to)
+                        backend.switchDocs(from, to);
                     }
                     onItemClicked: {
                         // boxItem.color = "light blue";
                         console.log("request for: ", modelData["queue"]);
-                        queuePalletRequest(modelData["queue"]);
+                        page1.queuePalletRequest(modelData["queue"]);
                     }
-                    // onItemReleased:
-                    // // boxItem.color = "light grey";
-                    // {}
-                    // onDragItemLoaded: {
-                    //     console.log("pallet_type_view: " + modelData["pallet_type"]);
-                    //     var type = modelData["pallet_type"];
-                    //     switch (type) {
-                    //     case 0:
-                    //         boxItem.color = "#ffeb3b";
-                    //         break;
-                    //     case 1:
-                    //         boxItem.color = "#ff9800";
-                    //         break;
-                    //     case 3:
-                    //         boxItem.color = "#2196f3";
-                    //         break;
-                    //     case 4:
-                    //         boxItem.color = "#4caf50";
-                    //         break;
-                    //     default:
-                    //         boxItem.color = "lightgrey";
-                    //         break;
-                    //     }
-                    // }
                 }
                 Component.onCompleted: {
                     console.log("ListView initialized, waiting for model...");
                 }
-
-                // Connections {
-                //     target: backend
-                //     onPQueueListModelChanged: {
-                //         console.log("Model updated, reloading ListView.");
-                //         listView.model = backend.pQueueListModel;
-                //     }
-                // }
             }
         }
     }
-
 }

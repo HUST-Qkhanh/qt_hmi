@@ -4,6 +4,7 @@
 #include <bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/document/view_or_value.hpp>
 #include <bsoncxx/json.hpp>
+#include <bsoncxx/types.hpp>
 #include <iostream>
 #include <memory>
 #include <mongocxx/client.hpp>
@@ -67,6 +68,8 @@ class MongoDBClient {
     std::string value() const {
         return value_;
     }
+
+    void getUniqueList(const std::string &dbName, const std::string &collectionName, const std::string &key, std::vector<std::string> &uniqueList);
 
    private:
     // Private constructor for Singleton pattern

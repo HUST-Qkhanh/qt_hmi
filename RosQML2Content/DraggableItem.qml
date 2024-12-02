@@ -60,7 +60,7 @@ Item {
             MouseArea {
                 id: dragArea
                 anchors.fill: parent
-                cursorShape: Qt.SizeHorCursor
+                // cursorShape: Qt.SizeHorCursor
                 drag.target: parent
                 drag.smoothed: false
 
@@ -70,7 +70,7 @@ Item {
                     }
                     itemReleased();
                 }
-                onPressAndHold: {
+                onDoubleClicked: {
                     if (!drag.active) {
                         console.log("Item clicked: ");
                         itemClicked();

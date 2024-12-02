@@ -7,7 +7,10 @@ Item {
     id: root
     clip: true
 
-    signal addNew
+    signal addNew()
+    signal itemClicked()
+    signal onReleased()
+    
 
     Rectangle {
         id: rectangle
@@ -38,39 +41,22 @@ Item {
         anchors.rightMargin: 0
         anchors.topMargin: 5
         anchors.bottomMargin: 0
-
-        RoundButton {
-            id: button
-            radius: 5
-            rightInset: 0
-            leftInset: 0
-            bottomInset: 0
-            topInset: 0
-            padding: 12
-            text: qsTr(" ADD SLOT")
-            Layout.fillHeight: true
-            Layout.preferredWidth: height
-            font.pointSize: 0.1 * height
-            display: AbstractButton.TextUnderIcon
-            icon.height: 0.3 * height
-            icon.width: 0.3 * height
-            icon.color: Constants.textColorOnSecondary
-            icon.source: "asset/add_square_light.svg"
-            flat: false
-        }
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
             ListView {
                 id: listView
+                pixelAligned: true
+                // highlightRangeMode: ListView.ApplyRange
+                interactive: false
                 clip: true
                 spacing: 10
                 snapMode: ListView.SnapToItem
                 boundsBehavior: Flickable.StopAtBounds
                 flickableDirection: Flickable.HorizontalFlick
                 // model: backend.isQueueListModelLoaded ? backend.pQueueListModel : null//List1 {}
-                model: List1 {}
+                model: backend.pBufferListModel//List1 {}
                 orientation: ListView.Horizontal // Set to horizontal
 
                 // Adjust ScrollView content width for horizontal scrolling
@@ -90,7 +76,7 @@ Item {
                         Text {
                             id: textLabel
                             // anchors.centerIn: parent
-                            text: "Merchandise"
+                            text: modelData["id_hang"]
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 45 * listView.height / 425
@@ -100,12 +86,48 @@ Item {
                         Text {
                             id: textLabel1
                             // anchors.centerIn: parent
-                            text: "index: "
+                            text: modelData["status"]
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 45 * listView.height / 425
                             Layout.fillWidth: true
                             Layout.fillHeight: true
+                        }
+                    }
+                    MouseArea {
+                        id: dragArea
+                        anchors.fill: parent
+                        // cursorShape: Qt.SizeHorCursor
+                        drag.target: parent
+                        drag.smoothed: false
+
+                        onDoubleClicked: {
+                            // boxItem.color = "light blue";
+                            console.log("request for: ", modelData["stt"]);
+                            bufferPalletRequest(modelData["stt"]);
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        // console.log("pallet_type_view: " + modelData["pallet_type"]);
+                        var type = +modelData["type"];
+                        // console.log("paleet type: " + type);
+                        switch (type) {
+                        case 0:
+                            boxItem.color = "#ffeb3b";
+                            break;
+                        case 1:
+                            boxItem.color = "#ff9800";
+                            break;
+                        case 3:
+                            boxItem.color = "#2196f3";
+                            break;
+                        case 4:
+                            boxItem.color = "#4caf50";
+                            break;
+                        default:
+                            boxItem.color = "lightGrey";
+                            break;
                         }
                     }
                 }

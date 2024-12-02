@@ -80,10 +80,10 @@ Rectangle {
         }
     }
     
-    Connections {
-        target: backend
-        onAddQueueTaskFailed: {}
-    }
+    // Connections {
+    //     target: backend
+    //     onAddQueueTaskFailed: {}
+    // }
     
 
     /*

@@ -135,7 +135,7 @@ Item {
         }
     }
 
-    /*
+/*
 
                                    _   _
     ___ ___  _ __  _ __   ___  ___| |_(_) ___  _ __  ___
@@ -163,10 +163,11 @@ Item {
             statusIndicate.open();
         }
         onQueueJsonDeleted: {
-            confirmShow.info_text = qsTr("Remove from queue");
+            confirmShow.info_text = qsTr("Removed from queue");
             confirmShow.header_type = 4;
             statusIndicate.open();
         }
+        //TODO: update curent popup view when data is changed
     }
 
     //NOTE: Handle the action when button is pressed
@@ -281,6 +282,32 @@ Item {
                     border.color: "#3850ff"
                 }*/
             }
+            // TextField {
+            //     id: _palletInfo_
+            //     objectName: "_palletInfo__"
+            //     font.pixelSize: 10 * _Merchandise_.height / 35
+            //     verticalAlignment: Text.AlignVCenter
+            //     Layout.fillWidth: true
+
+            //     placeholderText: qsTr("Pallet Info")
+            //     placeholderTextColor: Constants.textColorSecondary
+
+            //     text: qsTr("")
+            //     Layout.preferredWidth: 300 * grid_queue.width / 1000
+            //     Layout.preferredHeight: 50 * grid_queue.height / 600
+
+            //     property bool isBold: false
+            //     property real radius: 5
+            //     Layout.fillHeight: true
+            //     Layout.row: 4
+            //     Layout.column: 0
+
+            //     /* background: Rectangle {
+            //         anchors.fill: parent
+            //         radius: 5
+            //         border.color: "#3850ff"
+            //     }*/
+            // }
             TextField {
                 id: _height_
                 objectName: "_height__"
@@ -347,7 +374,7 @@ Item {
                 property bool isBold: false
                 property real radius: 5
                 Layout.fillHeight: true
-                Layout.row: 5
+                Layout.row: 4
                 Layout.column: 1
 
                 /* background: Rectangle {
@@ -372,7 +399,7 @@ Item {
                 property bool isBold: false
                 property real radius: 5
                 Layout.fillHeight: true
-                Layout.row: 7
+                Layout.row: 5
                 Layout.column: 1
 
                 /* background: Rectangle {
@@ -391,7 +418,7 @@ Item {
                 Layout.preferredWidth: 300 * grid_queue.width / 1000
                 Layout.preferredHeight: 50 * grid_queue.height / 600
                 Layout.fillHeight: true
-                Layout.row: 5
+                Layout.row: 4
                 Layout.column: 0
                 onClicked: backend.searchModel(_Merchandise_.text, _Count_.text)
             }

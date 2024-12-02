@@ -1,6 +1,6 @@
 
 <RCC>
-<qresource>
+<qresource prefix="/">
 <file>App/include/config.json</file>
 <file>RosQML2.qmlproject</file>
 <file>RosQML2/Constants.qml</file>

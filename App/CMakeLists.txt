@@ -54,6 +54,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
   "src/threadPoolManager.cpp"
   "include/dbManager.h"
   "src/dbManager.cpp"
+  "include/ultis.h"
 )
 
 

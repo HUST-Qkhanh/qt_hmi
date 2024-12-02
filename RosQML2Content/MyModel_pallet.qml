@@ -8,20 +8,28 @@ Item {
     height: 300
     width: 600
 
+    // property alias _merchandise: _Merchandise_.text
+    // property alias _count: _Count_.text
+    // property alias _height: _height_.text
+    // property alias _width: _width_.text
+    // property alias _length: _length_.text
+    // property alias _palletType: _pallet_type_.text
+
+    property string jsonQueue: ''
     function clearTextFields() {
-        _id = qsTr("");
+        // _id = qsTr("");
 
-        _zone = qsTr("");
-        _column = qsTr("");
-        _location = qsTr("");
+        // _zone = qsTr("");
+        // _column = qsTr("");
+        // _location = qsTr("");
 
-        _palletStatus = qsTr("");
-        _merchandise = qsTr("");
-        _palletType = qsTr("");
+        // _palletStatus = qsTr("");
+        // _merchandise = qsTr("");
+        // _palletType = qsTr("");
 
-        _palletHeight = qsTr("");
-        _palletWidth = qsTr("");
-        _palletLength = qsTr("");
+        // _palletHeight = qsTr("");
+        // _palletWidth = qsTr("");
+        // _palletLength = qsTr("");
     }
 
     function updateModelPallet(jsonStr) {
@@ -43,33 +51,77 @@ Item {
     }
 
     function addModelPallet() {
-        if (___id.text === "-----") {
-            jsonObject = {
-                "_id": ___id.text,
-                "id": _id.text,
-                "id_hang": _id_hang.text,
-                "status": _status.text,
-                "stt": _stt.text,
-                "type": _type.text,
-                "height": _height.text,
-                "width": _width.text,
-                "length": _length.text,
-                "zone_id": _zone_id.text,
-                "column_id": _column_id.text,
-                "location_id": _location_id.text
+        if (_merchandise !== "" && _count !== "" && _id !== "") {
+            var jsonObject = {
+                "Merchandise": _merchandise,
+                "Count": _count,
+                "queue": _id
             };
-            backend.addDataBuffer(JSON.stringify(jsonObject, null, 2));
+            backend.addDataQueue(JSON.stringify(jsonObject, null, 2));
         } else {
-            _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
+            confirmShow.info_text = qsTr("Please input required fields");
+            confirmShow.header_type = 3;
+            statusIndicate.open();
         }
     }
 
     function deleteModelPallet(queueId) {
-    // body...
     }
 
     function saveModelPallet(queueId) {
     // body...
+    }
+
+    /*
+
+                                   _   _
+    ___ ___  _ __  _ __   ___  ___| |_(_) ___  _ __  ___
+   / __/ _ \| '_ \| '_ \ / _ \/ __| __| |/ _ \| '_ \/ __|
+  | (_| (_) | | | | | | |  __/ (__| |_| | (_) | | | \__ \
+   \___\___/|_| |_|_| |_|\___|\___|\__|_|\___/|_| |_|___/
+
+
+*/
+    //TODO: connection for updating dataview when cell is pressed
+    Connections {
+        target: backend
+        onModelJsonChanged: {
+            var jsonModel = backend.fetchedModelJson;
+            console.log("Fetched queue json:" + jsonModel);
+            updateModelPallet(jsonModel);
+        }
+        onModelJsonAdded: {
+            confirmShow.info_text = qsTr("Added to collection");
+            confirmShow.header_type = 4;
+            statusIndicate.open();
+        }
+        onModelJsonDeleted: {
+            confirmShow.info_text = qsTr("Removed from collection");
+            confirmShow.header_type = 4;
+            statusIndicate.open();
+        }
+        //TODO: update curent popup view when data is changed
+    }
+    //NOTE: Handle the action when button is pressed
+    Connections {
+        target: userPopup
+        onPopupLoaded: {
+            clearTextFields();
+            backend.updateMerchandiseList();
+            backend.updateCountList();
+        }
+        onAddDataRequest: {
+            console.log("model get add request");
+            addModelPallet();
+        }
+        onSaveDataRequest: {
+            console.log("model get save request");
+            saveModelPallet();
+        }
+        onDeleteModelRequest: {
+            console.log("model get remove request");
+            deleteModelPallet();
+        }
     }
 
     RowLayout {
@@ -85,38 +137,41 @@ Item {
             id: gridLayout
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.preferredWidth: parent.width * 0.45
-            Layout.maximumHeight: parent.height * 0.3
+            Layout.maximumHeight: parent.height * 0.4
 
-            Text {
-                text: qsTr("Merchandise :")
-                verticalAlignment: Text.AlignVCenter
-                clip: true
-                font.pointSize: 12 * model_pallet.height / 364
-                font.family: "Ubuntu"
-                font.bold: false
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Layout.row: 0
-                Layout.column: 0
-            }
+            // Text {
+                
+            //     text: qsTr("Merchandise :")
+            //     verticalAlignment: Text.AlignVCenter
+            //     clip: true
+            //     font.pointSize: 12 * model_pallet.height / 364
+            //     font.family: "Ubuntu"
+            //     font.bold: false
+            //     Layout.fillWidth: true
+            //     Layout.fillHeight: true
+            //     Layout.row: 0
+            //     Layout.column: 0
+            // }
 
-            Text {
-                text: qsTr("Count :")
-                verticalAlignment: Text.AlignVCenter
-                Layout.fillHeight: true
-                clip: true
-                font.pointSize: 12 * model_pallet.height / 364
-                font.family: "Ubuntu"
-                font.bold: false
-                Layout.fillWidth: true
-                Layout.row: 1
-                Layout.column: 0
-            }
+            // Text {
+            //     id: modelCount
+            //     text: qsTr("Count :")
+            //     verticalAlignment: Text.AlignVCenter
+            //     Layout.fillHeight: true
+            //     clip: true
+            //     font.pointSize: 12 * model_pallet.height / 364
+            //     font.family: "Ubuntu"
+            //     font.bold: false
+            //     Layout.fillWidth: true
+            //     Layout.row: 1
+            //     Layout.column: 0
+            // }
 
             ComboBox {
                 id: list_count
                 editable: true
                 font.pixelSize: 10 * model_pallet.height / 300
+                Layout.fillWidth: true
                 Layout.fillHeight: true
                 // Layout.preferredHeight: 31
                 // Layout.fillHeight: true
@@ -124,17 +179,8 @@ Item {
                 Layout.row: 1
                 Layout.column: 1
                 currentIndex: 0
-
-                /* background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }*/
-
                 property var count_pallet: [6, 8, 10, 12, 14, 16, 18]
-                model: ListModel {
-                    id: list_count_pallet
-                }
+                model: backend.pModelCountList
 
                 delegate: ItemDelegate {
                     text: model.text
@@ -165,6 +211,7 @@ Item {
                 id: list_model
                 editable: true
                 font.pixelSize: 10 * model_pallet.height / 300
+                Layout.fillWidth: true
                 Layout.fillHeight: true
 
                 // Layout.preferredHeight: 31
@@ -180,9 +227,7 @@ Item {
                 }*/
 
                 // property var model_pallet_: backend.getListModel()
-                model: ListModel {
-                    id: list_model_pallet
-                }
+                model: backend.pModelMerchandiseList
 
                 delegate: ItemDelegate {
                     text: model.text
@@ -207,7 +252,21 @@ Item {
                     console.log("Selected fruit: " + editText);
                 }
             }
+
+            RoundButton {
+                id: roundButton
+                radius: Constants.borderRadiusSmall
+                text: qsTr("Search")
+                icon.source: "asset/search_light.svg"
+                Layout.row: 2
+                Layout.preferredWidth: 300 * grid_queue.width / 1000
+                Layout.preferredHeight: 50 * grid_queue.height / 600
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.column: 1
+            }
         }
+
         GridLayout {
             Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.maximumHeight: model_pallet.height * 0.65

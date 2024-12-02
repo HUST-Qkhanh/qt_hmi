@@ -254,3 +254,27 @@ int MongoDBClient::getCollectionSize(const std::string &dbName, const std::strin
     // std::cout << "Collection size: " << count << " documents" << std::endl;
     return count;
 }
+
+// FIX: change
+void MongoDBClient::getUniqueList(const std::string &dbName,
+                                  const std::string &collectionName,
+                                  const std::string &key,
+                                  std::vector<std::string> &uniqueList) {
+    auto client = getClient();
+    auto db = client->database(dbName);
+    auto collection = db[collectionName];
+
+    // Get distinct values for the key
+    auto cursor = collection.distinct(key, {});
+
+    // Iterate over the distinct values
+    for (const auto &element : cursor) {
+        uniqueList.push_back(bsoncxx::to_json(element));
+    }
+
+    // Print the unique values
+    std::cout << "Unique " << key << " values:" << std::endl;
+    for (const auto &val : uniqueList) {
+        std::cout << val << std::endl;
+    }
+}

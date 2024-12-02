@@ -71,17 +71,6 @@ Rectangle {
         configManager.saveConfig(config, "config.json");
     }
 
-    // function getListCount() {
-    //     backend.getDataComboBox2();
-    //     var item = backend.getListCount();
-    //     return item;
-    // }
-    // function getListModel() {
-    //     backend.getDataComboBox();
-    //     var item = backend.getListModel();
-    //     return item;
-    // }
-
     function popup_close() {
         header_layout_text = "Trạng thái";
         pop_up_2.close();
@@ -637,12 +626,12 @@ Rectangle {
         anchors.left: columnLayout.right
         anchors.right: parent.right
         anchors.top: columnLayout.top
-        anchors.bottom: columnLayout.top
+        anchors.bottom: columnLayout.bottom
         anchors.leftMargin: 6
         anchors.rightMargin: 20
         anchors.topMargin: 0
         anchors.bottomMargin: 0
-        source: "qrc:/RosQML2Content/asset/asset/pngegg.png"
+        source: "asset/pngegg.png"
         fillMode: Image.PreserveAspectFit
     }
 

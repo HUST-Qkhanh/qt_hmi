@@ -58,6 +58,8 @@
 #include "model_pallet.h"
 #include "model_queue.h"
 
+#include <ultis.h>
+
 // #include <OpenXLSX.hpp>
 
 using json = nlohmann::json;
@@ -81,7 +83,14 @@ class Backend : public QObject {
     Q_PROPERTY(QString fetchedQueueJson READ getQueueJson NOTIFY queueJsonChanged)
     // Q_PROPERTY(QString addedQueueJson NOTIFY queueJsonAdded)
 
+    // Q_PROPERTY(QString fetchedModelJson READ getModelJson NOTIFY modelJsonChanged)
+
     Q_PROPERTY(QVariantList pQueueListModel READ getQueueListModel NOTIFY pQueueListModelChanged)
+    Q_PROPERTY(QVariantList pBufferListModel READ getBufferListModel NOTIFY pBufferListModelChanged)
+
+    Q_PROPERTY(QStringList pModelMerchandiseList READ getMerchandiseList NOTIFY pModelMerchandiseListChanged)
+    Q_PROPERTY(QStringList pModelCountList READ getCountList NOTIFY pModelCountListChanged)
+    
     // Q_PROPERTY(bool isQueueListModelLoaded READ isQueueListModelLoaded NOTIFY isQueueListModelLoadedChanged)
 
 
@@ -162,6 +171,8 @@ class Backend : public QObject {
     void queueJsonEditFailed(const QString &error);
     void queueJsonDeleted();
     void queueJsonDeleteFailed(const QString &error);
+    void isQueueListModelLoadedChanged();
+    void pQueueListModelChanged();
     // BUFFER
     void bufferJsonChanged();
     void bufferJsonAdded();
@@ -170,14 +181,19 @@ class Backend : public QObject {
     void bufferJsonEditFailed(const QString &error);
     void bufferJsonDeleted();
     void bufferJsonDeleteFailed(const QString &error);
+
+    void pBufferListModelChanged();
     // MODEL
     void modelJsonChanged();
     void modelJsonAdded();
     void modelJsonEdited();
     void modelJsonDeleted();
-    void pQueueListModelChanged();
-    void PBufferListModelChanged();
-    void isQueueListModelLoadedChanged();
+
+    void pModelMerchandiseListChanged();
+    void pModelCountListChanged();
+
+    //TODO: create a Tableview of pallet_model collection
+    // void pListModelChanged();
 
    private:
     ros::NodeHandle nh;
@@ -279,7 +295,7 @@ class Backend : public QObject {
     double start_time = ros::Time::now().toSec();
     double vel_linear;
     double vel_angular;
-    json deleteObjQueue(int queue);
+    // json deleteObjQueue(int queue);
     void arrangeQueue();
     void delayFunction(int milliseconds) {
         std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
@@ -331,9 +347,13 @@ class Backend : public QObject {
     int check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line);
     std::string switchColorType(int type);
 
-    QVariantList PBufferListModel_;
+    QVariantList pBufferListModel_;
     QVariantList pQueueListModel_;
+
+    QStringList modelCountList_;
+    QStringList modelMerchandiseList_;
     // bool m_isQueueListModelLoaded;
+    jsonKeys keys;
 
    public:
     explicit Backend(QObject *parent = nullptr);
@@ -360,6 +380,7 @@ class Backend : public QObject {
     QString systemStatus() const;
     QString updateStatus() const;
     QString getQueueJson() const;
+    QString getModelJson() const;
     QString getBufferJson() const;
     double getLinear() const;
     double getAngular() const;
@@ -394,7 +415,7 @@ class Backend : public QObject {
     Q_INVOKABLE void getDataBuffer(const int &id);
     Q_INVOKABLE void saveDataBuffer(const QString &jsonstring);
     Q_INVOKABLE void addDataBuffer(const QString &jsonStr);
-    Q_INVOKABLE void deleteDataBuffer(const QString &jsonstring);
+    Q_INVOKABLE void deleteDataBuffer(const int &id);
 
     Q_INVOKABLE void getDataQueue(const int &id);
     Q_INVOKABLE void expandQueue();
@@ -408,8 +429,10 @@ class Backend : public QObject {
     // Q_INVOKABLE void deleteDataModel(QString jsonstring);
 
     Q_INVOKABLE QString getStateSystem();
-    Q_INVOKABLE void getDataComboBox();
-    Q_INVOKABLE void getDataComboBox2();
+    Q_INVOKABLE void updateMerchandiseList(); //Merchandise list
+    Q_INVOKABLE void updateCountList(); //Count list
+    Q_INVOKABLE QStringList getMerchandiseList();
+    Q_INVOKABLE QStringList getCountList();
     Q_INVOKABLE void updateComboBox(QString model, QString count);
     Q_INVOKABLE QStringList getListModel() {
         return *models;

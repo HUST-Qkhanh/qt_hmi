@@ -77,7 +77,7 @@ Rectangle {
     //     return item;
     // }
     // function getListModel() {
-    //     backend.getDataComboBox();
+    //     backend.updateMerchandiseList();
     //     var item = backend.getListModel();
     //     return item;
     // }
