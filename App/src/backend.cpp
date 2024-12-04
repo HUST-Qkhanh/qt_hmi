@@ -1,55 +1,26 @@
 #include "backend.h"
-#include <iostream>
-#include <sstream>
-#include <nlohmann/json.hpp>
-#include <string>
-#include <regex>
+
+#include <asyncTasks.h>
+#include <dbManager.h>
 #include <std_stamped_msgs/EmptyStamped.h>
+#include <threadPoolManager.h>
+#include <unistd.h>
+
+#include <QQmlComponent>
 #include <cstdio>
 #include <fstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
+#include <regex>
+#include <sstream>
 #include <string>
-#include <unistd.h>
-#include <QQmlComponent>
 
 using json = nlohmann::json;
-Backend::Backend(QObject* parent)
-    : QObject(parent), nh() 
-{
-  try
-  {
-    // Initialize mongocxx driver
-    auto instance = getInstance();
-    std::string uri_string = "mongodb://localhost:27017/";
-    std::cout << "Connecting to MongoDB..." << std::endl;
-
-    // Build URI with authentication if username and password are provided
-
-    mongocxx::uri uri = mongocxx::uri(uri_string);
-
-    std::cout << "MongoDB URI parsed successfully!" << std::endl;
-    try
-    {
-      client = mongocxx::client{uri};
-    }
-    catch (const std::exception& e)
-    {
-      std::cout << "Init client: " << e.what() << std::endl;
-    }
-    // Access the specified database
-    database = client["admin"];
-
-    std::cout << "MongoDB database retrieved successfully!" << std::endl;
-  }
-  catch (const mongocxx::exception& e)
-  {
-    std::cerr << "Error during MongoDB initialization: " << e.what()
-              << std::endl;
-    throw;  // Rethrow the exception to propagate it further if needed
-  }
+Backend::Backend(QObject *parent)
+    : QObject(parent), nh() {
     // Initialize the subscriber in the constructor
-    collection = database["pallet_buffer"];
-    collection_queue = database["pallet_queue"];
-    collection_model = database["pallet_model"];
+    // TODO:
+    dbClient_->initialize(uri);
 
     battery_percent_sub = nh.subscribe("/arduino_driver/float_param/battery_percent", 1, &Backend::batteryPercentCallback, this);
     battery_voltage_sub = nh.subscribe("/arduino_driver/float_param/battery_voltage", 1, &Backend::batteryVoltageCallback, this);
@@ -66,13 +37,13 @@ Backend::Backend(QObject* parent)
     reset_error_pub = nh.advertise<std_stamped_msgs::EmptyStamped>("/reset_error", 1);
     robot_mode_pub = nh.advertise<std_stamped_msgs::StringStamped>("/request_mode", 1);
     robot_control_pub = nh.advertise<std_stamped_msgs::StringStamped>("/request_working_stt", 1);
-    
+
     robot_stop_pub = nh.advertise<std_stamped_msgs::StringStamped>("/request_start_mission", 1);
 
     // Service
-    
+
     pop_last_pallet = nh.advertiseService("/conveyor_buffer/pop_buffer_last", &Backend::servicePopPalletCallback, this);
-    append_head_pallet = nh.advertiseService("/conveyor_buffer/append_buffer_head", &Backend::serviceAppendPalletCallback, this); 
+    append_head_pallet = nh.advertiseService("/conveyor_buffer/append_buffer_head", &Backend::serviceAppendPalletCallback, this);
     get_last_pallet = nh.advertiseService("/conveyor_buffer/get_buffer_last", &Backend::serviceLookupPalletCallback, this);
     stop_error_agf = nh.serviceClient<std_stamped_msgs::StringService>("/stop_trigger_manager");
     reset_error_agf = nh.serviceClient<std_stamped_msgs::StringService>("/reset_trigger_manager");
@@ -81,12 +52,12 @@ Backend::Backend(QObject* parent)
     max_index = 0;
     _queue = "_queue";
     zone_ = "zone_";
-    QTranslator* translator = new QTranslator();
+    QTranslator *translator = new QTranslator();
     // m_translator.load(QStringLiteral(":/simplequick.qm"));
     // qApp->installTranslator(&m_translator);
     // qApp->removeTranslator(&m_translator);
 
-    std::cout << 9.87654321f << '\n';
+    // std::cout << 9.87654321f << '\n';
     std::string name = "";
     // try {
     //     YAML::Node config = YAML::LoadFile("/home/mkac/robot_config/robot_define.yaml");
@@ -108,10 +79,12 @@ Backend::Backend(QObject* parent)
     // catch (const YAML::ParserException& e) {
     //     ROS_WARN("Cannot get AGV name");
     // }
-    // // getDataComboBox();
-    
-    
-
+    // // updateMerchandiseList();
+    // std::vector<std::string> collectionList = {collection_queue, "pallet_buffer"};
+    // TrackDBChanges *trackDbchanges = new TrackDBChanges(dbClient_, collectionList);
+    // std::lock_guard<std::mutex> lock(mutex_);
+    // threadManager.executeTask(trackDbchanges);
+    // updateFetchedList();
 }
 
 std::vector<std::string> Backend::splitString(std::string str, char delimiter) {
@@ -126,61 +99,49 @@ std::vector<std::string> Backend::splitString(std::string str, char delimiter) {
     return result;
 }
 
-
-void Backend::batteryPercentCallback(const std_stamped_msgs::Float32Stamped& msg) {
+void Backend::batteryPercentCallback(const std_stamped_msgs::Float32Stamped &msg) {
     batteryPercentageStr = double(msg.data);
-    if (batteryPercentageStr >= 99) batteryPercentageStr = 100;
+    if (batteryPercentageStr >= 99)
+        batteryPercentageStr = 100;
     emit batteryPercentageChanged();
-
 }
 
-void Backend::batteryVoltageCallback(const std_stamped_msgs::Float32Stamped& msg) {
+void Backend::batteryVoltageCallback(const std_stamped_msgs::Float32Stamped &msg) {
     batteryVoltageStr = double(msg.data);
     emit batteryVoltageChanged();
-
 }
 
-void Backend::batteryCurrentCallback(const std_stamped_msgs::Float32Stamped& msg) {
+void Backend::batteryCurrentCallback(const std_stamped_msgs::Float32Stamped &msg) {
     batteryCurrentStr = double(msg.data);
     emit batteryCurrentChanged();
-
 }
 
-void Backend::robotModeCallback(const std_stamped_msgs::StringStamped::ConstPtr& msg) {
+void Backend::robotModeCallback(const std_stamped_msgs::StringStamped::ConstPtr &msg) {
     // robot_mode = std::string(msg ->data);
     robotModeStr = QString::fromStdString(msg->data);
     emit robotModeChanged();
 }
 
-void Backend::robotStatusCallback(const std_stamped_msgs::StringStamped::ConstPtr& msg) {
-
+void Backend::robotStatusCallback(const std_stamped_msgs::StringStamped::ConstPtr &msg) {
     std::string data = msg->data;
-    try
-    {
+    try {
         json jsondata = json::parse(data);
         statusValue = jsondata["status"];
         detailValue = jsondata["detail"];
         robot_mode = jsondata["mode"];
         errorValue = jsondata["error_code"];
-    }
-    catch (...)
-    {
+    } catch (...) {
         ROS_WARN("Loi chuyen doi json callback /robot_status");
     }
-
 
     if (statusValue == "PAUSED") {
         getControlStr = QString::fromStdString(statusValue);
         emit getControlChanged();
-    }
-    else if (statusValue == "RUNNING")
-    {
+    } else if (statusValue == "RUNNING") {
         getControlStr = QString::fromStdString(statusValue);
         statusValue = "NORMAL";
         emit getControlChanged();
-    }
-    else if (statusValue == "WAITING")
-    {
+    } else if (statusValue == "WAITING") {
         getControlStr = QString::fromStdString("RUNNING");
         emit getControlChanged();
     }
@@ -191,33 +152,27 @@ void Backend::robotStatusCallback(const std_stamped_msgs::StringStamped::ConstPt
     robotStatusStr = QString::fromStdString(statusValue);
     emit robotStatusChanged();
 
-
     robotDetailStr = QString::fromStdString(detailValue);
     emit robotDetailChanged();
-
 
     robotErrorStr = QString::fromStdString(errorValue);
     emit robotErrorChanged();
 
     // robotModeStr = QString::fromStdString(modeValue);
     // emit robotModeChanged();
-
 }
 
 void Backend::systemStatusCallback(const std_stamped_msgs::StringStamped::ConstPtr &msg) {
     std::string data = msg->data;
-    try
-    {
+    try {
         json jsondata = json::parse(data);
         stateValueSystem = jsondata["state"];
         statusValueSystem = jsondata["status"];
-    }
-    catch (...)
-    {
+    } catch (...) {
         ROS_WARN("Loi chuyen doi json callback /current_triggered_mission");
     }
     stateValueSystemStr = QString::fromStdString(stateValueSystem);
-    
+
     statusValueSystemStr = QString::fromStdString(statusValueSystem);
     emit systemStatusChanged();
 }
@@ -225,18 +180,17 @@ QString Backend::getStateSystem() {
     return stateValueSystemStr;
 }
 
-void Backend::fastechInputCallBack(const std_msgs::Int16MultiArray::ConstPtr& msg) {
+void Backend::fastechInputCallBack(const std_msgs::Int16MultiArray::ConstPtr &msg) {
     std::vector<int16_t> data_ = msg->data;
     fastechData.clear();
     fastechData.reserve(data_.size());
-    for (int i = 0; i < data_.size();i++) {
+    for (int i = 0; i < data_.size(); i++) {
         fastechData.push_back(static_cast<int>(data_[i]));
     }
     emit getFastechInputChanged();
-
 }
 
-void Backend::fastechOutputCallBack(const std_msgs::Int16MultiArray::ConstPtr& msg) {
+void Backend::fastechOutputCallBack(const std_msgs::Int16MultiArray::ConstPtr &msg) {
     // fastechDataOutput.clear();
     // fastechDataOutput.reserve(msg->data.size());
     // for (int value : msg->data) {
@@ -245,24 +199,19 @@ void Backend::fastechOutputCallBack(const std_msgs::Int16MultiArray::ConstPtr& m
     std::vector<int16_t> data_ = msg->data;
     fastechDataOutput.clear();
     fastechDataOutput.reserve(data_.size());
-    for (int i = 0; i < data_.size();i++) {
+    for (int i = 0; i < data_.size(); i++) {
         fastechDataOutput.push_back(static_cast<int>(data_[i]));
     }
 
     emit getFastechOutputChanged();
-
 }
 
-void Backend::cmdVelCallBack(const geometry_msgs::Twist& msg) {
+void Backend::cmdVelCallBack(const geometry_msgs::Twist &msg) {
     vel_linear = double(msg.linear.x);
     vel_angular = double(msg.angular.z);
 
     emit velChanged();
-
 }
-
-
-
 
 int Backend::getFastechRear(int index) {
     return fastechData[int(index) - 1];
@@ -327,52 +276,45 @@ QString Backend::updateStatus() const {
     return updateStatusStr;
 }
 
+QString Backend::getQueueJson() const {
+    return QString::fromStdString(fetchedQueueStr);
+}
+QString Backend::getBufferJson() const {
+    return QString::fromStdString(fetchedBufferStr);
+}
 
 void Backend::resetError() {
     std_stamped_msgs::EmptyStamped msg;
     if (robotModeStr.toStdString() == "AUTO") {
-
         reset_error_pub.publish(msg);
-
-    }
-    else {
+    } else {
         bug_manual_mode = false;
         // ROS_INFO_STREAM(robotModeStr.toStdString());
     }
-    
 }
 
-
-void Backend::requestMode(const QString& str) {
-
+void Backend::requestMode(const QString &str) {
     std_stamped_msgs::StringStamped request_mode_msg;
     request_mode_msg.stamp = ros::Time::now();
     request_mode_msg.data = str.toStdString();
     robot_mode_pub.publish(request_mode_msg);
 }
 
-
-void Backend::requestControl(const QString& str) {
-
+void Backend::requestControl(const QString &str) {
     std_stamped_msgs::StringStamped request_control_msg;
     request_control_msg.stamp = ros::Time::now();
     if (robotModeStr.toStdString() == "AUTO") {
-
         if (str.toStdString() == "STOP") {
             request_control_msg.data = "STOP";
             request_run_stop_pub.publish(request_control_msg);
-        }
-        else {
+        } else {
             request_control_msg.data = "RUN";
             request_run_stop_pub.publish(request_control_msg);
         }
-
-    }
-    else {
+    } else {
         bug_manual_mode = false;
         // ROS_INFO_STREAM(robotModeStr.toStdString());
     }
-
 }
 
 int Backend::getVolume() {
@@ -398,16 +340,12 @@ void Backend::shutdown(int state) {
 void Backend::getVolume_on_off(int i) {
     if (i == 0) {
         std::string result = exec("pactl set-sink-mute @DEFAULT_SINK@ true");
-    }
-    else std::string result = exec("pactl set-sink-mute @DEFAULT_SINK@ false");
-
-
+    } else
+        std::string result = exec("pactl set-sink-mute @DEFAULT_SINK@ false");
 }
 
 void Backend::change_to_japan() {
-
     // qApp ->installTranslator(&m_translator);
-
 }
 
 void Backend::change_to_eng() {
@@ -416,7 +354,7 @@ void Backend::change_to_eng() {
 
 QString Backend::getIP() {
     std::string ip = " ";
-    FILE* pipe = popen("ip -4 addr show dev enp3s0", "r");
+    FILE *pipe = popen("ip -4 addr show dev enp3s0", "r");
     if (!pipe) {
         return QString::fromStdString(ip);
     }
@@ -439,13 +377,23 @@ QString Backend::getIP() {
     return QString::fromStdString(ip);
 }
 
-
 QString Backend::getIPServer() {
     return server_address;
 }
 
-void Backend::palletStatusCallback(const std_msgs::Empty& msg){
-    initColor();
+/*
+
+    ____    _    _     _     ____    _    ____ _  ______
+   / ___|  / \  | |   | |   | __ )  / \  / ___| |/ / ___|
+  | |     / _ \ | |   | |   |  _ \ / _ \| |   | ' /\___ \
+  | |___ / ___ \| |___| |___| |_) / ___ \ |___| . \ ___) |
+   \____/_/   \_\_____|_____|____/_/   \_\____|_|\_\____/
+
+
+*/
+
+void Backend::palletStatusCallback(const std_msgs::Empty &msg) {
+    // updateFetchedList();
 }
 
 // Hàm chuyển đổi số thực thành chuỗi với độ chính xác mong muốn
@@ -456,615 +404,678 @@ void Backend::palletStatusCallback(const std_msgs::Empty& msg){
 // }
 json Backend::lookupPalletModel(std::string model, std::string count) {
     json object_pallet;
-    std::cout << model  << std::endl;
-    bsoncxx::builder::stream::document filter_model_pallet;
-    filter_model_pallet << "$and" << bsoncxx::builder::stream::open_array
-                << bsoncxx::builder::stream::open_document
-                << "Merchandise" << model        // Điều kiện 1
-                << bsoncxx::builder::stream::close_document
-                << bsoncxx::builder::stream::open_document
-                << "Count" << count        // Điều kiện 2
-                << bsoncxx::builder::stream::close_document
-                << bsoncxx::builder::stream::close_array;
+    json filter;
+    filter[keys.merchandise] = model;
+    filter[keys.count] = count;
 
-    // Thực hiện tìm kiếm một tài liệu
-    auto result_pallet = collection_model.find_one(filter_model_pallet.view());
-    if(result_pallet) {
-            bsoncxx::document::view view_pallet = result_pallet->view();
-            std::string obj_pallet = bsoncxx::to_json(view_pallet);
-            object_pallet = json::parse(obj_pallet);
-            // object_ = object_ + object_pallet;
-            std::cout << object_pallet << std::endl;
-            return object_pallet;
-        }
-        else {
-            ROS_ERROR("Can't find Merchandise2");
-            return object_pallet;
-        }
+    std::string result;
+    std::lock_guard<std::mutex> lock(mutex_);
+    dbClient_->fetchFromCollection(database, collection_model, filter.dump(), result);
 
+    if (!result.empty()) {
+        object_pallet = json::parse(result);
+        return object_pallet;
+    } else {
+        // ROS_ERROR("Can't find Merchandise2");
+        return object_pallet;
+    }
 }
-bool Backend::servicePopPalletCallback(std_stamped_msgs::StringService::Request& req, std_stamped_msgs::StringService::Response& res) {
-    arrangeQueue();
-    json delete_result = deleteObjQueue(1);
-    res.respond = delete_result.dump();
-    initColor();
+bool Backend::servicePopPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res) {
+    // arrangeQueue();
+    // json delete_result = deleteObjQueue(1);
+    // res.respond = delete_result.dump();
+    // // updateFetchedList();
     return 1;
-    
 }
-bool Backend::serviceLookupPalletCallback(std_stamped_msgs::StringService::Request& req, std_stamped_msgs::StringService::Response& res) {
+bool Backend::serviceLookupPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res) {
     arrangeQueue();
-    mongocxx::cursor cursor = collection_queue.find({});
-    json empty = { };
-    bsoncxx::builder::stream::document filter_builder;
-    filter_builder << "queue" << 1;
-    auto result = collection_queue.find_one(filter_builder.view());
+    json empty = {};
+    json filter;
+    filter[keys.queueIndex] = 1;
+    std::string result = "";
+    std::lock_guard<std::mutex> lock(mutex_);
+    dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), result);
 
-    if (result) {
+    if (!result.empty()) {
         // Chuyển đổi tài liệu thành JSON
-        bsoncxx::document::view view = result->view();
-        std::string obj_filter = bsoncxx::to_json(view);
-        json object_ = json::parse(obj_filter);
+        json object_ = json::parse(result);
         object_.erase("_id");
-        object_.erase("queue");
+        object_.erase(keys.queueIndex);
 
-        //Update collection_model
-        std::string model_pallet = object_["Merchandise"];
-        std::string count_pallet = object_["Count"];
-        
-        
-        json result_pallet = lookupPalletModel(model_pallet, count_pallet) ;
+        // Update collection_model
+        std::string model_pallet = object_[keys.merchandise];
+        std::string count_pallet = object_[keys.count];
+
+        json result_pallet = lookupPalletModel(model_pallet, count_pallet);
         // Kiểm tra và in ra kết quả
-        if(!result_pallet.empty()) {
+        if (!result_pallet.empty()) {
             result_pallet.erase("_id");
             object_.merge_patch(result_pallet);
-        }
-        else ROS_ERROR("Can't find Model");
-        
+        } else
+            ROS_ERROR("Can't find Model");
+
         res.respond = object_.dump();
-    } else  res.respond = empty.dump();;
-   
+    } else
+        res.respond = empty.dump();
+    ;
+
     return 1;
-    
 }
-bool Backend::serviceAppendPalletCallback(std_stamped_msgs::StringService::Request& req, std_stamped_msgs::StringService::Response& res ) {
+bool Backend::serviceAppendPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res) {
     arrangeQueue();
     json data_obj = json::parse(req.request);
     ROS_INFO_STREAM("call service append success");
-    ModelQueue model(data_obj);
-    std::string model_pallet = data_obj["Merchandise"];
-    std::string count_pallet = data_obj["Count"];
-    
-    
-    json result_pallet = lookupPalletModel(model_pallet, count_pallet) ;
+    // ModelQueue model(data_obj);
+    std::string model_pallet = data_obj[keys.merchandise];
+    std::string count_pallet = data_obj[keys.count];
+
+    json result_pallet = lookupPalletModel(model_pallet, count_pallet);
     // Kiểm tra và in ra kết quả
-    if(result_pallet.empty()) {
+    if (result_pallet.empty()) {
         res.respond = " CAN NOT FIND Merchandise OR COUNT";
         ROS_ERROR(" CAN NOT FIND Merchandise OR COUNT");
         return false;
     }
 
     // Chèn vào MongoDB
-    int result = model.insert(collection_queue);
+    try {
+        dbClient_->writeToCollection(database, collection_queue, req.request);
 
-    if(result == 1) {
-        initColor();
-        res.respond = "service success";
-        return true;
-    } else return false;
-    
-}
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << '\n';
+        return false;
+    }
 
-json Backend::deleteObjQueue(int queue) {
-    mongocxx::cursor cursor = collection_queue.find({});
-    json empty = { };
-    bsoncxx::builder::stream::document filter_builder;
-    filter_builder << "queue" << queue;
-    auto result = collection_queue.find_one(filter_builder.view());
-
-    if (result) {
-        // Chuyển đổi tài liệu thành JSON
-        bsoncxx::document::view view = result->view();
-        std::string obj_filter = bsoncxx::to_json(view);
-        json object_ = json::parse(obj_filter);
-        object_.erase("_id");
-        object_.erase("queue");
-        
-
-        //Update collection_model
-        std::string model_pallet = object_["Merchandise"];
-        std::string count_pallet = object_["Count"];
-        json result_pallet = lookupPalletModel(model_pallet, count_pallet);
-
-        // Kiểm tra và in ra kết quả
-        if(!result_pallet.empty()) {
-            
-            object_.merge_patch(result_pallet);
-        }
-        else ROS_ERROR("Can't find Merchandise1");
-        
-        // Perform the deletion operation
-        auto delete_result = collection_queue.delete_one(view);
-
-        if (delete_result && delete_result->deleted_count() > 0) {
-
-            return object_;
-        } else {
-
-            return empty;
-        }
-    } else return empty;
+    // updateFetchedList();
+    res.respond = "service success";
+    return true;
 }
 
 void Backend::arrangeQueue() {
-    // Lấy tất cả các document từ collection và sắp xếp theo trường "queue"
-    auto cursor = collection_queue.find(
-        bsoncxx::builder::stream::document{} << bsoncxx::builder::stream::finalize,
-        mongocxx::options::find{}.sort(bsoncxx::builder::stream::document{} << "queue" << 1 << bsoncxx::builder::stream::finalize)
-    );
+    // // Lấy tất cả các document từ collection và sắp xếp theo trường keys.queueIndex
+    // auto cursor = collection_queue.find(
+    //     bsoncxx::builder::stream::document{} << bsoncxx::builder::stream::finalize,
+    //     mongocxx::options::find{}.sort(bsoncxx::builder::stream::document{} << keys.queueIndex << 1 << bsoncxx::builder::stream::finalize));
 
-    std::vector<bsoncxx::document::value> documents;
-    for (auto&& doc : cursor) {
-        documents.push_back(bsoncxx::document::value(doc));
-    }
+    // std::vector<bsoncxx::document::value> documents;
+    // for (auto &&doc : cursor) {
+    //     documents.push_back(bsoncxx::document::value(doc));
+    // }
 
-    // Cập nhật lại các giá trị queue
-    int new_queue_value = 1;
-    for (auto& doc : documents) {
-        auto id = doc["_id"].get_oid().value;
-        auto filter = bsoncxx::builder::stream::document{} << "_id" << id << bsoncxx::builder::stream::finalize;
-        auto update = bsoncxx::builder::stream::document{} << "$set" << bsoncxx::builder::stream::open_document
-                                                           << "queue" << new_queue_value++
-                                                           << bsoncxx::builder::stream::close_document << bsoncxx::builder::stream::finalize;
-        collection_queue.update_one(filter.view(), update.view());
-
-
-    }
-
+    // // Cập nhật lại các giá trị queue
+    // int new_queue_value = 1;
+    // for (auto &doc : documents) {
+    //     auto id = doc["_id"].get_oid().value;
+    //     auto filter = bsoncxx::builder::stream::document{} << "_id" << id << bsoncxx::builder::stream::finalize;
+    //     auto update = bsoncxx::builder::stream::document{} << "$set" << bsoncxx::builder::stream::open_document
+    //                                                        << keys.queueIndex << new_queue_value++
+    //                                                        << bsoncxx::builder::stream::close_document << bsoncxx::builder::stream::finalize;
+    //     collection_queue.update_one(filter.view(), update.view());
+    // }
 }
-
-void Backend::colorPalletQueue(mongocxx::collection coll,
-                            std::string prefix,
-                            std::string id_,
-                            std::string suffix) {
-    mongocxx::cursor cursor = coll.find({});
+std::string Backend::switchColorType(int type) {
+    if (type == 0) {
+        return "#ffeb3b";
+    } else if (type == 1) {
+        return "#ff9800";
+    } else if (type == 3) {
+        return "#2196f3";
+    } else if (type == 4) {
+        return "#4caf50";
+    }
+    return "#CFD8DC";
+}
+void Backend::colorPalletQueue(const std::vector<std::string> &result) {
+    // qDebug() << "Now color pallet queue: " << result.size() << "\n";
     std::string color = "";
     rootObject = engine->rootObjects().first();
-    std::vector<int32_t> list_numbers = {1,2,3,4,5, 6, 7, 8,9,10,11,12,13,14,15};
-    for (auto&& doc : cursor) {
-        
-        // Create a function to process documents
-        std::string data_ = bsoncxx::to_json(doc);
-        json object_ = json::parse(data_);
-        
-        // Determine color based on type
-        std::string model_pallet = object_["Merchandise"];
-        std::string count_pallet = object_["Count"];
-        std::cout << count_pallet << std::endl;
-        json result_pallet = lookupPalletModel(model_pallet, count_pallet);
-   
-        float hig = 0;
-        if (!result_pallet.empty()) {
-            std::string high = result_pallet["pallet_type"].get<std::string>();
-            hig = stringToFloat(high);
-        } 
-        std::cerr << result_pallet << std::endl;
 
-        if (hig == 0) {
-            
-            color = "#FFEB3B";
-        } else if (hig == 1) {
-            
-            color = "#FF9800";
-        } else if (hig == 3) {
-            
-            color = "#2196F3";
-        } else {
-            color = "#4CAF50";
-        }
-        // Get the id and update color
-        std::string obj_ ="";
-        if (object_["queue"].is_number_integer()) {
-            int32_t queue_value = object_["queue"].get<int32_t>();
-            auto it = std::remove(list_numbers.begin(), list_numbers.end(), queue_value);
+    int index = 1;  // start from cell 1
 
-            // Xóa phần tử thừa sau khi dùng std::remove
-            list_numbers.erase(it, list_numbers.end());
-            // Tiếp tục xử lý với queue_value
-            obj_ = prefix + std::to_string(queue_value) + suffix;            
-        } else {
-            // Xử lý trường hợp lỗi hoặc kiểu dữ liệu không phải là số nguyên
-            std::cerr << "Error: queue is not an integer!" << std::endl;
+    for (auto &&doc : result) {
+        json palletJson = json::parse(doc);
+        if (!(palletJson.contains(keys.palletType) && palletJson[keys.palletType].is_string())) {
+            // qDebug() << "Queue cell has invalid data. \n";
+            ++index;
+            continue;
         }
-        
-        QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(obj_));
-        if (item) {
-            item->setProperty("color", QColor(QString::fromStdString(color)));
-        }
-    };
-    for (int i : list_numbers) {
-        // std::cout << i << std::endl ;
-        std::string obj__ = prefix + std::to_string(i) + suffix ;
-        QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(obj__));
-        if (item) {
-            item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
-        }
-    };
 
+        int type = std::stoi(palletJson[keys.palletType].get<std::string>());
+
+        // Switch color base on pallet_type
+        color = switchColorType(type);
+
+        // create object name
+        std::string obj_ = "zone_" + std::to_string(index) + "_queue";
+
+        QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+        if (!item) {
+            // qDebug() << "Can't find cell object_name: " << obj_ << "\n";
+            ++index;
+            continue;
+        }
+        // qDebug() << "found " << obj_ << "\n";
+        item->setProperty("color", QColor(QString::fromStdString(color)));
+        ++index;
+    }
+    // set color for the rest of cell
+    int queueCells = 14;
+    for (size_t i = index; i < queueCells + 1; i++) {
+        std::string obj_ = "zone_" + std::to_string(i) + "_queue";
+        QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+        if (!item) {
+            // qDebug() << "Can't find empty cell object_name: " << obj_ << "\n";
+            continue;
+        }
+        item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
+    }
 }
 
-void Backend::colorPallet(mongocxx::collection coll,
-                            std::string prefix,
-                            std::string id_,
-                            std::string suffix) {
-                                std::string color = "";
-    mongocxx::cursor cursor = coll.find({});
-    std::vector<int32_t> list_numbers = {1,2,3,4,5, 6, 7, 8,9,10};
+void Backend::colorPalletBuffer(const std::vector<std::string> &result) {
+    std::string color = "";
     rootObject = engine->rootObjects().first();
-    for (auto&& doc : cursor) {
-        
 
-        int32_t type = -1;
-        auto element = doc["type"];  // Lấy phần tử "type"
+    int index = 1;  // start from cell 1
 
-        if (element) {
-            // Kiểm tra kiểu dữ liệu và trích xuất giá trị
-            if (element.type() == bsoncxx::type::k_int32) {
-                int32_t type_value = element.get_int32();
-                if (type_value== 0) {
-                    color = "#FFEB3B";
-                } else if (type_value == 1) {
-                    color = "#FF9800";
-                } else if (type_value == -1) {
-                    color = "#CFD8DC";
-                } else {
-                    color = "#4CAF50";
-                }
-                // std::cout << "Type value: " << type_value << std::endl;
-            } else {
-                std::cerr << "Expected int32 but got different type" << std::endl;
-            }
-        } else {
-            std::cerr << "Element not found or is null" << std::endl;
+    for (auto &&doc : result) {
+        json palletJson = json::parse(doc);
+        if (!(palletJson.contains("type") && palletJson["type"].is_number_integer())) {
+            qDebug() << "Buffer cell has invalid data. \n";
+            ++index;
+            continue;
         }
 
-        // Get the id and update color
-        std::string obj_ ="";
-        
-        auto element_ = doc["stt"];  // Lấy phần tử "type"
+        int type = palletJson["type"].get<int>();
 
-        if (element_) {
-            // Kiểm tra kiểu dữ liệu và trích xuất giá trị
-            if (element_.type() == bsoncxx::type::k_int32) {
-                int32_t type_value = element_.get_int32();
-                auto it = std::remove(list_numbers.begin(), list_numbers.end(), type_value);
+        // Switch color base on pallet_type
+        color = switchColorType(type);
 
-                // Xóa phần tử thừa sau khi dùng std::remove
-                list_numbers.erase(it, list_numbers.end());
-                // Tiếp tục xử lý với queue_value
-                obj_ = prefix + std::to_string(type_value) + suffix;
-            } else {
-                std::cerr << "Expected int32 but got different type" << std::endl;
-            }
-        } else {
-            std::cerr << "element_ not found or is null" << std::endl;
-        }
+        // create object name
+        std::string obj_ = "zone_" + std::to_string(index);
 
-        // QObject *rootObject = engine->rootObjects().first();
-        QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(obj_));
-        if (item) {
-            item->setProperty("color", QColor(QString::fromStdString(color)));
+        QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+        if (!item) {
+            // qDebug() << "Can't find cell object_name: " << obj_ << "\n";
+            ++index;
+            continue;
         }
-    };
-    for (int i : list_numbers) {
-        // std::cout << i << std::endl ;
-        std::string obj__ = prefix + std::to_string(i) + suffix ;
-        QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(obj__));
-        if (item) {
-            item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
-        }
-    };
+        // qDebug() << "found " << obj_ << "\n";
+        item->setProperty("color", QColor(QString::fromStdString(color)));
+        ++index;
+    }
 }
 
-void Backend::initColor() {
-    arrangeQueue();
-    while ( engine->rootObjects().isEmpty()) {};
-    rootObject = engine->rootObjects().first();
-    colorPallet(collection,"zone_","zone_id","");
-    colorPalletQueue(collection_queue,"zone_","queue","_queue");
+/**
+ * @brief color all pallet cells
+ *
+ */
+void Backend::updateFetchedList() {
+    connect(&threadManager, &ThreadPoolManager::getAllQueueCompleted, this, &Backend::initQueueListModel, Qt::UniqueConnection);
+    connect(&threadManager, &ThreadPoolManager::getAllBufferCompleted, this, &Backend::initBufferListModel, Qt::UniqueConnection);
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::vector<std::string> collectionList = {"pallet_queue", "pallet_buffer"};
+    GetCellsProperties *getAllQueue = new GetCellsProperties(dbClient_, collectionList);
+    threadManager.executeTask(getAllQueue);
 }
 
+/*
 
-void Backend::setDataBuffer(QString id) {
-    mongocxx::cursor cursor = collection.find({});
-    bsoncxx::builder::stream::document filter_builder;
-    filter_builder << "id" << id.toStdString();
-    auto result = collection.find_one(filter_builder.view());
+                                 ____  ____    _                     _ _
+    __ _ _   _  ___ _   _  ___  |  _ \| __ )  | |__   __ _ _ __   __| | | ___ _ __ ___
+   / _` | | | |/ _ \ | | |/ _ \ | | | |  _ \  | '_ \ / _` | '_ \ / _` | |/ _ \ '__/ __|
+  | (_| | |_| |  __/ |_| |  __/ | |_| | |_) | | | | | (_| | | | | (_| | |  __/ |  \__ \
+   \__, |\__,_|\___|\__,_|\___| |____/|____/  |_| |_|\__,_|_| |_|\__,_|_|\___|_|  |___/
+      |_|
 
-    if (result) {
-        bsoncxx::document::view view = result->view();
-        rootObject = engine->rootObjects().first();
-        for (auto it = view.begin(); it != view.end(); ++it) {
-            std::string key = "___" + std::string(it->key());  // Lấy tên key
-            auto value = it->get_value();  // Lấy giá trị
-            QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(key));
-            if (item) {
-                QString propertyValue;
-                // Xử lý giá trị dựa trên kiểu dữ liệu của nó
-                switch (value.type()) {
-                    case bsoncxx::type::k_int32:
-                        // std::cout << key << ": " << value.get_int32() << std::endl;
-                        propertyValue = QString::number(value.get_int32());
-                        break;
-                    case bsoncxx::type::k_int64:
-                        // std::cout << key << ": " << value.get_int64() << std::endl;
-                        propertyValue = QString::number(value.get_int64());
-                        break;
-                    case bsoncxx::type::k_double:
-                        // std::cout << key << ": " << value.get_double() << std::endl;
-                        propertyValue = QString::number(value.get_double());
-                        break;
-                    case bsoncxx::type::k_utf8:
-                        // std::cout << key << ": " << value.get_string().value.to_string() << std::endl;
-                        propertyValue = QString::fromStdString(std::string(value.get_string().value));
-                        break;
-                    case bsoncxx::type::k_oid:
-                        // std::cout << key << ": " << value.get_oid().value.to_string() << std::endl;
-                         propertyValue = QString::fromStdString( value.get_oid().value.to_string());
-                        break;
-                }
-                item->setProperty("text", propertyValue);
-            }
+*/
 
-            else {
-                delayFunction(100);
-                // ROS_WARN("item not found: %s", key);
-                std::cout << key << std::endl;
-                
-                for (auto it = view.begin(); it != view.end(); ++it) {
-                    std::string key = "___" + std::string(it->key());  // Lấy tên key
-                    auto value = it->get_value();  // Lấy giá trị
-                    QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(key));
-                    if (item) {
-                        QString propertyValue;
-                        // Xử lý giá trị dựa trên kiểu dữ liệu của nó
-                        switch (value.type()) {
-                            case bsoncxx::type::k_int32:
-                                // std::cout << key << ": " << value.get_int32() << std::endl;
-                                propertyValue = QString::number(value.get_int32());
-                                break;
-                            case bsoncxx::type::k_int64:
-                                // std::cout << key << ": " << value.get_int64() << std::endl;
-                                propertyValue = QString::number(value.get_int64());
-                                break;
-                            case bsoncxx::type::k_double:
-                                // std::cout << key << ": " << value.get_double() << std::endl;
-                                propertyValue = QString::number(value.get_double());
-                                break;
-                            case bsoncxx::type::k_utf8:
-                                // std::cout << key << ": " << value.get_string().value.to_string() << std::endl;
-                                propertyValue = QString::fromStdString(std::string(value.get_string()));
-                                break;
-                            case bsoncxx::type::k_oid:
-                                // std::cout << key << ": " << value.get_oid().value.to_string() << std::endl;
-                                propertyValue = QString::fromStdString(value.get_oid().value.to_string());
-                                break;
-                        }
-                        item->setProperty("text", propertyValue);
-                    }
-                }
-            }
-        }
-    } else {
-        QList<QQuickItem *> allObjects = rootObject->findChildren<QQuickItem *>();
-        // QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(key));
-        for (QQuickItem *item : allObjects) {
-            if (!item->objectName().isEmpty()) {
-                // Ví dụ: nếu đối tượng là Text hoặc TextEdit
-                if (item->inherits("QQuickTextField")) {
-                    item->setProperty("text", QString::fromStdString("-----"));
-                }
-                // Bạn có thể thêm điều kiện cho các thuộc tính khác mà bạn cần gán giá trị
-            }
+void Backend::getDataQueue(const int &id) {
+    ROS_ERROR_STREAM("set QUEUE for " << id);
+    // ThreadPoolManager threadManager;
+    connect(&threadManager, &ThreadPoolManager::getQueueTaskCompleted, this, &Backend::queueJsonFetched, Qt::UniqueConnection);
+    std::lock_guard<std::mutex> lock(mutex_);
+    GetQueueTask *getQueuePallet = new GetQueueTask(dbClient_, id);
+    threadManager.executeTask(getQueuePallet);
+}
+void Backend::addDataQueue(const QString &jsonStr) {
+    ROS_ERROR_STREAM("add new doc toQUEUE");
+    connect(&threadManager, &ThreadPoolManager::addQueueTaskCompleted, this, &Backend::queueDbAdded, Qt::UniqueConnection);
+
+    std::string palletStr = jsonStr.toStdString();
+    // TODO: this only contain Merchandise, Count, queue -> Need to lookup model to add height, width, length
+
+    AddQueueTask *addQueuePallet = new AddQueueTask(dbClient_, palletStr);
+    threadManager.executeTask(addQueuePallet);
+}
+void Backend::saveDataQueue(const QString &jsonstr) {
+    connect(&threadManager, &ThreadPoolManager::editQueueTaskCompleted, this, &Backend::queueDbSaved, Qt::UniqueConnection);
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::string palletStr = jsonstr.toStdString();
+    // TODO: this only contain Merchandise, Count, queue -> Need to lookup model to add height, width, length
+
+    EditQueueTask *saveQueuePallet = new EditQueueTask(dbClient_, palletStr);
+    threadManager.executeTask(saveQueuePallet);
+}
+void Backend::deleteDataQueue(const int &id) {
+    ROS_ERROR_STREAM("delete QUEUE for " << id);
+    // ThreadPoolManager threadManager;
+    connect(&threadManager, &ThreadPoolManager::eraseQueueTaskCompleted, this, &Backend::queueDbDeleted, Qt::UniqueConnection);
+    std::lock_guard<std::mutex> lock(mutex_);
+    EraseQueueTask *deleteQueuePallet = new EraseQueueTask(dbClient_, id);
+    threadManager.executeTask(deleteQueuePallet);
+}
+
+/**
+ * @brief Getter for QVariantList
+ *
+ * @return QVariantList
+ */
+QVariantList Backend::getQueueListModel() const {
+    // qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
+    return pQueueListModel_;
+}
+
+/**
+ * @brief Update the QVariantList base on the result
+ *
+ * @param result
+ */
+void Backend::initQueueListModel(const std::vector<std::string> &result) {
+    pQueueListModel_.clear();
+
+    for (const auto &jsonString : result) {
+        QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString));
+        if (doc.isObject()) {
+            pQueueListModel_.append(doc.object().toVariantMap());
         }
     }
-    initColor();
+    // qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
+    emit pQueueListModelChanged();
 }
-void Backend::setDataQueue(int id) {
-    mongocxx::cursor cursor = collection_queue.find({});
-    bsoncxx::builder::stream::document filter_builder;
-    filter_builder << "queue" << id;
-    auto result = collection_queue.find_one(filter_builder.view());
 
-    if (result) {
-        // Chuyển đổi tài liệu thành JSON
-        bsoncxx::document::view view = result->view();
-        std::string obj_filter = bsoncxx::to_json(view);
-        json jsonObject = json::parse(obj_filter);
-        std::string model_pallet = jsonObject["Merchandise"];
-        std::string count_pallet = jsonObject["Count"];
-        json result_pallet = lookupPalletModel(model_pallet, count_pallet);
-        if(!result_pallet.empty()) {
-            
-            jsonObject.merge_patch(result_pallet);
-        }
-        rootObject = engine->rootObjects().first();
-        // jsonObject.erase("_id");
-        for (auto it = jsonObject.begin(); it != jsonObject.end(); ++it) {
-            std::string key = "_" + it.key();  // Lấy tên key
-            auto value = it.value();     // Lấy giá trị
-            // Tìm đối tượng QML dựa trên tên key
-            QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(key));
-            if (item) {
-                // Chuyển đổi giá trị JSON thành QString
-                QString propertyValue;
-                if (value.is_string()) {
-                    propertyValue = QString::fromStdString(value.get<std::string>());
-                } else if (value.is_number_integer()) {
-                    propertyValue = QString::number(value.get<int>());
-                } else if (value.is_boolean()) {
-                    propertyValue = value.get<bool>() ? "true" : "false";
-                } else {
-                    propertyValue = QString::fromStdString("[Unknown Type]");
-                }
-                item->setProperty("text", propertyValue);
-            }
-            else if ( key == "__id") {
-                ROS_WARN("item not fadasddasdound: %s", key);
-                std::cout << key << std::endl;
-                QObject *itempp = rootObject->findChild<QObject*>(QString::fromStdString("uuid_queue"));
-                if (itempp) {
-                    itempp->setProperty("text", QString::fromStdString(view["_id"].get_oid().value.to_string()));
-                }
-            }
-            else {
-                delayFunction(100);
-                ROS_WARN("item not found: %s", key);
-                std::cout << key << std::endl;
-                QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(key));
-                if (item) {
-                    // Chuyển đổi giá trị JSON thành QString
-                    QString propertyValue;
-                    if (value.is_string()) {
-                        propertyValue = QString::fromStdString(value.get<std::string>());
-                    } else if (value.is_number_integer()) {
-                        propertyValue = QString::number(value.get<int>());
-                    } else if (value.is_boolean()) {
-                        propertyValue = value.get<bool>() ? "true" : "false";
-                    } else {
-                        propertyValue = QString::fromStdString("[Unknown Type]");
-                    }
+/**
+ * @brief Search model base on Merchandise and count
+ *
+ * @param merchandise
+ * @param count
+ */
+void Backend::searchModel(const QString &merchandise, const QString &count) {
+    std::cout << "search\n";
+    json filter;
+    if (merchandise == "" || count == "") {
+        return;
+    }
+    filter[keys.merchandise] = merchandise.toStdString();
+    filter[keys.count] = count.toStdString();
+    std::string fetchedStr = "";
+    std::lock_guard<std::mutex> lock(mutex_);
+    dbClient_->fetchFromCollection(database, collection_model, filter.dump(),
+                                   fetchedStr);
 
-                    // Gán giá trị cho thuộc tính "text"
-                    item->setProperty("text", propertyValue);
-                }
-            }
-        }
-    } else {
-        QList<QQuickItem *> allObjects = rootObject->findChildren<QQuickItem *>();
+    // set the position index to max
+    json fetchedJson = json::parse(fetchedStr);
+    auto queueSize = dbClient_->getCollectionSize(database, collection_queue);
 
-        for (QQuickItem *item : allObjects) {
-            if (!item->objectName().isEmpty()) {
-                if (item->inherits("QQuickTextField")) {
-                    item->setProperty("text", QString::fromStdString("-----"));
-                }
-            }
+    // TODO: keep the current queue being displayed
+    std::string obj_ = "_Id__";
+    QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+    if (item) {
+        QVariant current_queue = item->property("text");
+        fetchedJson[keys.queueIndex] = current_queue.isValid() ? current_queue.toInt() : (queueSize + 1);
+    }
+    // Output a string to be update on screen
+    queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
+}
+
+/**
+ * @brief Increase size of queue collection
+ *
+ */
+void Backend::expandQueue() {
+    auto queueSize = dbClient_->getCollectionSize(database, collection_queue);
+    json fetchedJson;
+    fetchedJson[keys.queueIndex] = queueSize + 1;
+    queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
+}
+
+/**
+ * @brief Change index of 2 documents for switching their position in Listview
+ *
+ * @param from
+ * @param to
+ */
+void Backend::switchDocs(int from, int to) {
+    std::string currentDoc, destDoc;
+    json filter, update;
+
+    // Fetch doc at queue number
+    filter = json::object();
+    filter[keys.queueIndex] = from + 1;
+    dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), currentDoc);
+
+    filter = json::object();
+    filter[keys.queueIndex] = to + 1;
+    dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), destDoc);
+
+    if (currentDoc == "" && destDoc == "") {
+        std::cerr << "Fetch empty doc" << "\n";
+        return;
+    }
+
+    json currentDoc_json = json::parse(currentDoc);
+    json destDoc_json = json::parse(destDoc);
+
+    std::cout << "currentDoc_json: " << currentDoc_json << "\n";
+    std::cout << "destDoc_json: " << destDoc_json << "\n";
+
+    // Switch queue number of destination doc and current doc
+    currentDoc_json[keys.queueIndex] = to + 1;
+    destDoc_json[keys.queueIndex] = from + 1;
+
+    filter = json::object();
+    filter["_id"]["$oid"] = currentDoc_json["_id"]["$oid"].get<std::string>();
+    std::cout << "currentDoc_json OID: " << filter.dump() << "\n";
+    dbClient_->editInCollection(database, collection_queue, filter.dump(), currentDoc_json.dump());
+
+    filter = json::object();
+    filter["_id"]["$oid"] = destDoc_json["_id"]["$oid"].get<std::string>();
+    dbClient_->editInCollection(database, collection_queue, filter.dump(), destDoc_json.dump());
+
+    // Trigger update view
+    emit pQueueListModelChanged();
+}
+
+/*
+
+   _            __  __             ____  ____    _                     _ _
+  | |__  _   _ / _|/ _| ___ _ __  |  _ \| __ )  | |__   __ _ _ __   __| | | ___ _ __ ___
+  | '_ \| | | | |_| |_ / _ \ '__| | | | |  _ \  | '_ \ / _` | '_ \ / _` | |/ _ \ '__/ __|
+  | |_) | |_| |  _|  _|  __/ |    | |_| | |_) | | | | | (_| | | | | (_| | |  __/ |  \__ \
+  |_.__/ \__,_|_| |_|  \___|_|    |____/|____/  |_| |_|\__,_|_| |_|\__,_|_|\___|_|  |___/
+
+
+*/
+
+void Backend::getDataBuffer(const int &id) {
+    ROS_ERROR_STREAM("set BUFFER for " << id);
+    // ThreadPoolManager threadManager;
+    connect(&threadManager, &ThreadPoolManager::getBufferTaskCompleted, this, &Backend::bufferJsonFetched, Qt::UniqueConnection);
+
+    json palletJson;
+
+    GetBufferTask *getBufferPallet = new GetBufferTask(dbClient_, id);
+    threadManager.executeTask(getBufferPallet);
+}
+
+/**
+ * @brief Add new data to buffer collection
+ *
+ * @param id
+ * @param jsonStr
+ */
+void Backend::addDataBuffer(const QString &jsonStr) {
+    // // List of required keys for each JSON object
+    // std::vector<std::string> modelJsonKeys = {keys.merchandise, keys.count};
+    // std::vector<std::string> addBufferKeys = {
+    //     keys.height, keys.width, keys.length, keys.palletType,
+    //     keys.zoneId, keys.columnId, keys.locationId, keys.palletInfo};
+
+    // json modelFilter;
+    // std::string modelStr = "";  // fetched model
+    // json jsonToSave;
+    // json bufferFilter;
+
+    // // qDebug() << "request save: " << editStr_ << "\n";
+    // json addBufferData = json::parse(jsonStr);
+
+    // // Check for model keys first
+    // if (keys.hasRequiredKeys(addBufferData, modelJsonKeys)) {
+    //     // Search for model
+    //     modelFilter[keys.merchandise] = addBufferData[keys.merchandise];
+    //     modelFilter[keys.count] = addBufferData[keys.count];
+    //     try {
+    //         std::lock_guard<std::mutex> lock(mutex_);
+    //         dbClient_->fetchFromCollection("admin", "pallet_model", modelFilter.dump(), modelStr);
+    //     } catch (const std::exception &e) {
+    //         // qDebug() << e.what() << '\n';
+    //         emit bufferJsonAddFail(QString::fromStdString(e.what()));
+    //         return;
+    //     }
+    //     if (modelStr == "") {
+    //         // qDebug() << "MODEL IS NOT IN DataBase" << '\n';
+    //         emit bufferJsonAddFail(QString::fromStdString("MODEL IS NOT IN DATABASE"));
+    //         return;
+    //     }
+    //     json modelJson = json::parse(modelStr);
+
+    //     // Check for keys availability in final docs which will be add to collection
+    //     if (keys.hasRequiredKeys(addBufferData, addBufferKeys)) {
+    //         // Data from text fields
+    //         jsonToSave[keys.merchandise] = addBufferData[keys.merchandise];
+    //         jsonToSave[keys.count] = addBufferData[keys.count];
+    //         jsonToSave["stt"] = addBufferData["stt"].get<int>();
+    //         jsonToSave[keys.zoneId] = addBufferData[keys.zoneId];
+    //         jsonToSave[keys.columnId] = addBufferData[keys.columnId];
+    //         jsonToSave[keys.locationId] = addBufferData[keys.locationId];
+    //         jsonToSave[keys.palletInfo] = addBufferData[keys.palletInfo];
+    //         // Data from model collection
+    //         jsonToSave[keys.height] = modelJson[keys.height];
+    //         jsonToSave[keys.width] = modelJson[keys.width];
+    //         jsonToSave[keys.length] = modelJson[keys.length];
+    //         jsonToSave[keys.palletType] = modelJson[keys.palletType];
+    //     } else {
+    //         emit bufferJsonAddFail(QString::fromStdString("Missing input param"));
+    //         return;
+    //     }
+
+    //     // TODO: when add to queue -> check the size of collection -> insert new doc to collection -> increase the queue of doc which queue > inserted doc's queue
+    //     bufferFilter["stt"] = addBufferData["stt"].get<int>();
+
+    //     try {
+    //         std::lock_guard<std::mutex> lock(mutex_);
+    //         dbClient_->addMidleCollection("admin", "pallet_queue", bufferFilter.dump(), jsonToSave.dump());
+    //     } catch (const std::exception &e) {
+    //         // qDebug() << e.what() << '\n';
+    //         emit bufferJsonAddFail(QString::fromStdString(e.what()));
+    //         return;
+    //     }
+    //     // qDebug() << "AddQueueTask finished.";
+    //     emit bufferJsonAdded();
+}
+void Backend::saveDataBuffer(const QString &jsonstring) {
+    // List of required keys for each JSON object
+    std::vector<std::string> modelJsonKeys = {keys.merchandise, keys.count};
+    std::vector<std::string> addBufferKeys = {
+        keys.height, keys.width, keys.length, keys.palletType,
+        keys.zoneId, keys.columnId, keys.locationId, keys.palletInfo};
+    json modelFilter;
+    std::string modelStr = "";  // fetched model
+    json jsonToFilter;
+    json jsonToSave;
+    json filter;
+
+    json editBufferData = json::parse(jsonstring.toStdString());
+    if (keys.hasRequiredKeys(editBufferData, modelJsonKeys)) {
+        emit bufferJsonEditFailed(QString::fromStdString("No input merchandise and count to save"));
+        return;
+    }
+
+    // Search for model
+    modelFilter[keys.merchandise] = editBufferData[keys.merchandise];
+    modelFilter[keys.count] = editBufferData[keys.count];
+    try {
+        dbClient_->fetchFromCollection("admin", "pallet_model", modelFilter.dump(), modelStr);
+    } catch (const std::exception &e) {
+        // qDebug() << e.what() << '\n';
+        emit bufferJsonEditFailed(QString::fromStdString(e.what()));
+        return;
+    }
+    if (modelStr == "") {
+        // qDebug() << "MODEL IS NOT IN DataBase" << '\n';
+        emit bufferJsonEditFailed(QString::fromStdString("MODEL IS NOT IN DATABASE"));
+        return;
+    }
+
+    json modelJson = json::parse(modelStr);
+    jsonToSave["$set"] = {
+        {keys.merchandise, editBufferData[keys.merchandise]},
+        {keys.count, editBufferData[keys.count]},
+        {keys.zoneId, editBufferData[keys.zoneId]},
+        {keys.locationId, editBufferData[keys.locationId]},
+        {keys.columnId, editBufferData[keys.columnId]},
+        {keys.palletType, modelJson[keys.palletType]},
+        {keys.height, modelJson[keys.height]},
+        {keys.width, modelJson[keys.width]},
+        {keys.length, modelJson[keys.length]},
+        {keys.palletInfo, modelJson[keys.palletInfo]}};
+
+    filter["stt"] = std::stoi(editBufferData[keys.queueIndex].get<std::string>());
+    try {
+        std::lock_guard<std::mutex> lock(mutex_);
+        dbClient_->editInCollection("admin", "pallet_buffer", filter.dump(),
+                                    jsonToSave.dump());
+    } catch (const std::exception &e) {
+        // std::cerr << e.what() << '\n';
+        emit bufferJsonEditFailed(QString::fromStdString(e.what()));
+        return;
+    }
+    emit bufferJsonEdited();
+}
+void Backend::deleteDataBuffer(const int &id) {
+    // qDebug() << "EraseQueueTask started on thread:" << QThread::currentThread();
+    // Clear the data from doc
+
+    json filter, jsonToSave;
+    jsonToSave["$set"] = {
+        {"id_hang", "free"},
+        {"status", "free"},
+        {keys.zoneId, 1},
+        {keys.locationId, 1},
+        {keys.columnId, 1},
+        {keys.bufferType, -1},
+        {keys.height, 0},
+        {keys.width, 0},
+        {keys.length, 0}};
+    filter[keys.bufferIndex] = id;
+    try {
+        std::lock_guard<std::mutex> lock(mutex_);
+        dbClient_->editInCollection("admin", "pallet_buffer", filter.dump(),
+                                    jsonToSave.dump());
+    } catch (const std::exception &e) {
+        // std::cerr << e.what() << '\n';
+        // // qDebug() << "task failed";
+        emit bufferJsonDeleteFailed(QString::fromStdString(e.what()));
+    }
+    emit bufferJsonDeleted();
+}
+/**
+ * @brief Getter for QVariantList
+ *
+ * @return QVariantList
+ */
+QVariantList Backend::getBufferListModel() const {
+    // qDebug() << "pQueueListModel_: " << pQueueListModel_ << "\n";
+    return pBufferListModel_;
+}
+
+/**
+ * @brief Update the QVariantList base on the result
+ *
+ * @param result
+ */
+void Backend::initBufferListModel(const std::vector<std::string> &result) {
+    pBufferListModel_.clear();
+
+    for (const auto &jsonString : result) {
+        QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString));
+        if (doc.isObject()) {
+            pBufferListModel_.append(doc.object().toVariantMap());
         }
     }
-    initColor();
-}
-void Backend::saveDataBuffer(QString jsonstring) {
-    nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-    jsonObj["stt"] = std::stoi(jsonObj["stt"].get<std::string>());
-    jsonObj["type"] = std::stoi(jsonObj["type"].get<std::string>());
-    jsonObj["height"] = stringToDouble(jsonObj["height"].get<std::string>());
-    jsonObj["width"] = stringToDouble(jsonObj["width"].get<std::string>());
-    jsonObj["length"] = stringToDouble(jsonObj["length"].get<std::string>());
-    jsonObj["zone_id"] = std::stoi(jsonObj["zone_id"].get<std::string>());
-    jsonObj["column_id"] = std::stoi(jsonObj["column_id"].get<std::string>());
-    jsonObj["location_id"] = std::stoi(jsonObj["location_id"].get<std::string>());
-
-    mongocxx::cursor cursor = collection.find({});
-    std::string id_ = jsonObj["_id"].get<std::string>();
-    bsoncxx::oid id(id_); // Thay bằng _id thực tế của bạn
-    bsoncxx::builder::stream::document filter_builder;
-    filter_builder << "_id" << id;
-    ModelBuffer modelupdate(jsonObj);
-    modelupdate.update(collection, filter_builder.view());
-    initColor();
-
-}
-void Backend::saveDataQueue(QString jsonstring) {
-    nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-    jsonObj["queue"] = std::stoi(jsonObj["queue"].get<std::string>());
-    mongocxx::cursor cursor = collection_queue.find({});
-
-    std::string id_ = jsonObj["_id"].get<std::string>();
-    bsoncxx::oid id(id_); // Thay bằng _id thực tế của bạn
-    bsoncxx::builder::stream::document filter_builder;
-    filter_builder << "_id" << id;
-
-    ModelQueue modelupdate(jsonObj, jsonObj["queue"]);
-    modelupdate.update(collection_queue, filter_builder.view());
-    initColor();
+    // qDebug() << "pBufferListModel_: " << pBufferListModel_ << "\n";
+    emit pBufferListModelChanged();
 }
 
-void Backend::switchColorBuffer(mongocxx::collection coll,std::string old_id) {
+/*
 
+                       _      _   ____  ____    _                     _ _
+   _ __ ___   ___   __| | ___| | |  _ \| __ )  | |__   __ _ _ __   __| | | ___ _ __ ___
+  | '_ ` _ \ / _ \ / _` |/ _ \ | | | | |  _ \  | '_ \ / _` | '_ \ / _` | |/ _ \ '__/ __|
+  | | | | | | (_) | (_| |  __/ | | |_| | |_) | | | | | (_| | | | | (_| | |  __/ |  \__ \
+  |_| |_| |_|\___/ \__,_|\___|_| |____/|____/  |_| |_|\__,_|_| |_|\__,_|_|\___|_|  |___/
+
+
+*/
+
+// void Backend::setModelBuffer(const int &id) {
+//     ROS_ERROR_STREAM("set BUFFER for " << id);
+//     // ThreadPoolManager threadManager;
+//     connect(&threadManager, &ThreadPoolManager::getBufferTaskCompleted, this, &Backend::bufferJsonFetched, Qt::UniqueConnection);
+
+//     json palletJson;
+
+//     GetBufferTask *getBufferPallet = new GetBufferTask(dbClient_, id);
+//     threadManager.executeTask(getBufferPallet);
+
+//     //updateFetchedList();
+// }
+// void Backend::addModelBuffer(const int &id, const QString &jsonStr){
+//     connect(&threadManager, &ThreadPoolManager::addBufferTaskCompleted, this, &Backend::BufferDbAdded, Qt::UniqueConnection);
+
+//     std::string palletStr = QString::toStdString(jsonStr);
+
+//     AddBufferTask *addBufferPallet = new AddBufferTask(dbClient_, id, palletStr);
+//     threadManager.executeTask(addBufferPallet);
+// }
+// void Backend::saveModelBuffer(QString jsonstring) {
+//     // nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
+//     // jsonObj["Buffer"] = std::stoi(jsonObj["Buffer"].get<std::string>());
+//     // mongocxx::cursor cursor = collection_Buffer.find({});
+
+//     // std::string id_ = jsonObj["_id"].get<std::string>();
+//     // bsoncxx::oid id(id_);  // Thay bằng _id thực tế của bạn
+//     // bsoncxx::builder::stream::document filter_builder;
+//     // filter_builder << "_id" << id;
+
+//     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
+//     // modelupdate.update(collection_Buffer, filter_builder.view());
+//     //updateFetchedList();
+// }
+// void Backend::deleteModelBuffer(QString jsonstring) {
+//     // nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
+//     // jsonObj["Buffer"] = std::stoi(jsonObj["Buffer"].get<std::string>());
+//     // mongocxx::cursor cursor = collection_Buffer.find({});
+
+//     // std::string id_ = jsonObj["_id"].get<std::string>();
+//     // bsoncxx::oid id(id_);  // Thay bằng _id thực tế của bạn
+//     // bsoncxx::builder::stream::document filter_builder;
+//     // filter_builder << "_id" << id;
+
+//     // ModelBuffer modelupdate(jsonObj, jsonObj["Buffer"]);
+//     // modelupdate.update(collection_Buffer, filter_builder.view());
+//     //updateFetchedList();
+// }
+
+void Backend::switchColorBuffer(mongocxx::collection coll, std::string old_id) {
 }
 
-void Backend::switchColorQueue(mongocxx::collection coll,std::string old_id, std::string update_id) {
-    std::string obj__ = "zone_" + old_id + "_queue" ;
-    QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(obj__));
-    
+void Backend::switchColorQueue(mongocxx::collection coll, std::string old_id, std::string update_id) {
+    std::string obj__ = "zone_" + old_id + "_queue";
+    QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj__));
+
     if (item) {
         item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
     }
-    std::string obj_ = "zone_" + update_id + "_queue" ;
-    std::cout << obj_ << std::endl;
-    QObject *itemz = rootObject->findChild<QObject*>(QString::fromStdString(obj_));
-    
+    std::string obj_ = "zone_" + update_id + "_queue";
+    // std::cout << obj_ << std::endl;
+    QObject *itemz = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+
     if (itemz) {
         itemz->setProperty("color", QColor(QString::fromStdString("#EF5350")));
     }
-    
 }
-
-void Backend::deleteDataBuffer(QString jsonstring) {
-    nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-    std::cout << 1 << std::endl;
-    std::string id_ = jsonObj["_id"].get<std::string>();
-    std::cout << 2 << std::endl;
-    mongocxx::cursor cursor = collection.find({});
-    bsoncxx::oid id(id_); // Thay bằng _id thực tế của bạn
-    bsoncxx::builder::stream::document filter_builder;
-    filter_builder << "_id" << id;
-    std::cout << 3 << std::endl;
-    auto result = collection.find_one(filter_builder.view());
-
-    if (result) {
-        std::cout << 4 << std::endl;
-        bsoncxx::document::view view = result->view();
-        std::string status = "free" ;
-        jsonObj["status"] = status;
-        jsonObj["type"] = -1;
-        jsonObj["stt"] = std::stoi(jsonObj["stt"].get<std::string>());
-        jsonObj["id_hang"] = status;
-        jsonObj["height"] = stringToDouble(jsonObj["height"].get<std::string>());
-        jsonObj["width"] = stringToDouble(jsonObj["width"].get<std::string>());
-        jsonObj["length"] = stringToDouble(jsonObj["length"].get<std::string>());
-        jsonObj["zone_id"] = std::stoi(jsonObj["zone_id"].get<std::string>());
-        jsonObj["column_id"] = std::stoi(jsonObj["column_id"].get<std::string>());
-        jsonObj["location_id"] = std::stoi(jsonObj["location_id"].get<std::string>());
-        ModelBuffer modelupdate(jsonObj);
-        modelupdate.update(collection, filter_builder.view());
-        // auto delete_result = collection.delete_one(view);
-    }
-    initColor();
-
-}
-void Backend::deleteDataQueue(QString jsonstring) {
-
-    std::string jsonObj = jsonstring.toStdString();
-
-    mongocxx::cursor cursor = collection_queue.find({});
-    std::string id_ = jsonObj;
-    bsoncxx::oid id(id_); // Thay bằng _id thực tế của bạn
-    bsoncxx::builder::stream::document filter_builder;
-    filter_builder << "_id" << id;
-    auto result = collection_queue.find_one(filter_builder.view());
-
-    if (result) {
-        bsoncxx::document::view view = result->view();
-        // Perform the deletion operatin
-        auto delete_result = collection_queue.delete_one(view);
-    }
-    initColor();
-    
-}
-
 
 void Backend::requestStop(const QString &str) {
-
     std_stamped_msgs::StringStamped request_stop_msg;
     request_stop_msg.stamp = ros::Time::now();
     std::string data_ = "STOP";
@@ -1086,13 +1097,12 @@ void Backend::requestStop(const QString &str) {
     } else {
         ROS_ERROR("Service /stop_trigger_manager not available after timeout.");
     }
-
 }
 
 void Backend::requestReset(const QString &str) {
     std_stamped_msgs::StringService::Request req;
     std_stamped_msgs::StringService::Response res;
-    
+
     req.request = "Hello, this is a request reset_trigger_manager";
 
     // Đợi tối đa 2 giây để service sẵn sàng
@@ -1107,315 +1117,206 @@ void Backend::requestReset(const QString &str) {
     }
 }
 
-void Backend::getDataComboBox()  {
-    models->clear();
-    counts->clear();
-    // Duyệt qua cursor MongoDB
-    mongocxx::cursor cursor = collection_model.find({});
-    for (auto&& doc : cursor) {
-        // Chuyển BSON thành JSON
-        std::string data_ = bsoncxx::to_json(doc);
-        json object_ = json::parse(data_);
-
-        // Lấy dữ liệu từ các trường "Model" và "Count"
-        std::string model_pallet = object_["Merchandise"];
-
-        // Thêm vào models và counts thông qua con trỏ
-        // models->append(QString::fromStdString(model_pallet)); 
-        if (!models->contains(QString::fromStdString(model_pallet))) {
-            // Nếu chưa có thì append vào danh sách
-            models->append(QString::fromStdString(model_pallet)); 
-        }
-        // std::string count_pallet = object_["Count"];
-        // if (!counts->contains(QString::fromStdString(count_pallet))) {
-        //     // Nếu chưa có thì append vào danh sách
-        //     counts->append(QString::fromStdString(count_pallet)); 
-        // }
-
+void Backend::updateMerchandiseList() {
+    qDebug() << "updapteMerchandiseList\n";
+    // Look for all unique merchandise in pallet_model collection
+    std::vector<std::string> merchandiseList;
+    dbClient_->getUniqueList(database, collection_model, "Merchandise", merchandiseList);
+    // convert std::string to QString
+    for (const auto &item : merchandiseList) {
+        modelMerchandiseList_ << QString::fromStdString(item);
     }
 }
-void Backend::getDataComboBox2()  {
-    counts->clear();
-
-    // Duyệt qua cursor MongoDB
-    mongocxx::cursor cursor = collection_model.find({});
-    for (auto&& doc : cursor) {
-        // Chuyển BSON thành JSON
-        std::string data_ = bsoncxx::to_json(doc);
-        json object_ = json::parse(data_);
-
-        // Lấy dữ liệu từ các trường "Model" và "Count"
-        std::string count_pallet = object_["Count"];
-
-        counts->append(QString::fromStdString(count_pallet)); 
+void Backend::updateCountList() {
+    // Look for all unique count in pallet_model collection
+    std::vector<std::string> countList;
+    dbClient_->getUniqueList(database, collection_model, "Count", countList);
+    // convert std::string to QString
+    for (const auto &item : countList) {
+        modelCountList_ << QString::fromStdString(item);
     }
 }
+
+QStringList Backend::getMerchandiseList() {
+    return modelMerchandiseList_;
+}
+QStringList Backend::getCountList() {
+    return modelCountList_;
+}
+// QString Backend::getModelJson(){
+//     return 
+// }
 
 void Backend::updateComboBox(QString model, QString count) {
-    std::string model_string = model.toStdString();
-    std::string count_string = count.toStdString();
-    json model_data = lookupPalletModel(model_string, count_string);
-    std::cout << model_string << std::endl;
-    if (!model_data.empty()) {
-        // model_data.erase("_id");
+    // std::string model_string = model.toStdString();
+    // std::string count_string = count.toStdString();
+    // json model_data = lookupPalletModel(model_string, count_string);
+    // // std::cout << model_string << std::endl;
+    // if (!model_data.empty()) {
+    //     // model_data.erase("_id");
 
-        model_data.erase("Merchandise");
-        model_data.erase("Count");
+    //     model_data.erase(keys.merchandise);
+    //     model_data.erase(keys.count);
 
-        for (auto it = model_data.begin(); it != model_data.end(); ++it) {
-            std::string key = "_" + it.key() + "__";  // Lấy tên key
-            auto value = it.value();     // Lấy giá trị
-            rootObject = engine->rootObjects().first();
-            if ( key == "__id__") {
-                bsoncxx::builder::stream::document filter_model_pallet;
-                filter_model_pallet << "$and" << bsoncxx::builder::stream::open_array
-                            << bsoncxx::builder::stream::open_document
-                            << "Merchandise" << model_string        // Điều kiện 1
-                            << bsoncxx::builder::stream::close_document
-                            << bsoncxx::builder::stream::open_document
-                            << "Count" << count_string        // Điều kiện 2
-                            << bsoncxx::builder::stream::close_document
-                            << bsoncxx::builder::stream::close_array;
+    //     for (auto it = model_data.begin(); it != model_data.end(); ++it) {
+    //         std::string key = "_" + it.key() + "__";  // Lấy tên key
+    //         auto value = it.value();                  // Lấy giá trị
+    //         rootObject = engine->rootObjects().first();
+    //         if (key == "__id__") {
+    //             bsoncxx::builder::stream::document filter_model_pallet;
+    //             filter_model_pallet << "$and" << bsoncxx::builder::stream::open_array
+    //                                 << bsoncxx::builder::stream::open_document
+    //                                 << keys.merchandise << model_string  // Điều kiện 1
+    //                                 << bsoncxx::builder::stream::close_document
+    //                                 << bsoncxx::builder::stream::open_document
+    //                                 << keys.count << count_string  // Điều kiện 2
+    //                                 << bsoncxx::builder::stream::close_document
+    //                                 << bsoncxx::builder::stream::close_array;
 
-                // Thực hiện tìm kiếm một tài liệu
-                auto result_pallet = collection_model.find_one(filter_model_pallet.view());
-                if(result_pallet) {
-                    bsoncxx::document::view view_pallet = result_pallet->view();
-                    QObject *itempp = rootObject->findChild<QObject*>(QString::fromStdString("__id__"));
-                    if (itempp) {
-                        itempp->setProperty("text", QString::fromStdString(view_pallet["_id"].get_oid().value.to_string()));
-                    }
-                }
-            }
-            else {
-                QObject *item = rootObject->findChild<QObject*>(QString::fromStdString(key));
-                if (item) {
-                    
-                    QString propertyValue = QString::fromStdString(value.get<std::string>());
-                    
-                    item->setProperty("text", propertyValue);
-                } 
-            
-            }
-        }
-    } 
-    std::cout << model_string << std::endl;
-    // initColor();
-}
+    //             // Thực hiện tìm kiếm một tài liệu
+    //             auto result_pallet = collection_model.find_one(filter_model_pallet.view());
+    //             if (result_pallet) {
+    //                 bsoncxx::document::view view_pallet = result_pallet->view();
+    //                 QObject *itempp = rootObject->findChild<QObject *>(QString::fromStdString("__id__"));
+    //                 if (itempp) {
+    //                     itempp->setProperty("text", QString::fromStdString(view_pallet["_id"].get_oid().value.to_string()));
+    //                 }
+    //             }
+    //         } else {
+    //             QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(key));
+    //             if (item) {
+    //                 QString propertyValue = QString::fromStdString(value.get<std::string>());
 
-void Backend::saveDataModel(QString jsonstring) {
-    nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-    mongocxx::cursor cursor = collection_model.find({});
-    std::string id_ = jsonObj["_id"];
-    std::string model_pallet = jsonObj["Merchandise"];
-    std::string count_pallet = jsonObj["Count"];
-    std::cout << jsonObj.dump() << std::endl;
-    bsoncxx::oid id(id_); // Thay bằng _id thực tế của bạn
-    bsoncxx::builder::stream::document filter_builder;
-    filter_builder << "_id" << id;
-    auto result = collection_model.find_one(filter_builder.view());
-
-    if (result) {
-        bsoncxx::document::view view = result->view();
-        ModelPallet modelupdate(jsonObj);
-        modelupdate.update(collection_model, filter_builder.view());
-        ROS_WARN("success");
-    }
-    initColor();
-}
-
-void Backend::deleteDataModel(QString jsonstring) {
-    nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-    mongocxx::cursor cursor = collection_model.find({});
-    std::string id_ = jsonObj["_id"];
-    std::string model_pallet = jsonObj["Merchandise"];
-    std::string count_pallet = jsonObj["Count"];
-    bsoncxx::oid id(id_); // Thay bằng _id thực tế của bạn
-    bsoncxx::builder::stream::document filter_model_pallet;
-    filter_model_pallet << "$and" << bsoncxx::builder::stream::open_array
-                << bsoncxx::builder::stream::open_document
-                << "_id" << id        // Điều kiện 1
-                << bsoncxx::builder::stream::close_document
-                << bsoncxx::builder::stream::open_document
-                << "Merchandise" << model_pallet        // Điều kiện 1
-                << bsoncxx::builder::stream::close_document
-                << bsoncxx::builder::stream::open_document
-                << "Count" << count_pallet        // Điều kiện 2
-                << bsoncxx::builder::stream::close_document
-                << bsoncxx::builder::stream::close_array;
-
-    // Thực hiện tìm kiếm một tài liệu
-    auto result_pallet = collection_model.find_one(filter_model_pallet.view());
-    
-    if (result_pallet) {
-        bsoncxx::document::view view = result_pallet->view();
-        auto delete_result = collection_model.delete_one(view);
-    }
-    initColor();
-}
-
-void Backend::addDataBuffer(QString jsonstring) {
-    nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-    ModelBuffer modelupdate(jsonObj);
-    int result = modelupdate.insert(collection);
-
-    if(result == 1) {
-        ROS_WARN("import success");
-    } else ROS_WARN("import false");
-    initColor();
-}
-
-void Backend::addDataQueue(QString jsonstring) {
-    nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-    ModelQueue modelupdate(jsonObj);
-    int result = modelupdate.insert(collection_queue);
-
-    if(result == 1) {
-        ROS_WARN("import success");
-    } else ROS_WARN("import false");
-    initColor();
-}
-
-void Backend::addDataModel(QString jsonstring) {
-    nlohmann::json jsonObj = nlohmann::json::parse(jsonstring.toStdString());
-    ModelPallet modelupdate(jsonObj);
-    int result = modelupdate.insert(collection_model);
-
-    if(result == 1) {
-        ROS_WARN("import success");
-    } else ROS_WARN("import false");
-    initColor();
-
+    //                 item->setProperty("text", propertyValue);
+    //             }
+    //         }
+    //     }
+    // }
+    // std::cout << model_string << std::endl;
+    // //updateFetchedList();
 }
 
 QString Backend::openFileDialog() {
-    std::string status = "";
-    updateStatusStr = QString::fromStdString(status);
-    QString fileName = QFileDialog::getOpenFileName(nullptr, "Chọn file", "", "All Files (*)");
-    if (!fileName.isEmpty()) {
-        qDebug() << "Đường dẫn file đã chọn:" << fileName;
-        auto result = collection_model.delete_many({});
-        if (result) {
-        status =  "Đã xóa " + std::to_string(result->deleted_count()) + " model." ;
-        } else {
-            status = "Không có model nào được xóa." ;
-        }
-        updateStatusStr = QString::fromStdString(status);
-        emit updateStatusChanged();
+    // std::string status = "";
+    // updateStatusStr = QString::fromStdString(status);
+    // QString fileName = QFileDialog::getOpenFileName(nullptr, "Chọn file", "", "All Files (*)");
+    // if (!fileName.isEmpty()) {
+    //     //qDebug() << "Đường dẫn file đã chọn:" << fileName;
+    //     auto result = collection_model.delete_many({});
+    //     if (result) {
+    //         status = "Đã xóa " + std::to_string(result->deleted_count()) + " model.";
+    //     } else {
+    //         status = "Không có model nào được xóa.";
+    //     }
+    //     updateStatusStr = QString::fromStdString(status);
+    //     emit updateStatusChanged();
 
+    //     // update model tu file
 
-        //update model tu file
+    //     // Mở file CSV
+    //     std::ifstream file(fileName.toStdString());
+    //     if (!file.is_open()) {
+    //         status = "Không thể mở file";
+    //         updateStatusStr = QString::fromStdString(status);
+    //         emit updateStatusChanged();
+    //         return fileName;
+    //     }
 
-        // Mở file CSV
-        std::ifstream file(fileName.toStdString());
-        if (!file.is_open()) {
-            status = "Không thể mở file" ;
-            updateStatusStr = QString::fromStdString(status);
-            emit updateStatusChanged();
-            return fileName;
-        }
+    //     // Đọc file dòng theo dòng
+    //     std::vector<std::string> current_line;
+    //     std::vector<std::string> pre_line;
+    //     std::vector<std::string> next_line;
 
-        // Đọc file dòng theo dòng
-        std::vector<std::string> current_line;
-        std::vector<std::string> pre_line;
-        std::vector<std::string> next_line;
+    //     std::string line;
+    //     int line_count = 0;
+    //     while (std::getline(file, line)) {
+    //         line_count++;
+    //         // std::cout << line << std::endl;
+    //         json row_json;
+    //         int pallet_type;
 
-        std::string line;
-        int line_count = 0;
-        while (std::getline(file, line)) {
-            line_count ++;
-            std::cout << line << std::endl;
-            json row_json;
-            int pallet_type;
+    //         // Tách các giá trị theo dấu phẩy
+    //         std::stringstream ss(line);
+    //         std::string value;
+    //         std::vector<std::string> row;
 
-            // Tách các giá trị theo dấu phẩy
-            std::stringstream ss(line);
-            std::string value;
-            std::vector<std::string> row;
-            
-            while (std::getline(ss, value, ',')) {
-                // Thêm giá trị vào vector
-                row.push_back(value);
-            }
-            if (line_count >= 3) {
-                pre_line = current_line;
-                current_line = next_line;
-                next_line = row;
-            } else if ( line_count == 2) {
-                current_line = next_line;
-                next_line = row;
-                continue;
+    //         while (std::getline(ss, value, ',')) {
+    //             // Thêm giá trị vào vector
+    //             row.push_back(value);
+    //         }
+    //         if (line_count >= 3) {
+    //             pre_line = current_line;
+    //             current_line = next_line;
+    //             next_line = row;
+    //         } else if (line_count == 2) {
+    //             current_line = next_line;
+    //             next_line = row;
+    //             continue;
+    //         } else if (line_count == 1) {
+    //             next_line = row;
+    //             continue;
+    //         }
+    //         row_json[keys.merchandise] = current_line[1];
+    //         row_json[keys.count] = current_line[8];
+    //         row_json[keys.palletType] = std::to_string(check_line(current_line, pre_line, next_line));
+    //         row_json[keys.length] = current_line[5];
+    //         row_json[keys.width] = current_line[6];
+    //         row_json[keys.height] = std::to_string(stringToFloat(current_line[7]) * 1000);
 
-            } else if (line_count == 1) {
-                next_line = row;
-                continue;
-            }
-            row_json["Merchandise"] = current_line[1];
-            row_json["Count"] = current_line[8];
-            row_json["pallet_type"] = std::to_string(check_line(current_line, pre_line, next_line));
-            row_json["length"] = current_line[5];
-            row_json["width"] = current_line[6];
-            row_json["height"] = std::to_string(stringToFloat(current_line[7]) * 1000);
+    //         ModelPallet modelupdate(row_json);
+    //         int result = modelupdate.insert(collection_model);
 
+    //         if (result == 1) {
+    //             status = " import success - " + std::to_string(line_count) + " - " + current_line[1];
 
+    //             updateStatusStr = QString::fromStdString(status);
+    //             emit updateStatusChanged();
+    //         } else {
+    //             status = " import false - " + std::to_string(line_count) + " - " + current_line[1];
+    //             updateStatusStr = QString::fromStdString(status);
+    //             emit updateStatusChanged();
+    //         }
+    //     }
+    //     json row_j;
+    //     row_j[keys.merchandise] = next_line[1];
+    //     row_j[keys.count] = next_line[8];
+    //     row_j[keys.palletType] = std::to_string(check_line(next_line, pre_line, pre_line));
+    //     row_j[keys.length] = next_line[5];
+    //     row_j[keys.width] = next_line[6];
+    //     row_j[keys.height] = std::to_string(stringToFloat(next_line[7]) * 1000);
 
-            ModelPallet modelupdate(row_json);
-            int result = modelupdate.insert(collection_model);
+    //     ModelPallet modelupdate_(row_j);
+    //     int result_ = modelupdate_.insert(collection_model);
 
-            if(result == 1) {
-                status = " import success - " + std::to_string(line_count) + " - " + current_line[1] ;
-                
-                updateStatusStr = QString::fromStdString(status);
-                emit updateStatusChanged();
-            } else {
-                status = " import false - " + std::to_string(line_count) + " - " + current_line[1] ;
-                updateStatusStr = QString::fromStdString(status);
-                emit updateStatusChanged();
-            }
-        }
-        json row_j;
-        row_j["Merchandise"] = next_line[1];
-        row_j["Count"] = next_line[8];
-        row_j["pallet_type"] = std::to_string(check_line(next_line, pre_line, pre_line));
-        row_j["length"] = next_line[5];
-        row_j["width"] = next_line[6];
-        row_j["height"] = std::to_string(stringToFloat(next_line[7]) * 1000);
+    //     if (result_ == 1) {
+    //         status = " import success - " + next_line[1];
 
+    //         updateStatusStr = QString::fromStdString(status);
+    //         emit updateStatusChanged();
+    //     } else {
+    //         status = " import false - " + next_line[1];
+    //         updateStatusStr = QString::fromStdString(status);
+    //         emit updateStatusChanged();
+    //     }
 
+    //     // Đóng file Excel
+    //     file.close();
+    // }
 
-        ModelPallet modelupdate_(row_j);
-        int result_ = modelupdate_.insert(collection_model);
-
-        if(result_ == 1) {
-            status = " import success - " + next_line[1] ;
-            
-            updateStatusStr = QString::fromStdString(status);
-            emit updateStatusChanged();
-        } else {
-            status = " import false - " + next_line[1] ;
-            updateStatusStr = QString::fromStdString(status);
-            emit updateStatusChanged();
-        }
-
-        // Đóng file Excel
-        file.close();
-    } 
-
-    return fileName;
+    // return fileName;
 }
 
-int Backend::check_line( std::vector<std::string> &current_line , std::vector<std::string> &pre_line, std::vector<std::string> &next_line) {
-        if (current_line[1] == pre_line[1]) {
-            if (stringToFloat(current_line[8]) > stringToFloat(pre_line[8])) {
-                return 1;
-            }
-            else return 0;
-        
-        } else if (current_line[1] == next_line[1]) {
-            if (stringToFloat(current_line[8]) > stringToFloat(next_line[8])) {
-                return 1;
-            }
-            else return 0;
-        } else return 3;
-
-    }
+// int Backend::check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line) {
+//     if (current_line[1] == pre_line[1]) {
+//         if (stringToFloat(current_line[8]) > stringToFloat(pre_line[8])) {
+//             return 1;
+//         } else
+//             return 0;
+//     } else if (current_line[1] == next_line[1]) {
+//         if (stringToFloat(current_line[8]) > stringToFloat(next_line[8])) {
+//             return 1;
+//         } else
+//             return 0;
+//     } else
+//         return 3;
+// }

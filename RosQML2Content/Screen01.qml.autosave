@@ -49,16 +49,6 @@ Rectangle {
     property string count_data: ""
     property int item_count: loadConfig()
 
-    /*
-
-       _                   _
-   ___(_) __ _ _ __   __ _| |
-  / __| |/ _` | '_ \ / _` | |
-  \__ \ | (_| | | | | (_| | |
-  |___/_|\__, |_| |_|\__,_|_|
-         |___/
-
-*/
     signal queuePalletRequest(int queueId)
     signal bufferPalletRequest(int bufferId)
 
@@ -67,16 +57,6 @@ Rectangle {
     // property var model_pallet_: getListModel()
     // property var count_pallet: []
     // Khi cần khôi phục cấu hình
-    /*
-
-        __                  _   _
-       / _|_   _ _ __   ___| |_(_) ___  _ __
-      | |_| | | | '_ \ / __| __| |/ _ \| '_ \
-      |  _| |_| | | | | (__| |_| | (_) | | | |
-      |_|  \__,_|_| |_|\___|\__|_|\___/|_| |_|
-
-
-*/
     function loadConfig() {
         var config = configManager.loadConfig("config.json");
         if (config.item_count !== undefined) {
@@ -90,6 +70,17 @@ Rectangle {
         };
         configManager.saveConfig(config, "config.json");
     }
+
+    // function getListCount() {
+    //     backend.getDataComboBox2();
+    //     var item = backend.getListCount();
+    //     return item;
+    // }
+    // function getListModel() {
+    //     backend.updateMerchandiseList();
+    //     var item = backend.getListModel();
+    //     return item;
+    // }
 
     function popup_close() {
         header_layout_text = "Trạng thái";
@@ -355,10 +346,11 @@ Rectangle {
             Layout.preferredHeight: parent.height * 0.2
             // Layout.preferredWidth: parent.width * 0.7
         }
+
     }
 
     RowLayout {
-        height: parent.height * 0.1
+        height: parent.height  * 0.1
         visible: true
         anchors.left: parent.left
         anchors.right: parent.right
@@ -552,16 +544,6 @@ Rectangle {
         }
     }
 
-    /*
-
-                                       _   _
-        ___ ___  _ __  _ __   ___  ___| |_(_) ___  _ __  ___
-       / __/ _ \| '_ \| '_ \ / _ \/ __| __| |/ _ \| '_ \/ __|
-      | (_| (_) | | | | | | |  __/ (__| |_| | (_) | | | \__ \
-       \___\___/|_| |_|_| |_|\___|\___|\__|_|\___/|_| |_|___/
-
-
-*/
     Connections {
         target: backend
         onBatteryPercentageChanged: {
@@ -648,16 +630,6 @@ Rectangle {
             backend.getDataBuffer(bufferId);
         }
     }
-    Connections {
-        target: conveyorView
-        function onAddNew() {
-            // console.log("Add newsdsd");
-            backend.expandQueue();
-            pop_up_2.open();
-            loadPopupType(0);
-            
-        }
-    }
 
     Image {
         id: pngegg
@@ -673,4 +645,7 @@ Rectangle {
         source: "asset/pngegg.png"
         fillMode: Image.PreserveAspectFit
     }
+
+
+
 }

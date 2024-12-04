@@ -13,11 +13,12 @@ message(STATUS "BUILDING PROJECT: ${CMAKE_PROJECT_NAME}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_PREFIX_PATH "/opt/ros/noetic")
-# list(APPEND CMAKE_PREFIX_PATH "/home/khanh/mav_ws/devel" "/usr/local/lib")
+# list(APPEND CMAKE_PREFIX_PATH "/home/khanh/mav_ws/devel" "/usr/local/lib" "/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6")
 list(APPEND CMAKE_PREFIX_PATH "/home/mkac/amr_ws/devel" "/usr/local/lib")
 
 
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/qml)
 set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
@@ -33,7 +34,8 @@ if (Qt6_VERSION VERSION_GREATER_EQUAL 6.3)
 endif()
 
 qt_add_executable(${CMAKE_PROJECT_NAME}
-    RosQML2.qrc)
+    RosQML2.qrc
+    ${QM_FILES})
 
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
     PREFIX "/"

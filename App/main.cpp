@@ -11,6 +11,8 @@
 #include "config_manager.h"
 #include <QApplication>
 #include "autogen/environment.h"
+#include <QTranslator>
+
 
 class hmiApp : public QObject {
     Q_OBJECT
@@ -33,10 +35,10 @@ public:
         connect(rosTimer, &QTimer::timeout, this, [this]() {
             hmi_msg.stamp = ros::Time::now();
             hmi_status_pub.publish(hmi_msg);
-            backend.initColor();
+            backend.updateFetchedList();
             ros::spinOnce();
             });
-        rosTimer->start(200); // Adjust the interval as needed
+        rosTimer->start(800); // Adjust the interval as needed
     }
 
     hmiApp(int argc, char** argv);
@@ -56,6 +58,10 @@ hmiApp::hmiApp(int argc, char** argv)
     // app.installTranslator(&translator);
     set_qt_environment();
 
+    QTranslator translator;
+    translator.load(":/simplequick");
+    app.installTranslator(&translator);
+    
     hmi_status_pub = nh.advertise<std_stamped_msgs::StringStamped>("/hmi_status", 1);
     const QUrl url(mainQmlFile);
     QObject::connect(
@@ -67,6 +73,7 @@ hmiApp::hmiApp(int argc, char** argv)
                 QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
+        
     qmlRegisterType<Backend>("backendqt", 1, 0, "Backend");
     engine.rootContext()->setContextProperty("configManager", &configManager);
     engine.rootContext()->setContextProperty("backend", &backend);
@@ -76,7 +83,7 @@ hmiApp::hmiApp(int argc, char** argv)
     QInputMethod *inputMethod = QGuiApplication::inputMethod();
     inputMethod->show();
     backend.setEngine(&engine);
-    backend.initColor();
+    // backend.updateFetchedList();
     
     // Initialize ROS timer to process callbacks
     init_ros_timer();
