@@ -60,6 +60,9 @@ Item {
             MouseArea {
                 id: dragArea
                 anchors.fill: parent
+                scrollGestureEnabled: false
+                preventStealing: true
+                pressAndHoldInterval: 200
                 // cursorShape: Qt.SizeHorCursor
                 drag.target: parent
                 drag.smoothed: false
@@ -70,7 +73,7 @@ Item {
                     }
                     itemReleased();
                 }
-                onDoubleClicked: {
+                onPressAndHold: {
                     if (!drag.active) {
                         console.log("Item clicked: ");
                         itemClicked();
@@ -224,9 +227,9 @@ Item {
             return;
         }
         root.moveItemRequested(model.index, dropIndex);
-        
+
         console.log("index: " + model.index + "drop: " + dropIndex);
-        
+
 
         makeDroppedItemVisibleTimer.start();
     }

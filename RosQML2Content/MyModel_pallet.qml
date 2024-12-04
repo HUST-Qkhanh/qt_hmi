@@ -182,10 +182,6 @@ Item {
                 property var count_pallet: [6, 8, 10, 12, 14, 16, 18]
                 model: backend.pModelCountList
 
-                delegate: ItemDelegate {
-                    text: model.text
-                }
-
                 Component.onCompleted: {
                     backend.updateCountList();
                 }
@@ -206,6 +202,7 @@ Item {
                 id: list_model
                 editable: true
                 font.pixelSize: 10 * model_pallet.height / 300
+                flat: false
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
@@ -223,10 +220,6 @@ Item {
 
                 // property var model_pallet_: backend.getListModel()
                 model: backend.pModelMerchandiseList
-
-                delegate: ItemDelegate {
-                    text: model.text
-                }
 
                 Component.onCompleted:
                     backend.updateMerchandiseList();

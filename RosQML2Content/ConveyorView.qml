@@ -61,11 +61,15 @@ Item {
             }
         }
         ScrollView {
+            id: scrollView
             Layout.fillWidth: true
             Layout.fillHeight: true
+            ScrollBar.horizontal.interactive: true
 
             ListView {
                 id: listView
+                interactive: true
+                pressDelay: 10
                 boundsMovement: Flickable.StopAtBounds
                 clip: true
                 spacing: 10
@@ -75,24 +79,21 @@ Item {
                 model: backend.pQueueListModel
                 orientation: ListView.Horizontal // Set to horizontal
 
-                // Adjust ScrollView content width for horizontal scrolling
                 contentWidth: contentItem.width
                 Layout.fillHeight: true
 
                 delegate: DraggableItem {
                     Rectangle {
                         id: boxItem
-                        width: height//textLabel.width * 2 // Adjust width for horizontal layout
-                        height: listView.height   // Match ListView height
+                        width: height
+                        height: listView.height
                         color: "lightGrey"
                         radius: Constants.borderRadiusSmall
-                        // border.width: 1
+
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: 10
                             Text {
-                                id: textLabel
-                                // anchors.centerIn: parent
                                 text: modelData["Merchandise"]
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
@@ -101,8 +102,6 @@ Item {
                                 Layout.fillHeight: true
                             }
                             Text {
-                                id: textLabel1
-                                // anchors.centerIn: parent
                                 text: modelData["queue"]
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
@@ -113,9 +112,7 @@ Item {
                         }
 
                         Component.onCompleted: {
-                            // console.log("pallet_type_view: " + modelData["pallet_type"]);
                             var type = +modelData["pallet_type"];
-                            // console.log("paleet type: " + type);
                             switch (type) {
                             case 0:
                                 boxItem.color = "#ffeb3b";
@@ -134,6 +131,20 @@ Item {
                                 break;
                             }
                         }
+
+                        MouseArea {
+                            id: mouseArea
+                            anchors.fill: parent
+                            onClicked: {
+                                console.log("Item clicked: ", modelData["queue"]);
+                                page1.queuePalletRequest(modelData["queue"]);
+                            }
+
+                            onPressAndHold: {
+                                console.log("Item press-and-hold: ", modelData["queue"]);
+                                // Handle the press and hold action
+                            }
+                        }
                     }
 
                     draggedItemParent: root
@@ -141,14 +152,28 @@ Item {
                     onMoveItemRequested: {
                         backend.switchDocs(from, to);
                     }
-                    onItemClicked: {
-                        // boxItem.color = "light blue";
-                        console.log("request for: ", modelData["queue"]);
-                        page1.queuePalletRequest(modelData["queue"]);
-                    }
                 }
-                Component.onCompleted: {
-                    console.log("ListView initialized, waiting for model...");
+
+                MultiPointTouchArea {
+                    anchors.fill: parent
+                    minimumTouchPoints: 2
+                    maximumTouchPoints: 2
+
+                    onTouchUpdated: function (touchPoints) {
+                        console.log("2 finger");
+                        if (touchPoints.length === 2) {
+                            var dx = (touchPoints[0].x - touchPoints[0].startX + touchPoints[1].x - touchPoints[1].startX) / 2;
+                            listView.contentX -= dx;  // Handle custom horizontal scrolling
+                        }
+                    }
+
+                    onPressed: function (touchPoints) {
+                        if (touchPoints.length === 1) {
+                            console.log("1 finger");
+                            // Allow single-finger touch events to propagate to MouseArea
+                            touchPoints[0].accept();  // This allows MouseArea to process the single touch
+                        }
+                    }
                 }
             }
         }

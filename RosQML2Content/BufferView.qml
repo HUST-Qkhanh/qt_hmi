@@ -47,6 +47,7 @@ Item {
 
             ListView {
                 id: listView
+                boundsMovement: Flickable.StopAtBounds
                 pixelAligned: true
                 // highlightRangeMode: ListView.ApplyRange
                 interactive: false
@@ -101,7 +102,7 @@ Item {
                         drag.target: parent
                         drag.smoothed: false
 
-                        onDoubleClicked: {
+                        onPressAndHold: {
                             // boxItem.color = "light blue";
                             console.log("request for: ", modelData["stt"]);
                             bufferPalletRequest(modelData["stt"]);
