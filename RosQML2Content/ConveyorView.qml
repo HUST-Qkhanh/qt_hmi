@@ -14,12 +14,10 @@ Item {
         color: "lightblue"
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.leftMargin: 0
-        anchors.rightMargin: 0
         height: parent.height * 0.3
 
         Text {
-            text: "Pallets on Conveyor "
+            text: "Pallets on Conveyor"
             anchors.fill: parent
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -32,55 +30,60 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: rectangle.bottom
-        anchors.bottom: parent.bottom
-        anchors.leftMargin: 0
-        anchors.rightMargin: 0
-        anchors.topMargin: 5
-        anchors.bottomMargin: 0
+        anchors.bottom: horizontalScrollBar.top
+        anchors.margins: 10
 
         RoundButton {
             id: button
             radius: 5
+            text: qsTr("Add")
+            font.pointSize: height * 0.1
+            display: AbstractButton.TextUnderIcon
+            icon.height: height * 0.5
+            icon.width: height * 0.5
+            icon.source: "asset/add_square_fill.svg"
+            highlighted: false
             rightInset: 0
             leftInset: 0
             bottomInset: 0
             topInset: 0
-            padding: 12
-            text: qsTr("Add")
-            Layout.fillHeight: true
+            padding: 0
+            rightPadding: 0
+            leftPadding: 0
+            bottomPadding: 0
+            topPadding: 0
             Layout.preferredWidth: height
-            font.pointSize: 0.1 * height
-            display: AbstractButton.TextUnderIcon
-            icon.height: 0.3 * height
-            icon.width: 0.3 * height
-            icon.color: Constants.textColorOnSecondary
-            icon.source: "asset/add_square_light.svg"
-            flat: false
-            onClicked: {
-                root.addNew();
-            }
+            Layout.fillHeight: true
+            onClicked: root.addNew()
         }
+
         ScrollView {
             id: scrollView
             Layout.fillWidth: true
             Layout.fillHeight: true
-            ScrollBar.horizontal.interactive: true
+            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+            ScrollBar.vertical.policy: ScrollBar.AlwaysOff
 
             ListView {
                 id: listView
                 interactive: true
-                pressDelay: 10
-                boundsMovement: Flickable.StopAtBounds
-                clip: true
                 spacing: 10
-                snapMode: ListView.SnapToItem
-                boundsBehavior: Flickable.OvershootBounds
                 flickableDirection: Flickable.HorizontalFlick
                 model: backend.pQueueListModel
-                orientation: ListView.Horizontal // Set to horizontal
-
+                orientation: ListView.Horizontal
                 contentWidth: contentItem.width
                 Layout.fillHeight: true
+
+                property real savedPosition: 0
+                clip: true
+
+                function saveScrollPosition() {
+                    savedPosition = contentX;
+                }
+
+                function restoreScrollPosition() {
+                    contentX = savedPosition;
+                }
 
                 delegate: DraggableItem {
                     Rectangle {
@@ -93,89 +96,68 @@ Item {
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: 10
+
                             Text {
                                 text: modelData["Merchandise"]
                                 horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
                                 font.pointSize: 45 * listView.height / 425
                                 Layout.fillWidth: true
-                                Layout.fillHeight: true
                             }
                             Text {
                                 text: modelData["queue"]
                                 horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
                                 font.pointSize: 45 * listView.height / 425
                                 Layout.fillWidth: true
-                                Layout.fillHeight: true
                             }
                         }
 
                         Component.onCompleted: {
                             var type = +modelData["pallet_type"];
                             switch (type) {
-                            case 0:
-                                boxItem.color = "#ffeb3b";
-                                break;
-                            case 1:
-                                boxItem.color = "#ff9800";
-                                break;
-                            case 3:
-                                boxItem.color = "#2196f3";
-                                break;
-                            case 4:
-                                boxItem.color = "#4caf50";
-                                break;
-                            default:
-                                boxItem.color = "#4caf50";
-                                break;
-                            }
-                        }
-
-                        MouseArea {
-                            id: mouseArea
-                            anchors.fill: parent
-                            onClicked: {
-                                console.log("Item clicked: ", modelData["queue"]);
-                                page1.queuePalletRequest(modelData["queue"]);
-                            }
-
-                            onPressAndHold: {
-                                console.log("Item press-and-hold: ", modelData["queue"]);
-                                // Handle the press and hold action
+                            case 0: boxItem.color = "#ffeb3b"; break;
+                            case 1: boxItem.color = "#ff9800"; break;
+                            case 3: boxItem.color = "#2196f3"; break;
+                            case 4: boxItem.color = "#4caf50"; break;
+                            default: boxItem.color = "#4caf50"; break;
                             }
                         }
                     }
 
                     draggedItemParent: root
 
-                    onMoveItemRequested: {
-                        backend.switchDocs(from, to);
+                    onMoveItemRequested: backend.switchDocs(from, to)
+                    onItemClicked: {
+                        console.log("request for:", modelData["queue"]);
+                        page1.queuePalletRequest(modelData["queue"]);
                     }
                 }
 
-                MultiPointTouchArea {
-                    anchors.fill: parent
-                    minimumTouchPoints: 2
-                    maximumTouchPoints: 2
-
-                    onTouchUpdated: function (touchPoints) {
-                        console.log("2 finger");
-                        if (touchPoints.length === 2) {
-                            var dx = (touchPoints[0].x - touchPoints[0].startX + touchPoints[1].x - touchPoints[1].startX) / 2;
-                            listView.contentX -= dx;  // Handle custom horizontal scrolling
-                        }
-                    }
-
-                    onPressed: function (touchPoints) {
-                        if (touchPoints.length === 1) {
-                            console.log("1 finger");
-                            // Allow single-finger touch events to propagate to MouseArea
-                            touchPoints[0].accept();  // This allows MouseArea to process the single touch
-                        }
-                    }
+                onModelChanged: {
+                    restoreScrollPosition();  // Restore scroll position after data changes
                 }
             }
+        }
+    }
+
+    ScrollBar {
+        id: horizontalScrollBar
+        orientation: Qt.Horizontal
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        policy: ScrollBar.AlwaysOn
+        size: listView.width / listView.contentWidth
+        position: listView.contentX / listView.contentWidth
+        onPositionChanged: listView.contentX = position * listView.contentWidth
+    }
+
+    // Automatically reload the view when data changes
+    Connections {
+        target: backend
+        onPQueueListModelChanged: {  // Replace 'onDataUpdated' with your actual signal
+            listView.saveScrollPosition();  // Save current position
+            listView.model = backend.pQueueListModel;  // Update model data
+            listView.restoreScrollPosition();  // Restore saved position
         }
     }
 }

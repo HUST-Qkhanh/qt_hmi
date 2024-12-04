@@ -7,10 +7,9 @@ Item {
     id: root
     clip: true
 
-    signal addNew()
-    signal itemClicked()
-    signal onReleased()
-    
+    signal addNew
+    signal itemClicked
+    signal onReleased
 
     Rectangle {
         id: rectangle
@@ -36,14 +35,18 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: rectangle.bottom
-        anchors.bottom: parent.bottom
+        anchors.bottom: horizontalScrollBar.top
         anchors.leftMargin: 0
         anchors.rightMargin: 0
         anchors.topMargin: 5
-        anchors.bottomMargin: 0
+        anchors.bottomMargin: 10
         ScrollView {
+            hoverEnabled: false
+            enabled: false
             Layout.fillWidth: true
             Layout.fillHeight: true
+            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+            ScrollBar.vertical.policy: ScrollBar.AlwaysOff
 
             ListView {
                 id: listView
@@ -137,5 +140,22 @@ Item {
                 }
             }
         }
+    }
+    ScrollBar {
+        id: horizontalScrollBar
+        orientation: Qt.Horizontal
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+        // Bind to the ListView's horizontal position
+        policy: ScrollBar.AlwaysOn
+        size: listView.width / listView.contentWidth
+        position: listView.contentX / listView.contentWidth
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
+        anchors.bottomMargin: 0
+        onPositionChanged: listView.contentX = position * listView.contentWidth
     }
 }
