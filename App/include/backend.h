@@ -81,9 +81,7 @@ class Backend : public QObject {
     Q_PROPERTY(QString fetchedBufferJson READ getBufferJson NOTIFY bufferJsonChanged)
 
     Q_PROPERTY(QString fetchedQueueJson READ getQueueJson NOTIFY queueJsonChanged)
-    // Q_PROPERTY(QString addedQueueJson NOTIFY queueJsonAdded)
-
-    // Q_PROPERTY(QString fetchedModelJson READ getModelJson NOTIFY modelJsonChanged)
+    Q_PROPERTY(QString fetchedModelJson READ getModelJson NOTIFY modelJsonChanged)
 
     Q_PROPERTY(QVariantList pQueueListModel READ getQueueListModel NOTIFY pQueueListModelChanged)
     Q_PROPERTY(QVariantList pBufferListModel READ getBufferListModel NOTIFY pBufferListModelChanged)
@@ -129,7 +127,7 @@ class Backend : public QObject {
     // MODEL
     void modelJsonFetched(const QString &result) {
         ROS_ERROR("bufferJsonFetched");
-        fetchedBufferStr = result.toStdString();
+        fetchedModelStr = result.toStdString();
         emit modelJsonChanged();
     };
     void modelDbAdded(const QString &result) {
@@ -176,7 +174,7 @@ class Backend : public QObject {
     // BUFFER
     void bufferJsonChanged();
     void bufferJsonAdded();
-    void bufferJsonAddFail(const QString &error);
+    void bufferJsonAddFailed(const QString &error);
     void bufferJsonEdited();
     void bufferJsonEditFailed(const QString &error);
     void bufferJsonDeleted();
@@ -186,8 +184,11 @@ class Backend : public QObject {
     // MODEL
     void modelJsonChanged();
     void modelJsonAdded();
+    void modelJsonAddFailed(const QString &error);
     void modelJsonEdited();
+    void modelJsonEditFailed(const QString &error);
     void modelJsonDeleted();
+    void modelJsonDeleteFailed(const QString &error);
 
     void pModelMerchandiseListChanged();
     void pModelCountListChanged();
@@ -285,6 +286,7 @@ class Backend : public QObject {
     std::string zone_;
     std::string fetchedQueueStr;
     std::string fetchedBufferStr;
+    std::string fetchedModelStr;
     bool bug_manual_mode;
     int index;
     int max_index;
@@ -387,6 +389,7 @@ class Backend : public QObject {
 
     QVariantList getQueueListModel() const;
     QVariantList getBufferListModel() const;
+
     // bool isQueueListModelLoaded() const { return m_isQueueListModelLoaded; }
 
     // int getFastechRear(int index) const;
@@ -415,7 +418,7 @@ class Backend : public QObject {
     Q_INVOKABLE void getDataBuffer(const int &id);
     Q_INVOKABLE void saveDataBuffer(const QString &jsonstring);
     Q_INVOKABLE void addDataBuffer(const QString &jsonStr);
-    Q_INVOKABLE void deleteDataBuffer(const int &id);
+    Q_INVOKABLE void deleteDataBuffer(const QString &id);
 
     Q_INVOKABLE void getDataQueue(const int &id);
     Q_INVOKABLE void expandQueue();
@@ -423,10 +426,9 @@ class Backend : public QObject {
     Q_INVOKABLE void saveDataQueue(const QString &jsonstr);
     Q_INVOKABLE void deleteDataQueue(const int &id);
 
-    // Q_INVOKABLE void setDataModel(const int &count, const QString &merchandise);
-    // Q_INVOKABLE void addDataModel(QString jsonstring);
-    // Q_INVOKABLE void saveDataModel(QString jsonstring);
-    // Q_INVOKABLE void deleteDataModel(QString jsonstring);
+    Q_INVOKABLE void addDataModel(QString jsonstring);
+    Q_INVOKABLE void saveDataModel(QString jsonstring);
+    Q_INVOKABLE void deleteDataModel(QString jsonstring);
 
     Q_INVOKABLE QString getStateSystem();
     Q_INVOKABLE void updateMerchandiseList(); //Merchandise list
@@ -447,7 +449,6 @@ class Backend : public QObject {
 
     Q_INVOKABLE void initQueueListModel(const std::vector<std::string> &result);
     Q_INVOKABLE void searchModel(const QString &merchandise, const QString &count);
-
     Q_INVOKABLE void initBufferListModel(const std::vector<std::string> &result);
     // Q_INVOKABLE void initBufferListModel(const std::vector<std::string> &result);
 

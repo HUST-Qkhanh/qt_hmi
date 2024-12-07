@@ -126,7 +126,7 @@ Item {
                         case 3:
                             boxItem.color = "#2196f3";
                             break;
-                        case 4:
+                        case 2:
                             boxItem.color = "#4caf50";
                             break;
                         default:

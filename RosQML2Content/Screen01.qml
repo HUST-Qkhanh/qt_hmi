@@ -13,6 +13,7 @@ import RosQML2
 // import QtQuick.VirtualKeyboard.Components 6.7
 // import backendqt 1.0
 import QtQuick.Studio.DesignEffects
+import QtQuick3D 6.7
 
 Rectangle {
     id: page1
@@ -357,199 +358,17 @@ Rectangle {
         }
     }
 
-    RowLayout {
-        height: parent.height * 0.1
-        visible: true
-        anchors.left: parent.left
-        anchors.right: parent.right
+    MyActionButtonLayout {
+        id: actionButtonLayout
         anchors.bottom: parent.bottom
         anchors.leftMargin: 10
         anchors.rightMargin: 10
         anchors.bottomMargin: 10
-        Layout.bottomMargin: 0
-        Layout.topMargin: 0
-        spacing: 0
-        Layout.fillWidth: true
-        Layout.margins: 20
-        Layout.fillHeight: true
-        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-        Layout.preferredHeight: parent.height * 0.15
-        RoundButton {
-            id: stop_button
-            text: stop_mode
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            highlighted: false
-            font.bold: true
-            font.pointSize: 45 * parent.height / 420
-
-            background: Rectangle {
-                color: "#AB47BC"
-                radius: Constants.borderRadiusLarge
-                border.color: stop_button.background.color
-                border.width: 0
-            }
-            onClicked: {
-                if (stop_mode === "STOP") {
-                    backend.requestStop("STOP");
-                } else if (stop_mode === "PAUSED") {
-                    backend.requestStop("RUN");
-                }
-            }
-            // onPressedChanged: {
-            //     if (pressed) {
-            //         background.color = "#E1BEE7";
-            //     } else {
-            //         background.color = "#AB47BC";
-            //     }
-            // }
-        }
-
-        RoundButton {
-            id: reset_button
-            text: reset_mode
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            highlighted: false
-            font.bold: true
-            font.pointSize: 45 * parent.height / 420
-
-            background: Rectangle {
-                color: "#4CAF50"
-                radius: Constants.borderRadiusLarge
-                border.color: reset_button.background.color
-                border.width: 0
-            }
-            onClicked: {
-                popup_mode = 2;
-                status_popup.text = state_system;
-
-                popup_confirm_visible = true;
-
-                popup.open();
-            }
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = "#A5D6A7";
-                } else {
-                    background.color = "#4CAF50";
-                }
-            }
-        }
-
-        RoundButton {
-            id: homming_button
-            text: homing_mode
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            highlighted: false
-            font.bold: true
-            font.pointSize: 45 * parent.height / 420
-
-            background: Rectangle {
-                color: "#FFFFFF"
-                radius: Constants.borderRadiusLarge
-                border.color: "#607D8B"
-                border.width: 0
-            }
-        }
-
-        RoundButton {
-            id: stop_button1
-            text: stop_mode
-            topPadding: 0
-            topInset: 0
-            rightPadding: 0
-            leftPadding: 0
-            highlighted: false
-            font.pointSize: 45 * parent.height / 420
-            font.bold: true
-            bottomPadding: 0
-            bottomInset: 0
-            background: Rectangle {
-                color: "#ab47bc"
-                radius: Constants.borderRadiusMedium
-            }
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = "#E1BEE7";
-                } else {
-                    background.color = "#AB47BC";
-                }
-            }
-            onClicked: {
-                if (stop_mode === "STOP") {
-                    backend.requestStop("STOP");
-                } else if (stop_mode === "PAUSED") {
-                    backend.requestStop("RUN");
-                }
-            }
-        }
-
-        RoundButton {
-            id: reset_button1
-            text: reset_mode
-            topPadding: 0
-            topInset: 0
-            rightPadding: 0
-
-            leftPadding: 0
-            highlighted: false
-            font.pointSize: 45 * parent.height / 420
-            font.bold: true
-            bottomPadding: 0
-            bottomInset: 0
-            background: Rectangle {
-                color: "#4caf50"
-                radius: Constants.borderRadiusMedium
-            }
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = "#A5D6A7";
-                } else {
-                    background.color = "#4CAF50";
-                }
-            }
-            onClicked: {
-                popup_mode = 2;
-                status_popup.text = state_system;
-
-                popup_confirm_visible = true;
-
-                popup.open();
-            }
-        }
-
-        RoundButton {
-            id: homming_button1
-            text: homing_mode
-            topPadding: 0
-            topInset: 0
-            rightPadding: 0
-            leftPadding: 0
-            highlighted: false
-            font.pointSize: 45 * parent.height / 420
-            font.bold: true
-            bottomPadding: 0
-            bottomInset: 0
-            background: Rectangle {
-                color: "#0051ff"
-                radius: Constants.borderRadiusMedium
-            }
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            onPressedChanged: {
-                if (pressed) {
-                    background.color = "#A5D6A7";
-                } else {
-                    background.color = "#FFFFFF";
-                }
-            }
-        }
+        spacing: 10
+        visible: true
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: parent.height * 0.1
     }
 
     /*
@@ -650,27 +469,251 @@ Rectangle {
     }
     Connections {
         target: conveyorView
-        function onAddNew() {
+        onAddNew: {
             // console.log("Add newsdsd");
             backend.expandQueue();
             pop_up_2.open();
             loadPopupType(0);
-            
         }
     }
 
     Image {
         id: pngegg
-        y: 89
         anchors.left: columnLayout.right
         anchors.right: parent.right
         anchors.top: columnLayout.top
         anchors.bottom: columnLayout.bottom
-        anchors.leftMargin: 6
-        anchors.rightMargin: 20
+        anchors.leftMargin: 5
+        anchors.rightMargin: 10
         anchors.topMargin: 0
         anchors.bottomMargin: 0
         source: "asset/pngegg.png"
+        mirror: false
+        sourceSize.width: 2000
         fillMode: Image.PreserveAspectFit
     }
+
+    GridLayout {
+        id: note
+        width: parent.width * 0.1
+        anchors.left: columnLayout.left
+        anchors.top: columnLayout.bottom
+        anchors.bottom: actionButtonLayout.top
+        anchors.leftMargin: 0
+        anchors.topMargin: parent.height * 0.05
+        anchors.bottomMargin: parent.height * 0.05
+        ColumnLayout {
+            id: layout_note_1
+            spacing: 5
+            Rectangle {
+                color: "#cfd8dc"
+                Layout.fillWidth: true
+                Layout.preferredWidth: height
+                Layout.fillHeight: true
+            }
+
+            Rectangle {
+                color: "#ffeb3b"
+                Layout.fillWidth: true
+                Layout.preferredWidth: height
+                Layout.fillHeight: true
+            }
+
+            Rectangle {
+                color: "#ff9800"
+                Layout.fillWidth: true
+                Layout.preferredWidth: height
+                Layout.fillHeight: true
+            }
+
+            Rectangle {
+                color: "#4caf50"
+                Layout.fillWidth: true
+                Layout.preferredWidth: height
+                Layout.fillHeight: true
+            }
+
+            Rectangle {
+                color: "#2196f3"
+                Layout.fillWidth: true
+                Layout.preferredWidth: height
+                Layout.fillHeight: true
+            }
+            Layout.maximumWidth: 100
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+        }
+
+        ColumnLayout {
+            id: layout_note_2
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            spacing: 5
+            Text {
+                height: 50
+                text: "Trống (type: -1)"
+                font.pixelSize: note.height * 0.1
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+
+            Text {
+                height: 50
+                text: "Pallet thấp (type: 0)"
+                font.pixelSize: note.height * 0.1
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+            Text {
+                height: 50
+                text: "Pallet cao (type: 1)"
+                font.pixelSize: note.height * 0.1
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+
+            Text {
+                height: 50
+                text: "Pallet kép (type: 2)"
+                font.pixelSize: note.height * 0.1
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+
+            Text {
+                height: 50
+                text: "Pallet đơn (type: 3)"
+                font.pixelSize: note.height * 0.1
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+        }
+    }
+
+    Item {
+        id: __materialLibrary__
+
+        PrincipledMaterial {
+            id: principledMaterial
+            objectName: "New Material"
+        }
+    }
+
+    // RowLayout {
+    //     id: rowLayout
+    //     y: 71
+    //     height: parent.height * 0.07
+    //     anchors.left: columnLayout.right
+    //     anchors.right: pngegg.right
+    //     anchors.bottom: columnLayout.bottom
+    //     anchors.leftMargin: 5
+    //     anchors.rightMargin: 0
+    //     anchors.bottomMargin: 0
+
+
+    //     TextField {
+    //         id: textField1
+    //         text: "BF1"
+    //         horizontalAlignment: Text.AlignHCenter
+    //         rightInset: 5
+    //         leftInset: 5
+    //         font.bold: false
+    //         font.pointSize: parent.height * 0.2
+    //         Layout.fillHeight: true
+    //         Layout.fillWidth: true
+    //         placeholderText: qsTr("Departure")
+    //     }
+    //     Image {
+    //         id: transfer_long_right_light
+    //         source: "asset/transfer_long_right_light.svg"
+    //         sourceSize.height: 50
+
+    //         sourceSize.width: 50
+    //         Layout.fillHeight: true
+    //         Layout.fillWidth: true
+    //         fillMode: Image.PreserveAspectFit
+    //     }
+
+    //     TextField {
+    //         id: textField
+    //         text: "Zone_1"
+    //         horizontalAlignment: Text.AlignHCenter
+    //         rightInset: 5
+    //         leftInset: 5
+    //         font.bold: false
+    //         font.pointSize: parent.height * 0.2
+    //         Layout.fillHeight: true
+    //         Layout.fillWidth: true
+    //         placeholderText: qsTr("Destination")
+    //     }
+
+    // }
+
+    // View3D {
+    //     visible: true
+    //     anchors.fill: parent
+    //     anchors.leftMargin: 160
+    //     anchors.rightMargin: 139
+    //     anchors.topMargin: 151
+    //     anchors.bottomMargin: 73
+    //     importScene: perspectiveCamera
+    //     camera: perspectiveCamera
+
+
+    //     // Lighting
+    //         // DirectionalLight {
+    //         //     worldPosition: Qt.vector3d(0, 200, 200)
+    //     //     intensity: 1.0
+    //     // }
+
+    //     // 3D Model
+
+    //     PerspectiveCamera {
+    //         id: perspectiveCamera
+    //         x: -7.6
+    //         y: 0
+    //         eulerRotation.z: -0.93604
+    //         eulerRotation.y: -0.93604
+    //         eulerRotation.x: -0.00765
+    //         z: 330.52588
+
+    //             Model {
+    //                 id: cube
+    //                 x: -14.111
+    //                 y: 0
+    //                 source: "#Cube"
+    //                 eulerRotation.z: 18.20031
+    //                 eulerRotation.y: 42.55695
+    //                 eulerRotation.x: 13.64559
+    //                 z: -430.27103
+    //                 materials: principledMaterial
+    //             }
+    //         }
+
+    //         // // Rotation animation for the model
+    //         // NumberAnimation on model.rotation.y {
+    //         //     from: 0
+    //         //     to: 360
+    //         //     duration: 10000 // Rotate every 10 seconds
+    //         //     loops: Animation.Infinite
+    //         //     running: true
+    //         // }
+    //     }
+
 }
+
+/*##^##
+Designer {
+    D{i:0;matPrevEnvDoc:"SkyBox";matPrevEnvValueDoc:"preview_studio";matPrevModelDoc:"#Sphere"}
+}
+##^##*/

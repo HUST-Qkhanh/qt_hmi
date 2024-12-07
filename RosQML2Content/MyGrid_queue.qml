@@ -159,16 +159,21 @@ Item {
     //TODO: connection for updating dataview when cell is pressed
     Connections {
         target: backend
-        function onQueueJsonChanged() {
+        onQueueJsonChanged: {
             getQueuePallet();
         }
-        function onQueueJsonAdded() {
+        onQueueJsonAdded: {
             confirmShow.info_text = qsTr("Added to queue");
             confirmShow.header_type = 4;
             statusIndicate.open();
         }
-        function onQueueJsonDeleted() {
+        onQueueJsonDeleted: {
             confirmShow.info_text = qsTr("Removed from queue");
+            confirmShow.header_type = 4;
+            statusIndicate.open();
+        }
+        onQueueJsonEdited: {
+            confirmShow.info_text = qsTr("Saved buffer successfully");
             confirmShow.header_type = 4;
             statusIndicate.open();
         }
@@ -178,18 +183,18 @@ Item {
     //NOTE: Handle the action when button is pressed
     Connections {
         target: userPopup
-        function onPopupLoaded() {
+        onPopupLoaded: {
             clearTextFields();
         }
-        function onAddDataRequest() {
+        onAddDataRequest: {
             console.log("queue get add request");
             addQueuePallet();
         }
-        function onSaveDataRequest() {
+        onSaveDataRequest: {
             console.log("queue get save request");
             saveQueuePallet();
         }
-        function onDeleteDataRequest() {
+        onDeleteDataRequest: {
             console.log("queue get remove request");
             deleteQueuePallet();
         }

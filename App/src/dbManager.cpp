@@ -274,7 +274,8 @@ void MongoDBClient::getUniqueList(const std::string &dbName,
             auto values_array = doc["values"].get_array().value;
             for (const auto& value : values_array) {
                 // Convert each value to a string and add to the vector
-                uniqueList.push_back(std::string(value.get_string()));
+                std::string std_string = value.get_string().value.data();
+                uniqueList.push_back(std_string);
             }
         }
     }

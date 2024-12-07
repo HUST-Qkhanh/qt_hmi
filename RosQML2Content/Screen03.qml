@@ -1,7 +1,7 @@
 import QtQuick 6.2
 import QtQuick.Controls 6.2
 
-import backendqt 1.0
+// import backendqt 1.0
 
 Page {
     id: page3

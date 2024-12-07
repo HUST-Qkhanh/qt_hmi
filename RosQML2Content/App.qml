@@ -130,7 +130,6 @@ Window {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.margins: 10 * parent.height / 1080
-            parent: parent.width
             fillMode: Image.PreserveAspectFit
         }
         ColumnLayout {

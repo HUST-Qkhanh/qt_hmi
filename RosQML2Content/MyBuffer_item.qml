@@ -38,11 +38,24 @@ Item {
         _palletLength = qsTr("");
     }
 
+    function hasEmptyField() {
+        return _id === "" ||
+               _zone === "" ||
+               _column === "" ||
+               _location === "" ||
+               _palletStatus === "" ||
+               _merchandise === "" ||
+               _palletType === "" ||
+               _palletHeight === "" ||
+               _palletWidth === "" ||
+               _palletLength === "";
+    }
+
     function updateBufferPallet(jsonStr) {
         var jsonObj = JSON.parse(jsonStr); // Parse the JSON string into a JavaScript object
 
         // Update the text fields with parsed data
-        _id = jsonObj.stt.toString() || "";
+        _id = jsonObj.id.toString() || "";
         _zone = jsonObj.zone_id.toString() || "";
         _column = jsonObj.column_id.toString() || "";
         _location = jsonObj.location_id.toString() || "";
@@ -56,29 +69,13 @@ Item {
         console.log("buffer_id: " + _id);
     }
 
-    // function addBufferPallet() {
-    //     if (___id.text === "-----") {
-    //         jsonObject = {
-    //             "_id": ___id.text,
-    //             "id": _id.text,
-    //             "id_hang": _id_hang.text,
-    //             "status": _status.text,
-    //             "stt": _stt.text,
-    //             "type": _type.text,
-    //             "height": _height.text,
-    //             "width": _width.text,
-    //             "length": _length.text,
-    //             "zone_id": _zone_id.text,
-    //             "column_id": _column_id.text,
-    //             "location_id": _location_id.text
-    //         };
-    //         backend.addDataBuffer(JSON.stringify(jsonObject, null, 2));
-    //     } else {
-    //         _headerLayoutText = " Mục đã tồn tại - hãy ấn sửa ";
-    //     }
-    // }
+    function addBufferPallet() {
+        confirmShow.info_text = qsTr("Can not add new buffer zone");
+        confirmShow.header_type = 3;
+        statusIndicate.open();
+    }
 
-    function deleteBufferPallet(bufferId) {
+    function deleteBufferPallet() {
         if (_id !== "") {
             backend.deleteDataBuffer(_id);
         } else {
@@ -89,6 +86,27 @@ Item {
     }
 
     function saveBufferPallet(queueId) {
+        if (!hasEmptyField()) {
+            var jsonObject = {
+                "id": _id,
+                "zone_id": _zone,
+                "column_id": _column,
+                "location_id": _location,
+                "status": _palletStatus,
+                "id_hang": _merchandise,
+                "type": _palletType,
+                "height": _palletHeight,
+                "width": _palletWidth,
+                "length": _palletLength
+            };
+            backend.saveDataBuffer(JSON.stringify(jsonObject, null, 2));
+        } else {
+            console.log("Error save to queue");
+            console.log("Please input required fields");
+            confirmShow.info_text = qsTr("Please input required fields");
+            confirmShow.header_type = 3;
+            statusIndicate.open();
+        }
     }
 
     /*
@@ -118,6 +136,11 @@ Item {
             confirmShow.header_type = 4;
             statusIndicate.open();
         }
+        onBufferJsonEdited: {
+            confirmShow.info_text = qsTr("Saved buffer successfully");
+            confirmShow.header_type = 4;
+            statusIndicate.open();
+        }
     }
 
     Connections {
@@ -125,10 +148,10 @@ Item {
         onPopupLoaded: {
             clearTextFields();
         }
-        // onAddDataRequest: {
-        //     console.log("queue get add request");
-        //     addBufferPallet();
-        // }
+        onAddDataRequest: {
+            console.log("queue get add request");
+            addBufferPallet();
+        }
         onSaveDataRequest: {
             console.log("buffer get save request");
             saveBufferPallet();

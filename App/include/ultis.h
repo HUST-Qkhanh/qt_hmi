@@ -7,7 +7,7 @@ class jsonKeys {
     jsonKeys(/* args */){}
     ~jsonKeys(){}
     std::string queueIndex = "queue";
-    std::string bufferIndex = "stt";
+    std::string bufferIndex = "id";
     std::string merchandise = "Merchandise";
     std::string count = "Count";
     std::string palletType = "pallet_type";
@@ -19,6 +19,8 @@ class jsonKeys {
     std::string columnId = "column_id";
     std::string zoneId = "zone_id";
     std::string bufferType = "type";
+    std::string bufferStatus = "status";
+    std::string bufferMerchandise = "id_hang";
 
     bool hasRequiredKeys(const json& obj, const std::vector<std::string>& keys) {
         for (const auto& key : keys) {

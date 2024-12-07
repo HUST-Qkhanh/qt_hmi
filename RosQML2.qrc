@@ -1,6 +1,6 @@
 
 <RCC>
-<qresource prefix="/">
+<qresource>
 <file>App/include/config.json</file>
 <file>RosQML2.qmlproject</file>
 <file>RosQML2/Constants.qml</file>
@@ -18,6 +18,7 @@
 <file>RosQML2Content/KeyboardStyle.qml</file>
 <file>RosQML2Content/List1.qml</file>
 <file>RosQML2Content/Mission.qml</file>
+<file>RosQML2Content/MyActionButtonLayout.qml</file>
 <file>RosQML2Content/MyBuffer_item.qml</file>
 <file>RosQML2Content/MyGrid_queue.qml</file>
 <file>RosQML2Content/MyModel_pallet.qml</file>
@@ -48,6 +49,7 @@
 <file>RosQML2Content/asset/dart-mission-goal-success-svgrepo-com.svg</file>
 <file>RosQML2Content/asset/done_all_alt_round.svg</file>
 <file>RosQML2Content/asset/edit.svg</file>
+<file>RosQML2Content/asset/favpng_box-pallet-logistics.png</file>
 <file>RosQML2Content/asset/full.svg</file>
 <file>RosQML2Content/asset/low-battery-svgrepo-com.svg</file>
 <file>RosQML2Content/asset/minimize-8.svg</file>
@@ -60,6 +62,7 @@
 <file>RosQML2Content/asset/sound.svg</file>
 <file>RosQML2Content/asset/svg.svg</file>
 <file>RosQML2Content/asset/svg_2.svg</file>
+<file>RosQML2Content/asset/transfer_long_right_light.svg</file>
 <file>RosQML2Content/asset/trash.svg</file>
 <file>RosQML2Content/asset/tv.svg</file>
 <file>RosQML2Content/asset/zoom.svg</file>

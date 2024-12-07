@@ -33,7 +33,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
   ${catkin_INCLUDE_DIRS}
 
   # /home/mkac/mav_ws/devel/include
-  /home/mkac/amr_ws/devel/include
+  # /home/mkac/amr_ws/devel/include
 )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE

@@ -17,8 +17,8 @@ Item {
 
     property string jsonQueue: ''
     function clearTextFields() {
-        // _count = qsTr("");
-        // _merchandise = qsTr("");
+        _count = qsTr("");
+        _merchandise = qsTr("");
         _pallet_type = qsTr("");
 
         _height = qsTr("");
@@ -39,12 +39,12 @@ Item {
     }
 
     function addModelPallet() {
-        if (_merchandise !== "" && _count !== "" && _height !== "" && _width !== "" && _length !== "" && _pallet_type !== "") {
+        if (_merchandise !== "" && _count !== "" && _id !== "") {
             var jsonObject = {
                 "Merchandise": _merchandise,
                 "Count": _count,
                 "height": _height,
-                "width": _width,
+                "width": _width_,
                 "length": _length,
                 "pallet_type": _pallet_type
             };
@@ -62,25 +62,11 @@ Item {
             "Count": _count
         };
         clearTextFields();
-        backend.deleteDataModel(JSON.stringify(jsonObject, null, 2));
+        backend.deleteDataModel(jsonObject);
     }
 
-    function saveModelPallet() {
-        if (_merchandise !== "" && _count !== "" && _height !== "" && _width !== "" && _length !== "" && _pallet_type !== "") {
-            var jsonObject = {
-                "Merchandise": _merchandise,
-                "Count": _count,
-                "height": _height,
-                "width": _width,
-                "length": _length,
-                "pallet_type": _pallet_type
-            };
-            backend.saveDataModel(JSON.stringify(jsonObject, null, 2));
-        } else {
-            confirmShow.info_text = qsTr("Please input required fields");
-            confirmShow.header_type = 3;
-            statusIndicate.open();
-        }
+    function saveModelPallet(queueId) {
+
     }
 
     /*
@@ -96,9 +82,10 @@ Item {
     Connections {
         target: roundButton
         onClicked: {
+            
             console.log("search for model:" + list_model.currentText + " <>" + list_count.currentText);
-
-            backend.searchModel(list_model.currentText, list_count.currentText);
+            
+            backend.searchModel(list_model.currentText, list_count.currentText)
         }
     }
     //TODO: connection for updating dataview when cell is pressed
@@ -119,11 +106,6 @@ Item {
             confirmShow.header_type = 4;
             statusIndicate.open();
         }
-        onModelJsonEdited: {
-            confirmShow.info_text = qsTr("Saved to collection");
-            confirmShow.header_type = 4;
-            statusIndicate.open();
-        }
         //TODO: update curent popup view when data is changed
     }
     //NOTE: Handle the action when button is pressed
@@ -134,18 +116,18 @@ Item {
             // backend.updateMerchandiseList();
             // backend.updateCountList();
         }
-        onAddDataRequest: {
-            console.log("model get add request");
-            addModelPallet();
-        }
-        onSaveDataRequest: {
-            console.log("model get save request");
-            saveModelPallet();
-        }
-        onDeleteDataRequest: {
-            console.log("model get remove request");
-            deleteModelPallet();
-        }
+        // onAddDataRequest: {
+        //     console.log("model get add request");
+        //     addModelPallet();
+        // }
+        // onSaveDataRequest: {
+        //     console.log("model get save request");
+        //     saveModelPallet();
+        // }
+        // onDeleteModelRequest: {
+        //     console.log("model get remove request");
+        //     deleteModelPallet();
+        // }
     }
 
     Rectangle {
@@ -268,7 +250,8 @@ Item {
                 // property var model_pallet_: backend.getListModel()
                 model: backend.pModelMerchandiseList
 
-                Component.onCompleted: backend.updateMerchandiseList()
+                Component.onCompleted:
+                    backend.updateMerchandiseList();
                 onEditTextChanged: {
                     model_data = editText;
                     // __id__.text = "-----";
@@ -383,6 +366,8 @@ Item {
                 Layout.fillHeight: false
                 Layout.column: 2
             }
+
+
         }
 
         Image {
@@ -397,4 +382,6 @@ Item {
             fillMode: Image.PreserveAspectFit
         }
     }
+
+
 }
