@@ -63,7 +63,8 @@
 // #include <OpenXLSX.hpp>
 
 using json = nlohmann::json;
-class Backend : public QObject {
+class Backend : public QObject
+{
     Q_OBJECT
     Q_PROPERTY(double batteryPercentage READ batteryPercentage NOTIFY batteryPercentageChanged)
     Q_PROPERTY(double batteryVoltage READ batteryVoltage NOTIFY batteryVoltageChanged)
@@ -81,6 +82,7 @@ class Backend : public QObject {
     Q_PROPERTY(QString fetchedBufferJson READ getBufferJson NOTIFY bufferJsonChanged)
 
     Q_PROPERTY(QString fetchedQueueJson READ getQueueJson NOTIFY queueJsonChanged)
+    Q_PROPERTY(QString queueSeekModel READ getQueueSeekModel NOTIFY queueSeekChanged)
     Q_PROPERTY(QString fetchedModelJson READ getModelJson NOTIFY modelJsonChanged)
 
     Q_PROPERTY(QVariantList pQueueListModel READ getQueueListModel NOTIFY pQueueListModelChanged)
@@ -88,62 +90,78 @@ class Backend : public QObject {
 
     Q_PROPERTY(QStringList pModelMerchandiseList READ getMerchandiseList NOTIFY pModelMerchandiseListChanged)
     Q_PROPERTY(QStringList pModelCountList READ getCountList NOTIFY pModelCountListChanged)
-    
+
     // Q_PROPERTY(bool isQueueListModelLoaded READ isQueueListModelLoaded NOTIFY isQueueListModelLoadedChanged)
 
-
-   public slots:
+public slots:
     // QUEUE
-    void queueJsonFetched(const QString &result) {
+    void queueJsonFetched(const QString &result)
+    {
         fetchedQueueStr = result.toStdString();
         emit queueJsonChanged();
     };
-    void queueDbAdded(const QString &result) {
+    void queueSeekModelDone(const QString &result)
+    {
+        queueSeekModelJson = result.toStdString();
+        emit queueSeekChanged();
+    };
+    void queueDbAdded(const QString &result)
+    {
         fetchedQueueStr = result.toStdString();
         emit queueJsonAdded();
     };
-    void queueDbDeleted(const QString &result) {
+    void queueDbDeleted(const QString &result)
+    {
         emit queueJsonDeleted();
     };
-    void queueDbSaved(const QString &result) {
+    void queueDbSaved(const QString &result)
+    {
         emit queueJsonEdited();
     };
     // BUFFER
-    void bufferJsonFetched(const QString &result) {
+    void bufferJsonFetched(const QString &result)
+    {
         ROS_ERROR("bufferJsonFetched");
         fetchedBufferStr = result.toStdString();
         emit bufferJsonChanged();
     };
-    void bufferDbAdded(const QString &result) {
+    void bufferDbAdded(const QString &result)
+    {
         fetchedQueueStr = result.toStdString();
         emit bufferJsonAdded();
     };
-    void bufferDbDeleted(const QString &result) {
+    void bufferDbDeleted(const QString &result)
+    {
         emit bufferJsonDeleted();
     };
-    void bufferDbSaved(const QString &result) {
+    void bufferDbSaved(const QString &result)
+    {
         emit bufferJsonEdited();
     };
     // MODEL
-    void modelJsonFetched(const QString &result) {
-        ROS_ERROR("bufferJsonFetched");
+    void modelJsonFetched(const QString &result)
+    {
+        // ROS_ERROR("modelJsonFetched");
         fetchedModelStr = result.toStdString();
         emit modelJsonChanged();
     };
-    void modelDbAdded(const QString &result) {
+    void modelDbAdded(const QString &result)
+    {
         fetchedQueueStr = result.toStdString();
         emit modelJsonAdded();
     };
-    void modelDbDeleted(const QString &result) {
+    void modelDbDeleted(const QString &result)
+    {
         emit modelJsonDeleted();
     };
-    void modelDbSaved(const QString &result) {
+    void modelDbSaved(const QString &result)
+    {
         emit modelJsonEdited();
     };
     void colorPalletQueue(const std::vector<std::string> &result);
     void colorPalletBuffer(const std::vector<std::string> &result);
 
-   signals:
+signals:
     void batteryPercentageChanged();
     void batteryVoltageChanged();
     void batteryCurrentChanged();
@@ -163,6 +181,7 @@ class Backend : public QObject {
 
     // QUEUE
     void queueJsonChanged();
+    void queueSeekChanged();
     void queueJsonAdded();
     void queueJsonAddFailed(const QString &error);
     void queueJsonEdited();
@@ -193,10 +212,12 @@ class Backend : public QObject {
     void pModelMerchandiseListChanged();
     void pModelCountListChanged();
 
-    //TODO: create a Tableview of pallet_model collection
-    // void pListModelChanged();
+    // TODO: create a Tableview of pallet_model collection
+    //  void pListModelChanged();
 
-   private:
+    void serviceTimeout();
+
+private:
     ros::NodeHandle nh;
     QQmlApplicationEngine *engine = nullptr;
     QObject *rootObject;
@@ -284,7 +305,7 @@ class Backend : public QObject {
     std::string statusValueSystem;
     std::string _queue;
     std::string zone_;
-    std::string fetchedQueueStr;
+    std::string fetchedQueueStr, queueSeekModelJson;
     std::string fetchedBufferStr;
     std::string fetchedModelStr;
     bool bug_manual_mode;
@@ -299,47 +320,55 @@ class Backend : public QObject {
     double vel_angular;
     // json deleteObjQueue(int queue);
     void arrangeQueue();
-    void delayFunction(int milliseconds) {
+    void delayFunction(int milliseconds)
+    {
         std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
     }
     void switchColorBuffer(mongocxx::collection coll, std::string old_id);
     void switchColorQueue(mongocxx::collection coll, std::string old_id, std::string update_id);
     json lookupPalletModel(std::string model, std::string count);
 
-    std::string exec(const char *cmd) {
+    std::string exec(const char *cmd)
+    {
         std::array<char, 128> buffer;
         std::string result;
         std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
         if (!pipe)
             throw std::runtime_error("popen() failed!");
-        while (!feof(pipe.get())) {
+        while (!feof(pipe.get()))
+        {
             if (fgets(buffer.data(), 128, pipe.get()) != nullptr)
                 result += buffer.data();
         }
         return result;
     }
 
-    int getVolumePercentage(const std::string &mixerOutput) {
+    int getVolumePercentage(const std::string &mixerOutput)
+    {
         std::istringstream ss(mixerOutput);
         std::string line;
-        while (std::getline(ss, line)) {
+        while (std::getline(ss, line))
+        {
             size_t pos = line.find("[");
-            if (pos != std::string::npos && line.find("%]") != std::string::npos) {
+            if (pos != std::string::npos && line.find("%]") != std::string::npos)
+            {
                 std::string percentage = line.substr(pos + 1, line.find("%") - pos - 1);
                 // ROS_INFO_STREAM(std::stoi(percentage));
                 return std::stoi(percentage);
             }
         }
-        return -1;  // return -1 if not found
+        return -1; // return -1 if not found
     }
     // std::string getStringWithPrecision(float value, int precision) ;
-    float stringToFloat(const std::string &str) {
+    float stringToFloat(const std::string &str)
+    {
         std::stringstream ss(str);
         float result;
         ss >> result;
         return result;
     }
-    double stringToDouble(const std::string &str) {
+    double stringToDouble(const std::string &str)
+    {
         std::stringstream ss(str);
         double result;
         ss >> result;
@@ -357,13 +386,15 @@ class Backend : public QObject {
     // bool m_isQueueListModelLoaded;
     jsonKeys keys;
 
-   public:
+public:
     explicit Backend(QObject *parent = nullptr);
     QTranslator m_translator;
-    void setEngine(QQmlApplicationEngine *eng) {
+    void setEngine(QQmlApplicationEngine *eng)
+    {
         engine = eng;
         arrangeQueue();
-        while (engine->rootObjects().isEmpty()) {
+        while (engine->rootObjects().isEmpty())
+        {
         };
         rootObject = engine->rootObjects().first();
         // colorPallet(collection, "zone_", "zone_id", "");
@@ -382,6 +413,7 @@ class Backend : public QObject {
     QString systemStatus() const;
     QString updateStatus() const;
     QString getQueueJson() const;
+    QString getQueueSeekModel() const;
     QString getModelJson() const;
     QString getBufferJson() const;
     double getLinear() const;
@@ -431,18 +463,21 @@ class Backend : public QObject {
     Q_INVOKABLE void deleteDataModel(QString jsonstring);
 
     Q_INVOKABLE QString getStateSystem();
-    Q_INVOKABLE void updateMerchandiseList(); //Merchandise list
-    Q_INVOKABLE void updateCountList(); //Count list
+    Q_INVOKABLE void updateMerchandiseList(); // Merchandise list
+    Q_INVOKABLE void updateCountList();       // Count list
     Q_INVOKABLE QStringList getMerchandiseList();
     Q_INVOKABLE QStringList getCountList();
     Q_INVOKABLE void updateComboBox(QString model, QString count);
-    Q_INVOKABLE QStringList getListModel() {
+    Q_INVOKABLE QStringList getListModel()
+    {
         return *models;
     }
-    Q_INVOKABLE QStringList getListCount() {
+    Q_INVOKABLE QStringList getListCount()
+    {
         return *counts;
     }
-    Q_INVOKABLE void set_color() {
+    Q_INVOKABLE void set_color()
+    {
         updateFetchedList();
     }
     Q_INVOKABLE QString openFileDialog();
@@ -454,12 +489,12 @@ class Backend : public QObject {
 
     /**
      * @brief swich position number of 2 docs
-     * 
-     * @param from 
-     * @param to 
-     * @return Q_INVOKABLE 
+     *
+     * @param from
+     * @param to
+     * @return Q_INVOKABLE
      */
     Q_INVOKABLE void switchDocs(int from, int to);
 };
 
-#endif  // BACKEND_H
+#endif // BACKEND_H

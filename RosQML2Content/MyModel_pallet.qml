@@ -97,7 +97,6 @@ Item {
         target: roundButton
         onClicked: {
             console.log("search for model:" + list_model.currentText + " <>" + list_count.currentText);
-
             backend.searchModel(list_model.currentText, list_count.currentText);
         }
     }

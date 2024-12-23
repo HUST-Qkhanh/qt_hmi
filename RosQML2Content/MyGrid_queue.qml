@@ -18,6 +18,7 @@ Item {
     property alias _width: _width_.text
     property alias _length: _length_.text
     property alias _palletType: _pallet_type_.text
+    property alias _palletInfo: _pallet_info_.text
 
     property string jsonQueue: ''
 
@@ -79,7 +80,7 @@ Item {
     //TODO:TESTED
     function updateQueuePallet(jsonStr) {
         var jsonObj = JSON.parse(jsonStr); // Parse the JSON string into a JavaScript object
-
+        console.log("jsonObj: " + jsonStr);
         // Update the text fields with parsed data
         _merchandise = jsonObj.Merchandise || "";
         _count = jsonObj.Count || "";
@@ -88,8 +89,28 @@ Item {
         _length = jsonObj.length || "";
         _palletType = jsonObj.pallet_type || "";
         _id = jsonObj.queue || "";
-
+        _palletInfo = jsonObj.PalletInfo || "";
         console.log("queue_id: " + jsonObj.queue);
+    }
+
+    function updateQueueSeekPallet(jsonStr) {
+        var jsonObj = JSON.parse(jsonStr); // Parse the JSON string into a JavaScript object
+        console.log("jsonObj: " + jsonStr);
+        if (jsonObj) {
+            _height = jsonObj.height ?? "";
+            _width = jsonObj.width ?? "";
+            _length = jsonObj.length ?? "";
+            _palletType = jsonObj.pallet_type ?? "";
+            // _id = jsonObj.queue ?? "";
+        } else {
+            console.error("jsonObj is null or undefined");
+            // Assign default values if necessary
+            _height = "";
+            _width = "";
+            _length = "";
+            _palletType = "";
+            // _id = "";
+        }
     }
 
     //TODO: TESTED
@@ -141,6 +162,12 @@ Item {
         updateQueuePallet(jsonQueue);
     }
 
+    function getQueueSeekPallet() {
+        var jsonQueue = backend.queueSeekModel;
+        console.log("Seeked queue json:" + jsonQueue);
+        updateQueueSeekPallet(jsonQueue);
+    }
+
     /*
 
                                    _   _
@@ -162,6 +189,10 @@ Item {
         onQueueJsonChanged: {
             getQueuePallet();
         }
+        onQueueSeekChanged: {
+            getQueueSeekPallet();
+        }
+
         onQueueJsonAdded: {
             confirmShow.info_text = qsTr("Added to queue");
             confirmShow.header_type = 4;
@@ -248,6 +279,8 @@ Item {
                 Layout.preferredHeight: 50 * grid_queue.height / 600
                 Layout.row: 1
                 Layout.column: 0
+                onEditingFinished: console.log("Editing finished. Final text:", text)
+
                 /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -417,9 +450,27 @@ Item {
                 Layout.preferredWidth: 300 * grid_queue.width / 1000
                 Layout.preferredHeight: 50 * grid_queue.height / 600
                 Layout.fillHeight: true
-                Layout.row: 4
+                Layout.row: 5
                 Layout.column: 0
                 onClicked: backend.searchModel(_Merchandise_.text, _Count_.text)
+            }
+
+            TextField {
+                id: _pallet_info_
+                property real radius: 5
+                text: qsTr("")
+                font.pixelSize: 10 * _Merchandise_.height / 35
+                verticalAlignment: Text.AlignVCenter
+                placeholderTextColor: Constants.textColorSecondary
+                placeholderText: qsTr("Pallet Info")
+                objectName: "_pallet_info__"
+                property bool isBold: false
+                Layout.row: 4
+                Layout.preferredWidth: 300 * grid_queue.width / 1000
+                Layout.preferredHeight: 50 * grid_queue.height / 600
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.column: 0
             }
         }
 

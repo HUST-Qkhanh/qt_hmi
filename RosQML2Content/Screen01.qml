@@ -49,6 +49,9 @@ Rectangle {
     property string model_data: ""
     property string count_data: ""
     property int item_count: loadConfig()
+    property real scaleFactorWidth: parent.width / 600
+    property real scaleFactorHeight: parent.height / 400
+    property real scaleFactor: Math.min(scaleFactorWidth, scaleFactorHeight)
 
     /*
 
@@ -102,6 +105,74 @@ Rectangle {
     // onClosing: {
     //         saveConfig()
     //     }
+
+    Popup {
+        id: statusIndicate
+        // x: page1.width * 0.15
+        // y: page1.height * 0.1
+        anchors.centerIn: parent
+        width: 400 * scaleFactor
+        height: 200 * scaleFactor
+        visible: false
+        dim: true
+        font.italic: true
+        font.pointSize: 50
+        font.family: "Ubuntu"
+        modal: false
+        focus: true
+        z: 99
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        enter: Transition {
+            ParallelAnimation {
+                NumberAnimation {
+                    properties: "opacity"
+                    from: 0
+                    to: 1
+                    duration: 64
+                }
+                NumberAnimation {
+                    properties: "scale"
+                    from: 0.75
+                    to: 1
+                    duration: 64
+                }
+            }
+        }
+        exit: Transition {
+            ParallelAnimation {
+                NumberAnimation {
+                    properties: "opacity"
+                    from: 1
+                    to: 0
+                    duration: 64
+                }
+                NumberAnimation {
+                    properties: "scale"
+                    from: 1
+                    to: 0.75
+                    duration: 64
+                }
+            }
+        }
+        contentItem: Rectangle {
+            anchors.fill: parent
+            color: "transparent"  // Ensure there's no background color interfering
+        }
+
+        ConfirmShow {
+            id: confirmShow
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.fill: parent
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+        }
+    }
+
     Popup {
         id: popup
         // x: page1.width * 0.15
@@ -620,7 +691,6 @@ Rectangle {
     //     anchors.rightMargin: 0
     //     anchors.bottomMargin: 0
 
-
     //     TextField {
     //         id: textField1
     //         text: "BF1"
@@ -668,7 +738,6 @@ Rectangle {
     //     anchors.bottomMargin: 73
     //     importScene: perspectiveCamera
     //     camera: perspectiveCamera
-
 
     //     // Lighting
     //         // DirectionalLight {

@@ -323,6 +323,11 @@ QString Backend::getQueueJson() const
 {
     return QString::fromStdString(fetchedQueueStr);
 }
+
+QString Backend::getQueueSeekModel() const
+{
+    return QString::fromStdString(queueSeekModelJson);
+}
 QString Backend::getBufferJson() const
 {
     return QString::fromStdString(fetchedBufferStr);
@@ -743,11 +748,73 @@ void Backend::updateFetchedList()
 void Backend::getDataQueue(const int &id)
 {
     ROS_ERROR_STREAM("set QUEUE for " << id);
-    // ThreadPoolManager threadManager;
-    connect(&threadManager, &ThreadPoolManager::getQueueTaskCompleted, this, &Backend::queueJsonFetched, Qt::UniqueConnection);
+    json filter;
+    filter[keys.queueIndex] = id;
+    std::string fetchedQueue = "";
+
+    // std::cout << "FILTER: " << filter.dump() << "\n";
+    dbClient_->fetchFromCollection("admin", "pallet_queue", filter.dump(),
+                                   fetchedQueue);
+    // std::cout << "FETCHED JSON: " << fetchedStr << "\n";
+
+    if (fetchedQueue == "")
+    {
+        qDebug() << "GetQueueTask Task failed.";
+        return;
+    }
+    json fetchedQueueJson;
+    try
+    {
+        fetchedQueueJson = json::parse(fetchedQueue);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        return;
+    }
+
+    // search model to get dimensions and type
+    std::string merchandise, count;
+    merchandise = fetchedQueueJson.at(keys.merchandise).get<std::string>();
+    count = fetchedQueueJson.at(keys.count).get<std::string>();
+    json filterModel;
+    if (merchandise == "" || count == "")
+    {
+        return;
+    }
+    filterModel[keys.merchandise] = merchandise;
+    filterModel[keys.count] = count;
+    std::string fetchedModel = "";
     std::lock_guard<std::mutex> lock(mutex_);
-    GetQueueTask *getQueuePallet = new GetQueueTask(dbClient_, id);
-    threadManager.executeTask(getQueuePallet);
+    dbClient_->fetchFromCollection(database, collection_model, filterModel.dump(),
+                                   fetchedModel);
+
+    if (fetchedModel == "")
+    {
+        // std::cerr << "Can not find model\n";
+        emit queueJsonFetched(QString::fromStdString(fetchedQueueJson.dump())); // leave unknown fields empty
+        return;
+    }
+    json fetchedModelJson;
+    try
+    {
+        fetchedModelJson = json::parse(fetchedModel);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        emit queueJsonFetched(QString::fromStdString(fetchedQueueJson.dump()));
+        return;
+    }
+
+    // add missing data to queue view
+    fetchedQueueJson[keys.height] = fetchedModelJson.at(keys.height);
+    fetchedQueueJson[keys.width] = fetchedModelJson.at(keys.width);
+    fetchedQueueJson[keys.length] = fetchedModelJson.at(keys.length);
+    fetchedQueueJson[keys.palletType] = fetchedModelJson.at(keys.palletType);
+
+    // show the data to queue view
+    emit queueJsonFetched(QString::fromStdString(fetchedQueueJson.dump()));
 }
 void Backend::addDataQueue(const QString &jsonStr)
 {
@@ -801,7 +868,69 @@ void Backend::initQueueListModel(const std::vector<std::string> &result)
 
     for (const auto &jsonString : result)
     {
-        QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString));
+        json fetchedQueueJson;
+        try
+        {
+            fetchedQueueJson = json::parse(jsonString);
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << e.what() << '\n';
+            return;
+        }
+
+        // search model to get dimensions and type
+        std::string merchandise, count;
+        merchandise = fetchedQueueJson.at(keys.merchandise).get<std::string>();
+        count = fetchedQueueJson.at(keys.count).get<std::string>();
+        json filterModel;
+        if (merchandise == "" || count == "")
+        {
+            continue;
+        }
+        filterModel[keys.merchandise] = merchandise;
+        filterModel[keys.count] = count;
+        std::string fetchedModel = "";
+        std::lock_guard<std::mutex> lock(mutex_);
+        dbClient_->fetchFromCollection(database, collection_model, filterModel.dump(),
+                                       fetchedModel);
+
+        if (fetchedModel == "")
+        {
+            // std::cerr << "Can not find model\n";
+            // add the data to queue view model
+            QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(fetchedQueueJson.dump()));
+            if (doc.isObject())
+            {
+                pQueueListModel_.append(doc.object().toVariantMap());
+            }
+            continue;
+        }
+        json fetchedModelJson;
+        try
+        {
+            fetchedModelJson = json::parse(fetchedModel);
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << e.what() << '\n';
+            // add the data to queue view model
+            QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(fetchedQueueJson.dump()));
+            if (doc.isObject())
+            {
+                pQueueListModel_.append(doc.object().toVariantMap());
+            }
+            continue;
+        }
+
+        // add missing data to queue view
+        fetchedQueueJson[keys.height] = fetchedModelJson.at(keys.height);
+        fetchedQueueJson[keys.width] = fetchedModelJson.at(keys.width);
+        fetchedQueueJson[keys.length] = fetchedModelJson.at(keys.length);
+        fetchedQueueJson[keys.palletType] = fetchedModelJson.at(keys.palletType);
+
+        // add the data to queue view model
+        QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(fetchedQueueJson.dump()));
         if (doc.isObject())
         {
             pQueueListModel_.append(doc.object().toVariantMap());
@@ -893,14 +1022,16 @@ void Backend::searchModel(const QString &merchandise, const QString &count)
     std::lock_guard<std::mutex> lock(mutex_);
     dbClient_->fetchFromCollection(database, collection_model, filter.dump(),
                                    fetchedStr);
-
+    json fetchedJson;
     if (fetchedStr == "")
     {
-        std::cerr << "Can not find model\n";
+        // std::cerr << "Can not find model\n";
+        queueSeekModelDone(QString::fromStdString(fetchedJson.dump()));
+        modelJsonFetched(QString::fromStdString(fetchedJson.dump()));
         return;
     }
     // set the position index to max
-    json fetchedJson = json::parse(fetchedStr);
+    fetchedJson = json::parse(fetchedStr);
     auto queueSize = dbClient_->getCollectionSize(database, collection_queue);
 
     // TODO: keep the current queue being displayed
@@ -912,7 +1043,7 @@ void Backend::searchModel(const QString &merchandise, const QString &count)
         fetchedJson[keys.queueIndex] = current_queue.isValid() ? current_queue.toInt() : (queueSize + 1);
     }
     // Output a string to be update on screen
-    queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
+    queueSeekModelDone(QString::fromStdString(fetchedJson.dump()));
     modelJsonFetched(QString::fromStdString(fetchedJson.dump()));
 }
 
@@ -1310,6 +1441,7 @@ void Backend::requestStop(const QString &str)
     else
     {
         ROS_ERROR("Service /stop_trigger_manager not available after timeout.");
+        emit serviceTimeout();
     }
 }
 
@@ -1335,6 +1467,7 @@ void Backend::requestReset(const QString &str)
     else
     {
         ROS_ERROR("Service /reset_error_agf not available after timeout.");
+        emit serviceTimeout();
     }
 }
 

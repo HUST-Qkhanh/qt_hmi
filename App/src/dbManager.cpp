@@ -91,7 +91,7 @@ void MongoDBClient::editInCollection(const std::string &dbName,
         if (result && result->matched_count() > 0) {
             std::cout << "Document updated successfully.\n";
         } else {
-            std::cerr << "No document matched the given filter.\n";
+            // std::cerr << "No document matched the given filter.\n";
         }
     } catch (const std::exception &e) {
         std::cerr << "Error updating document: " << e.what() << std::endl;
@@ -115,7 +115,7 @@ void MongoDBClient::fetchFromCollection(const std::string &dbName,
         // std::cout << "Fetch document successfully: " << fetchedStr << "\n";
         // std::cout << "Fetch document successfully: \n";
     } else {
-        std::cerr << "No document matched the given filter.\n";
+        // std::cerr << "No document matched the given filter.\n";
     }
 }
 

@@ -23,12 +23,13 @@ Rectangle {
 */
     property int state: 0
     property string _headerLayoutText: "Trạng thái"
-    // Calculate scale factors
-    property real scaleFactorWidth: parent.width / 600
-    property real scaleFactorHeight: parent.height / 400
 
-    // Use the smaller factor to maintain aspect ratio
-    property real scaleFactor: Math.min(scaleFactorWidth, scaleFactorHeight)
+    // // Calculate scale factors
+    // property real scaleFactorWidth: parent.width / 600
+    // property real scaleFactorHeight: parent.height / 400
+
+    // // Use the smaller factor to maintain aspect ratio
+    // property real scaleFactor: Math.min(scaleFactorWidth, scaleFactorHeight)
 
     signal popupLoaded
     signal addDataRequest
@@ -79,12 +80,12 @@ Rectangle {
             statusIndicate.close();
         }
     }
-    
+
     // Connections {
     //     target: backend
     //     onAddQueueTaskFailed: {}
     // }
-    
+
 
     /*
 
@@ -96,73 +97,6 @@ Rectangle {
 
 
 */
-
-    Popup {
-        id: statusIndicate
-        // x: page1.width * 0.15
-        // y: page1.height * 0.1
-        anchors.centerIn: parent
-        width: 400 * scaleFactor
-        height: 200 * scaleFactor
-        visible: false
-        dim: true
-        font.italic: true
-        font.pointSize: 50
-        font.family: "Ubuntu"
-        modal: false
-        focus: true
-        z: 99
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-        enter: Transition {
-            ParallelAnimation {
-                NumberAnimation {
-                    properties: "opacity"
-                    from: 0
-                    to: 1
-                    duration: 64
-                }
-                NumberAnimation {
-                    properties: "scale"
-                    from: 0.75
-                    to: 1
-                    duration: 64
-                }
-            }
-        }
-        exit: Transition {
-            ParallelAnimation {
-                NumberAnimation {
-                    properties: "opacity"
-                    from: 1
-                    to: 0
-                    duration: 64
-                }
-                NumberAnimation {
-                    properties: "scale"
-                    from: 1
-                    to: 0.75
-                    duration: 64
-                }
-            }
-        }
-        contentItem: Rectangle {
-            anchors.fill: parent
-            color: "transparent"  // Ensure there's no background color interfering
-        }
-
-        ConfirmShow {
-            id: confirmShow
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.fill: parent
-            anchors.leftMargin: 0
-            anchors.rightMargin: 0
-            anchors.topMargin: 0
-            anchors.bottomMargin: 0
-        }
-    }
 
     ColumnLayout {
         id: columnLayout
@@ -336,8 +270,7 @@ Rectangle {
                 font.family: "ubuntu"
                 font.bold: true
                 display: AbstractButton.TextOnly
-                onClicked:
-                    {
+                onClicked: {
                     backend.updateMerchandiseList();
                     backend.updateCountList();
                 }

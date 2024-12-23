@@ -58,6 +58,13 @@ Item {
             icon = "qrc:/RosQML2Content/asset/done_all_alt_round.svg";
             showCancel = true;
             break;
+        case 5:
+            header_text = qsTr("Timeout");
+            // info_text = qsTr("Request Timeout!");
+            // icon = "asset/done_all_alt_round.svg";
+            icon = "qrc:/RosQML2Content/asset/close_round.svg";
+            showCancel = true;
+            break;
 
         default:
             break;
