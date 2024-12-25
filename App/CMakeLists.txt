@@ -1,7 +1,20 @@
-# include(FetchContent)
+include(FetchContent)
 
-# FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
-# FetchContent_MakeAvailable(json)
+# Fetch nlohmann/json from Git
+FetchContent_Declare(
+  nlohmann_json
+  GIT_REPOSITORY https://github.com/nlohmann/json.git
+  GIT_TAG v3.11.3
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
+# Fetch json-cpp from Git
+FetchContent_Declare(
+  yaml_cpp
+  GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
+  GIT_TAG yaml-cpp-0.7.0
+)
+FetchContent_MakeAvailable(yaml_cpp)
 
 # Find required packages
 find_package(catkin REQUIRED COMPONENTS
@@ -10,10 +23,12 @@ find_package(catkin REQUIRED COMPONENTS
   std_stamped_msgs
 )
 
-find_package(libmongocxx REQUIRED)
-find_package(libbson-1.0 REQUIRED)
+find_package(mongocxx REQUIRED)
+find_package(bsoncxx REQUIRED)
+find_package(Boost REQUIRED)
+# find_package(libmongocxx REQUIRED)
+# find_package(libbsoncxx REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 catkin_package(CATKIN_DEPENDS
@@ -23,17 +38,25 @@ catkin_package(CATKIN_DEPENDS
 )
 
 # Include directories
+message(STATUS "MONGOCXX_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
+message(STATUS "BSONCXX_INCLUDE_DIRS: ${bsoncxx_INCLUDE_DIRS}")
+
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
+  # ${bsoncxx_INCLUDE_DIRS}
+  # ${mongocxx_INCLUDE_DIRS}
+  # ${bsoncxx_INCLUDE_DIRS}/v_noabi
+  # ${mongocxx_INCLUDE_DIRS}/v_noabi
+  ${Boost_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
+  ${yaml_cpp_SOURCE_DIR}/include
+  ${nlohmann_json_SOURCE_DIR}/include
   "/usr/local/include/mongocxx/v_noabi"
   "/usr/local/include/bsoncxx/v_noabi"
   "/usr/local/include/bsoncxx/v_noabi/bsoncxx/third_party/mnmlstc"
   "/usr/local/include/bsoncxx/v_noabi/bsoncxx/third_party/mnmlstc/core"
   "/usr/include/boost"
-  ${catkin_INCLUDE_DIRS}
 
-  # /home/mkac/mav_ws/devel/include
-  # /home/mkac/amr_ws/devel/include
 )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
@@ -57,8 +80,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
   "include/ultis.h"
 )
 
-
-
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
   Qt${QT_VERSION_MAJOR}::Core
   Qt${QT_VERSION_MAJOR}::Gui
@@ -68,37 +89,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
   ${catkin_LIBRARIES}
   /usr/local/lib/libmongocxx.so
   /usr/local/lib/libbsoncxx.so
-
-  # nlohmann_json::nlohmann_json
-  # /usr/lib/x86_64-linux-gnu/libyaml-cpp.so
+  nlohmann_json::nlohmann_json
+  yaml-cpp
 )
-
-
-# BUILD TEST
-# add_executable(singleton_db_test
-#   test/singletonDb.cpp
-#   include/dbManager.h
-#   src/dbManager.cpp)
-
-# target_include_directories(singleton_db_test PRIVATE
-#   ${CMAKE_CURRENT_SOURCE_DIR}/include
-#   "/usr/local/include/mongocxx/v_noabi"
-#   "/usr/local/include/bsoncxx/v_noabi"
-#   "/usr/local/include/bsoncxx/v_noabi/bsoncxx/third_party/mnmlstc"
-#   "/usr/local/include/bsoncxx/v_noabi/bsoncxx/third_party/mnmlstc/core"
-#   "/usr/include/boost"
-#   ${catkin_INCLUDE_DIRS}
-# )
-
-# target_link_libraries(singleton_db_test
-#   ${catkin_LIBRARIES}
-#   /usr/local/lib/libmongocxx.so # Thay đổi đường dẫn tuyệt đối này nếu cần thiết
-#   /usr/local/lib/libbsoncxx.so # Thay đổi đường dẫn tuyệt đối này nếu cần thiết
-#   nlohmann_json::nlohmann_json
-
-#   # ${libbsoncxx_LIBRARIES}
-#   # ${libmongocxx_LIBRARIES}
-# )
-# set_target_properties(singleton_db_test PROPERTIES
-#   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
-# )
