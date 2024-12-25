@@ -112,14 +112,14 @@ Item {
                         }
 
                         Component.onCompleted: {
-                            var type = +modelData["pallet_type"];
+                            var type = modelData["pallet_type"] !== null ? +modelData["pallet_type"] : null;
                             
                             switch (type) {
-                            case 0: boxItem.color = "#ffeb3b"; break;
-                            case 1: boxItem.color = "#ff9800"; break;
-                            case 4: boxItem.color = "#2196f3"; break;
-                            case 3: boxItem.color = "#4caf50"; break;
-                            default: boxItem.color = "#EA4335"; break;
+                                case 0: boxItem.color = "#ffeb3b"; break;
+                                case 1: boxItem.color = "#ff9800"; break;
+                                case 4: boxItem.color = "#2196f3"; break;
+                                case 3: boxItem.color = "#4caf50"; break;
+                                default: boxItem.color = "#EA4335"; break;
                             }
                         }
                     }

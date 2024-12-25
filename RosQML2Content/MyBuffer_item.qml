@@ -7,7 +7,7 @@ Item {
     id: buffer_item
 
     property alias _id: _stt.text
-
+    property alias _count1: _count.text
     property alias _zone: _zone_id.text
     property alias _column: _column_id.text
     property alias _location: _location_id.text
@@ -97,7 +97,8 @@ Item {
                 "type": _palletType,
                 "height": _palletHeight,
                 "width": _palletWidth,
-                "length": _palletLength
+                "length": _palletLength,
+                "Count": _count1
             };
             backend.saveDataBuffer(JSON.stringify(jsonObject, null, 2));
         } else {
