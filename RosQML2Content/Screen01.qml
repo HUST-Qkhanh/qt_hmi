@@ -14,11 +14,6 @@ import RosQML2
 // import backendqt 1.0
 import QtQuick.Studio.DesignEffects
 import QtQuick3D 6.7
-// import QtQuick3D.Materials 6.7
-import QtQuick3D.Helpers 6.7
-import QtQuick3D.Particles3D 6.7
-import QtQuick3D.Physics
-import Generated.QtQuick3D.Forklift
 
 Rectangle {
     id: page1
@@ -105,7 +100,6 @@ Rectangle {
         pop_up_2.close();
         backend.set_color();
     }
-
     // Component.onCompleted: loadConfig()
 
     // onClosing: {
@@ -556,7 +550,6 @@ Rectangle {
 
     Image {
         id: pngegg
-        visible: false
         anchors.left: columnLayout.right
         anchors.right: parent.right
         anchors.top: columnLayout.top
@@ -736,61 +729,60 @@ Rectangle {
 
     // }
 
-    View3D {
-        visible: true
-        anchors.left: columnLayout.right
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.leftMargin: 6
-        anchors.rightMargin: 10
-        anchors.topMargin: 64
-        anchors.bottomMargin: 176
-        clip: true
-        importScene: perspectiveCamera
-        camera: perspectiveCamera
+    // View3D {
+    //     visible: true
+    //     anchors.fill: parent
+    //     anchors.leftMargin: 160
+    //     anchors.rightMargin: 139
+    //     anchors.topMargin: 151
+    //     anchors.bottomMargin: 73
+    //     importScene: perspectiveCamera
+    //     camera: perspectiveCamera
 
-        PerspectiveCamera {
-            id: perspectiveCamera
-            x: 150
-            y: 32.599
-            eulerRotation.z: 0
-            eulerRotation.y: 90.00002
-            eulerRotation.x: 0
-            z: -0
-        }
+    //     // Lighting
+    //         // DirectionalLight {
+    //         //     worldPosition: Qt.vector3d(0, 200, 200)
+    //     //     intensity: 1.0
+    //     // }
 
-        DirectionalLight {
-            id: directionalLight
-            x: 200
-            y: 100
-            brightness: 1.44
-            z: 150
-            eulerRotation.z: 68.60193
-            eulerRotation.y: 104.31462
-            eulerRotation.x: -34.65181
-        }
+    //     // 3D Model
 
-        Forklift {
-            id: forklift
-            scale.z: 30
-            scale.y: 30
-            scale.x: 30
+    //     PerspectiveCamera {
+    //         id: perspectiveCamera
+    //         x: -7.6
+    //         y: 0
+    //         eulerRotation.z: -0.93604
+    //         eulerRotation.y: -0.93604
+    //         eulerRotation.x: -0.00765
+    //         z: 330.52588
 
-            NumberAnimation on eulerRotation.y {
-                from: 0
-                to: 360
-                duration: 10000
-                loops: Animation.Infinite
-                running: true
-            }
-        }
-    }
+    //             Model {
+    //                 id: cube
+    //                 x: -14.111
+    //                 y: 0
+    //                 source: "#Cube"
+    //                 eulerRotation.z: 18.20031
+    //                 eulerRotation.y: 42.55695
+    //                 eulerRotation.x: 13.64559
+    //                 z: -430.27103
+    //                 materials: principledMaterial
+    //             }
+    //         }
+
+    //         // // Rotation animation for the model
+    //         // NumberAnimation on model.rotation.y {
+    //         //     from: 0
+    //         //     to: 360
+    //         //     duration: 10000 // Rotate every 10 seconds
+    //         //     loops: Animation.Infinite
+    //         //     running: true
+    //         // }
+    //     }
+
 }
 
 /*##^##
 Designer {
-    D{i:0;matPrevEnvDoc:"SkyBox";matPrevEnvValueDoc:"preview_landscape";matPrevModelDoc:"#Cube"}
-D{i:57;cameraSpeed3d:25;cameraSpeed3dMultiplier:1}
+    D{i:0;matPrevEnvDoc:"SkyBox";matPrevEnvValueDoc:"preview_studio";matPrevModelDoc:"#Sphere"}
 }
 ##^##*/

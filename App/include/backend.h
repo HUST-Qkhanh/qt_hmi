@@ -198,6 +198,7 @@ signals:
     void bufferJsonEditFailed(const QString &error);
     void bufferJsonDeleted();
     void bufferJsonDeleteFailed(const QString &error);
+
     void pBufferListModelChanged();
     // MODEL
     void modelJsonChanged();
@@ -287,7 +288,7 @@ private:
     // std::string uri = "mongodb://localhost:27017";
     std::string uri = "mongodb://localhost:27017";
     std::string database = "admin";
-    std::string collection = "pallet_buffer";
+    std::string collection = " pallet_buffer";
     std::string collection_queue = "pallet_queue";
     std::string collection_model = "pallet_model";
 

@@ -60,7 +60,7 @@ Item {
                 boundsBehavior: Flickable.StopAtBounds
                 flickableDirection: Flickable.HorizontalFlick
                 // model: backend.isQueueListModelLoaded ? backend.pQueueListModel : null//List1 {}
-                model: backend.pBufferListModel
+                model: backend.pBufferListModel//List1 {}
                 orientation: ListView.Horizontal // Set to horizontal
 
                 // Adjust ScrollView content width for horizontal scrolling
