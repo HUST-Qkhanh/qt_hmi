@@ -22,6 +22,14 @@ class jsonKeys {
     std::string bufferStatus = "status";
     std::string bufferMerchandise = "id_hang";
 
+    //robot status
+    std::string auto_mode = "AUTO";
+    std::string manual_mode = "MANUAL";
+    std::string running_status = "RUNNING";
+    std::string paused_status = "PAUSED";
+    std::string error_status = "ERROR";
+    std::string waiting_status = "WAITING";
+
     bool hasRequiredKeys(const json& obj, const std::vector<std::string>& keys) {
         for (const auto& key : keys) {
             if (!obj.contains(key)) {

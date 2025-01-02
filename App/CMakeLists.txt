@@ -23,8 +23,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_stamped_msgs
 )
 
-find_package(mongocxx REQUIRED)
-find_package(bsoncxx REQUIRED)
+# find_package(mongocxx REQUIRED)
+# find_package(bsoncxx REQUIRED)
 find_package(Boost REQUIRED)
 # find_package(libmongocxx REQUIRED)
 # find_package(libbsoncxx REQUIRED)

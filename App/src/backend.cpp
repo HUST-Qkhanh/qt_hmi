@@ -145,24 +145,23 @@ void Backend::robotStatusCallback(const std_stamped_msgs::StringStamped::ConstPt
         ROS_WARN("Loi chuyen doi json callback /robot_status");
     }
 
-    if (statusValue == "PAUSED")
+    if (statusValue == keys.paused_status)
     {
         getControlStr = QString::fromStdString(statusValue);
         emit getControlChanged();
     }
-    else if (statusValue == "RUNNING")
+    else if (statusValue == keys.running_status)
     {
         getControlStr = QString::fromStdString(statusValue);
-        statusValue = "NORMAL";
         emit getControlChanged();
     }
-    else if (statusValue == "WAITING")
+    else if (statusValue == keys.waiting_status)
     {
-        getControlStr = QString::fromStdString("RUNNING");
+        getControlStr = QString::fromStdString(keys.running_status);
         emit getControlChanged();
     }
 
-    if (robot_mode == "AUTO")
+    if (robot_mode == keys.auto_mode)
     {
         bug_manual_mode = true;
     }
@@ -341,7 +340,7 @@ QString Backend::getModelJson() const
 void Backend::resetError()
 {
     std_stamped_msgs::EmptyStamped msg;
-    if (robotModeStr.toStdString() == "AUTO")
+    if (robotModeStr.toStdString() == keys.auto_mode)
     {
         reset_error_pub.publish(msg);
     }
@@ -364,24 +363,24 @@ void Backend::requestControl(const QString &str)
 {
     std_stamped_msgs::StringStamped request_control_msg;
     request_control_msg.stamp = ros::Time::now();
-    if (robotModeStr.toStdString() == "AUTO")
+    if (robotModeStr.toStdString() == keys.auto_mode)
     {
         if (str.toStdString() == "STOP")
         {
             request_control_msg.data = "STOP";
             request_run_stop_pub.publish(request_control_msg);
         }
-        else
-        {
-            request_control_msg.data = "RUN";
-            request_run_stop_pub.publish(request_control_msg);
-        }
+        // else
+        // {
+        //     request_control_msg.data = "RUN";
+        //     request_run_stop_pub.publish(request_control_msg);
+        // }
     }
-    else
-    {
-        bug_manual_mode = false;
-        // ROS_INFO_STREAM(robotModeStr.toStdString());
-    }
+    // else
+    // {
+    //     bug_manual_mode = false;
+    //     // ROS_INFO_STREAM(robotModeStr.toStdString());
+    // }
 }
 
 int Backend::getVolume()
@@ -1122,13 +1121,21 @@ void Backend::switchDocs(int from, int to)
 void Backend::getDataBuffer(const int &id)
 {
     ROS_ERROR_STREAM("set BUFFER for " << id);
-    // ThreadPoolManager threadManager;
-    connect(&threadManager, &ThreadPoolManager::getBufferTaskCompleted, this, &Backend::bufferJsonFetched, Qt::UniqueConnection);
+    std::lock_guard<std::mutex> lock(mutex_);
+    // qDebug() << "GetBufferTask started on thread:" << QThread::currentThread();
+    json filter;
+    filter["stt"] = id;
+    std::string fetchedStr = "";
 
-    json palletJson;
-
-    GetBufferTask *getBufferPallet = new GetBufferTask(dbClient_, id);
-    threadManager.executeTask(getBufferPallet);
+    dbClient_->fetchFromCollection(database, collection, filter.dump(),
+                                   fetchedStr);
+    if (fetchedStr.empty())
+    {
+        std::cout << "FETCH BUFFER ERROR\n";
+        return;
+    }
+    QString result = QString::fromStdString(fetchedStr);
+    emit bufferJsonFetched(result);
 }
 
 /**
@@ -1413,39 +1420,51 @@ void Backend::switchColorQueue(mongocxx::collection coll, std::string old_id, st
     }
 }
 
-void Backend::requestStop(const QString &str)
+void Backend::requestStop()
 {
-    std_stamped_msgs::StringStamped request_stop_msg;
-    request_stop_msg.stamp = ros::Time::now();
-    std::string data_ = "STOP";
-    request_stop_msg.data = data_;
-    robot_stop_pub.publish(request_stop_msg);
-
-    std_stamped_msgs::StringService::Request req;
-    std_stamped_msgs::StringService::Response res;
-    std_stamped_msgs::StringService srv;
-    req.request = "Hello, this is a request stop_trigger_manager ";
-
-    // Đợi tối đa 2 giây để service sẵn sàng
-    if (ros::service::waitForService("/stop_trigger_manager", ros::Duration(2)))
+    if (robotModeStr.toStdString() == keys.auto_mode)
     {
-        if (stop_error_agf.call(req, res))
+        // Stop current running mission
+        std_stamped_msgs::StringStamped request_control_msg;
+        request_control_msg.stamp = ros::Time::now();
+        request_control_msg.data = "STOP";
+        request_run_stop_pub.publish(request_control_msg);
+
+        // Stop trigger manager
+        std_stamped_msgs::StringStamped request_stop_msg;
+        request_stop_msg.stamp = ros::Time::now();
+        std::string data_ = "STOP";
+        request_stop_msg.data = data_;
+        robot_stop_pub.publish(request_stop_msg);
+
+        std_stamped_msgs::StringService::Request req;
+        std_stamped_msgs::StringService::Response res;
+        std_stamped_msgs::StringService srv;
+        req.request = "Hello, this is a request stop_trigger_manager ";
+
+        // Đợi tối đa 2 giây để service sẵn sàng
+        if (ros::service::waitForService("/stop_trigger_manager", ros::Duration(2)))
         {
-            ROS_INFO("Response: %s", res.respond.c_str());
+            if (stop_error_agf.call(req, res))
+            {
+                ROS_INFO("Response: %s", res.respond.c_str());
+                emit requestStopSucceeded();
+            }
+            else
+            {
+                ROS_ERROR("Failed to call service string_service");
+                emit serviceTimeout();
+            }
         }
         else
         {
-            ROS_ERROR("Failed to call service string_service");
+            ROS_ERROR("Service /stop_trigger_manager not available after timeout.");
+            emit serviceTimeout();
         }
-    }
-    else
-    {
-        ROS_ERROR("Service /stop_trigger_manager not available after timeout.");
-        emit serviceTimeout();
     }
 }
 
-void Backend::requestReset(const QString &str)
+void Backend::requestReset()
 {
     std_stamped_msgs::StringService::Request req;
     std_stamped_msgs::StringService::Response res;
@@ -1453,7 +1472,7 @@ void Backend::requestReset(const QString &str)
     req.request = "Hello, this is a request reset_trigger_manager";
 
     // Đợi tối đa 2 giây để service sẵn sàng
-    if (ros::service::waitForService("/reset_error_agf", ros::Duration(2)))
+    if (ros::service::waitForService("/reset_trigger_manager", ros::Duration(2)))
     {
         if (reset_error_agf.call(req, res))
         {

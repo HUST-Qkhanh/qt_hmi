@@ -48,7 +48,7 @@ Rectangle {
 */
     Connections {
         target: page1
-        onLoadPopupType: {
+        function onLoadPopupType(type){
             if (type === 0) {
                 console.log("load queue view");
 

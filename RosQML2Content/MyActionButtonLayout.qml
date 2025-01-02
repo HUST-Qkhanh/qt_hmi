@@ -19,6 +19,8 @@ RowLayout {
     RoundButton {
         id: stop_button
         text: "STOP"
+        enabled: true
+        checked: false
         flat: false
         layer.samplerName: "source0"
         Layout.preferredWidth: actionButtonLayout.buttonWidth
@@ -30,9 +32,7 @@ RowLayout {
 
         onClicked: {
             if (stop_mode === "STOP") {
-                backend.requestStop("STOP");
-            } else if (stop_mode === "PAUSED") {
-                backend.requestStop("RUN");
+                backend.requestStop();
             }
         }
         // onPressedChanged: {
@@ -77,7 +77,7 @@ RowLayout {
     // }
 
     RoundButton {
-        id: reset_button1
+        id: status_button
         text: "RUNNING"
         highlighted: true
         font.pointSize: 45 * parent.height / 420
@@ -96,7 +96,7 @@ RowLayout {
     }
 
     RoundButton {
-        id: homming_button1
+        id: mode_button
         text: "MANUAL"
         highlighted: true
         font.pointSize: 45 * parent.height / 420
@@ -120,6 +120,65 @@ RowLayout {
         onServiceTimeout: {
             confirmShow.header_type = 5;
             confirmShow.info_text = qsTr("Request timeout");
+            statusIndicate.open();
+        }
+        onRobotModeChanged: {
+            mode_mode = backend.robotMode;
+            control_mode = backend.getControl;
+            status_mode = backend.robotStatus;
+
+            // console.log("mode_mode: " + mode_mode);
+            // console.log("control_mode: " + control_mode);
+            // console.log("status_mode: " + status_mode);
+            
+            if (mode_mode === "AUTO" && control_mode === "RUNNING") {
+                if (status_mode === "WAITING") {
+                    mode_button.background.color = "#3498DB";
+                    mode_button.text = "AUTO";
+                }
+                if (status_mode === "RUNNING") {
+                    mode_button.background.color = "#4CAF50";
+                    mode_button.text = "AUTO";
+                }
+            } else if (mode_mode === "MANUAL" && control_mode === "RUNNING") {
+                mode_button.background.color = "#3498DB";
+                mode_button.text = "MANUAL";
+            }
+        }
+        // onRobotStatusChanged: {
+        //     status_mode = backend.robotStatus;
+
+        //     if ((status_mode === "ERROR") || (status_mode === "EMG")) {
+        //         status_button.background.color = "#F44336";
+        //     } else if (status_mode === "WAITING_INIT_POSE") {
+        //         status_button.background.color = "#FFFFFF";
+        //     } else if (status_mode === "NORMAL") {
+        //         status_button.background.color = "#4CAF50";
+        //     } else if (status_mode === "WAITING") {
+        //         status_button.background.color = "#FFEB3B";
+        //     } else {
+        //         status_button.background.color = "#FF9800";
+        //     }
+        // }
+        onGetControlChanged: {
+
+        }
+
+        onSystemStatusChanged: {
+            state_system = "State AGF: " + backend.getStateSystem();
+
+            status_system = backend.systemStatus;
+            reset_mode = backend.systemStatus;
+            if (backend.systemStatus === "ERROR") {
+                reset_button.background.color = "#F44336";
+            } else if (backend.systemStatus === "NORMAL") {
+                reset_button.background.color = "#4CAF50";
+            }
+        }
+
+        onRequestStopSucceeded: {
+            stop_button.enabled = false;
+            confirmShow.header_type = 6;
             statusIndicate.open();
         }
     }
