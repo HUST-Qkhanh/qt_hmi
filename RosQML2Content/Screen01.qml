@@ -736,61 +736,69 @@ Rectangle {
 
     // }
 
-    View3D {
-        visible: true
+    Rectangle {
+        id: rectangle
+        color: "#ffffff"
+        radius: 10
         anchors.left: columnLayout.right
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
+        anchors.right: header.right
+        anchors.top: columnLayout.top
+        anchors.bottom: columnLayout.bottom
         anchors.leftMargin: 6
-        anchors.rightMargin: 10
-        anchors.topMargin: 64
-        anchors.bottomMargin: 176
-        clip: true
-        importScene: perspectiveCamera
-        camera: perspectiveCamera
+        anchors.rightMargin: 0
+        anchors.topMargin: 0
+        anchors.bottomMargin: 0
 
-        PerspectiveCamera {
-            id: perspectiveCamera
-            x: 150
-            y: 32.599
-            eulerRotation.z: 0
-            eulerRotation.y: 90.00002
-            eulerRotation.x: 0
-            z: -0
-        }
+        View3D {
+            visible: true
+            anchors.fill: parent
+            clip: true
+            importScene: perspectiveCamera
+            camera: perspectiveCamera
 
-        DirectionalLight {
-            id: directionalLight
-            x: 200
-            y: 100
-            brightness: 1.44
-            z: 150
-            eulerRotation.z: 68.60193
-            eulerRotation.y: 104.31462
-            eulerRotation.x: -34.65181
-        }
+            PerspectiveCamera {
+                id: perspectiveCamera
+                x: 150
+                y: 32.599
+                eulerRotation.z: 0
+                eulerRotation.y: 90.00002
+                eulerRotation.x: 0
+                z: -0
+            }
 
-        Forklift {
-            id: forklift
-            scale.z: 30
-            scale.y: 30
-            scale.x: 30
+            DirectionalLight {
+                id: directionalLight
+                x: 200
+                y: 100
+                brightness: 1.44
+                z: 150
+                eulerRotation.z: 68.60193
+                eulerRotation.y: 104.31462
+                eulerRotation.x: -34.65181
+            }
 
-            NumberAnimation on eulerRotation.y {
-                from: 0
-                to: 360
-                duration: 10000
-                loops: Animation.Infinite
-                running: true
+            Forklift {
+                id: forklift
+                scale.z: 30
+                scale.y: 30
+                scale.x: 30
+
+                NumberAnimation on eulerRotation.y {
+                    from: 0
+                    to: 360
+                    duration: 10000
+                    loops: Animation.Infinite
+                    running: true
+                }
             }
         }
     }
+
 }
 
 /*##^##
 Designer {
     D{i:0;matPrevEnvDoc:"SkyBox";matPrevEnvValueDoc:"preview_landscape";matPrevModelDoc:"#Cube"}
-D{i:57;cameraSpeed3d:25;cameraSpeed3dMultiplier:1}
+D{i:57}D{i:58;cameraSpeed3d:25;cameraSpeed3dMultiplier:1}
 }
 ##^##*/

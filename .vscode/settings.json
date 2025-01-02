@@ -6,6 +6,7 @@
         "/opt/ros/noetic/lib/python3/dist-packages"
     ],
     "files.associations": {
+        "*.h": "cpp",
         "*.qml": "qml",
         "qqmlcontext": "cpp",
         "qobject": "cpp",
@@ -83,7 +84,12 @@
         "compare": "cpp",
         "concepts": "cpp",
         "stop_token": "cpp",
-        "semaphore": "cpp"
+        "semaphore": "cpp",
+        "csignal": "cpp",
+        "any": "cpp",
+        "codecvt": "cpp",
+        "filesystem": "cpp",
+        "source_location": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

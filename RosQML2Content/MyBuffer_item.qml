@@ -39,16 +39,7 @@ Item {
     }
 
     function hasEmptyField() {
-        return _id === "" ||
-               _zone === "" ||
-               _column === "" ||
-               _location === "" ||
-               _palletStatus === "" ||
-               _merchandise === "" ||
-               _palletType === "" ||
-               _palletHeight === "" ||
-               _palletWidth === "" ||
-               _palletLength === "";
+        return _id === "" || _zone === "" || _column === "" || _location === "" || _palletStatus === "" || _merchandise === "" || _palletType === "" || _palletHeight === "" || _palletWidth === "" || _palletLength === "";
     }
 
     function updateBufferPallet(jsonStr) {
@@ -110,6 +101,12 @@ Item {
         }
     }
 
+    function getBufferPallet() {
+        var jsonBuffer = backend.fetchedBufferJson;
+        console.log("Fetched buffer json:" + jsonBuffer);
+        updateBufferPallet(jsonBuffer);
+    }
+
     /*
 
                                    _   _
@@ -123,14 +120,13 @@ Item {
 
     Component.onCompleted: {
         clearTextFields();
+        getBufferPallet();
     }
 
     Connections {
         target: backend
         onBufferJsonChanged: {
-            var jsonBuffer = backend.fetchedBufferJson;
-            console.log("Fetched buffer json:" + jsonBuffer);
-            updateBufferPallet(jsonBuffer);
+            getBufferPallet();
         }
         onBufferJsonDeleted: {
             confirmShow.info_text = qsTr("Removed from buffer");

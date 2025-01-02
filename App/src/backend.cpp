@@ -819,18 +819,95 @@ void Backend::getDataQueue(const int &id)
 void Backend::addDataQueue(const QString &jsonStr)
 {
     ROS_ERROR_STREAM("add new doc toQUEUE");
-    connect(&threadManager, &ThreadPoolManager::addQueueTaskCompleted, this, &Backend::queueDbAdded, Qt::UniqueConnection);
+    // qDebug() << "AddQueueTask started on thread:" << QThread::currentThread();
 
-    std::string palletStr = jsonStr.toStdString();
-    // TODO: this only contain Merchandise, Count, queue -> Need to lookup model to add height, width, length
+    json editQueueData;
+    try
+    {
+        editQueueData = json::parse(jsonStr.toStdString());
+        std::cout << "request save:" << editQueueData.dump() << "\n";
+    }
+    catch (const std::exception &e)
+    {
+        qDebug() << e.what() << '\n';
+        emit queueJsonAddFailed("AddQueueTask failed.");
+        return;
+    }
 
-    AddQueueTask *addQueuePallet = new AddQueueTask(dbClient_, palletStr);
-    threadManager.executeTask(addQueuePallet);
+    if (!(editQueueData.contains(keys.merchandise) &&
+          editQueueData.contains(keys.count) &&
+          editQueueData.contains(keys.queueIndex) &&
+          editQueueData.contains(keys.palletInfo)))
+    {
+        qDebug() << "No input merchandise and count to add";
+        emit queueJsonAddFailed("AddQueueTask failed.");
+        return;
+    }
+    // Check position availability
+    json queueFilter;
+    std::string queueStr = ""; // fetched queue
+    if (false)
+    {
+        queueFilter[keys.queueIndex] = editQueueData[keys.queueIndex];
+        try
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            dbClient_->fetchFromCollection(database, collection_queue, queueFilter.dump(), queueStr);
+        }
+        catch (const std::exception &e)
+        {
+            // Error when fetching queue
+            emit queueJsonAddFailed("AddQueueTask failed.");
+            return;
+        }
+        // if (queueStr != "")
+        // {
+        //     // Already have a queue at this position
+        //     emit queueJsonAddFailed("Already have a queue at this position.");
+        //     return;
+        // }
+    }
+
+    // check for model
+    json modelFilter;
+    std::string modelStr = ""; // fetched model
+    if (false)
+    {
+        modelFilter[keys.merchandise] = editQueueData[keys.merchandise];
+        modelFilter[keys.count] = editQueueData[keys.count];
+        try
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            dbClient_->fetchFromCollection(database, collection_model, modelFilter.dump(), modelStr);
+        }
+        catch (const std::exception &e)
+        {
+            // Error when fetching model
+            emit queueJsonAddFailed("AddQueueTask failed.");
+            return;
+        }
+
+        json modelJson = json::parse(modelStr);
+    }
+
+    // TODO: when add to queue -> check the size of collection -> insert new doc to collection -> increase the queue of doc which queue > inserted doc's queue
+    queueFilter[keys.queueIndex] = editQueueData[keys.queueIndex].is_number() ? editQueueData[keys.queueIndex].get<int>() : std::stoi(editQueueData[keys.queueIndex].get<std::string>());
+
+    try
+    {
+        dbClient_->addMidleCollection(database, collection_queue, queueFilter.dump(), editQueueData.dump());
+    }
+    catch (const std::exception &e)
+    {
+        qDebug() << e.what() << '\n';
+        emit queueJsonAddFailed("AddQueueTask failed.");
+        return;
+    }
+    emit queueJsonAdded();
 }
+
 void Backend::saveDataQueue(const QString &jsonstr)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-
     json modelFilter;
     std::string modelStr = ""; // fetched model
     json jsonToFilter;
@@ -865,6 +942,7 @@ void Backend::saveDataQueue(const QString &jsonstr)
     {
         try
         {
+            std::lock_guard<std::mutex> lock(mutex_);
             dbClient_->fetchFromCollection(database, collection_model, modelFilter.dump(), modelStr);
         }
         catch (const std::exception &e)
@@ -886,14 +964,12 @@ void Backend::saveDataQueue(const QString &jsonstr)
     jsonToSave["$set"] = {
         {keys.merchandise, editQueueData[keys.merchandise]},
         {keys.count, editQueueData[keys.count]},
-        // {keys.height, editQueueData[keys.height]},
-        // {keys.width, editQueueData[keys.width]},
-        // {keys.length, editQueueData[keys.length]},
-        {keys.palletType, editQueueData[keys.palletType]}};
+        {keys.palletInfo, editQueueData[keys.palletInfo]}};
 
     filter[keys.queueIndex] = std::stoi(editQueueData[keys.queueIndex].get<std::string>());
     try
     {
+        std::lock_guard<std::mutex> lock(mutex_);
         dbClient_->editInCollection(database, collection_queue, filter.dump(),
                                     jsonToSave.dump());
     }
@@ -1211,7 +1287,7 @@ void Backend::getDataBuffer(const int &id)
     std::string fetchedStr = "";
 
     dbClient_->fetchFromCollection(database, collection, filter.dump(),
-                                 fetchedStr);
+                                   fetchedStr);
     if (fetchedStr != "")
     {
         QString result = QString::fromStdString(fetchedStr);
@@ -1297,11 +1373,6 @@ void Backend::addDataBuffer(const QString &jsonStr)
 }
 void Backend::saveDataBuffer(const QString &jsonstring)
 {
-    // List of required keys for each JSON object
-    // std::vector<std::string> modelJsonKeys = {keys.merchandise, keys.count};
-    std::vector<std::string> addBufferKeys = {keys.bufferIndex, keys.merchandise, keys.height, keys.bufferStatus,
-                                              keys.width, keys.length, keys.palletType,
-                                              keys.zoneId, keys.columnId, keys.locationId};
     json modelFilter;
     std::string modelStr = ""; // fetched model
     json jsonToSave;

@@ -117,9 +117,17 @@ Item {
     function addQueuePallet() {
         if (_merchandise !== "" && _count !== "" && _id !== "") {
             var jsonObject = {
+                "Id": 3,
+                "Model": _merchandise,
                 "Merchandise": _merchandise,
                 "Count": _count,
-                "queue": _id
+                "queue": +_id,
+                "PalletInfo": _palletInfo,
+                "NameModel": "GX6050",
+                "Destination": "",
+                "ZoneId": 1,
+                "ColumnId": 1,
+                "LocationId": 1
             };
             backend.addDataQueue(JSON.stringify(jsonObject, null, 2));
         } else {
