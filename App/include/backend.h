@@ -198,7 +198,6 @@ signals:
     void bufferJsonEditFailed(const QString &error);
     void bufferJsonDeleted();
     void bufferJsonDeleteFailed(const QString &error);
-
     void pBufferListModelChanged();
     // MODEL
     void modelJsonChanged();
@@ -216,7 +215,6 @@ signals:
     //  void pListModelChanged();
 
     void serviceTimeout();
-    void requestStopSucceeded();
 
 private:
     ros::NodeHandle nh;
@@ -289,7 +287,7 @@ private:
     // std::string uri = "mongodb://localhost:27017";
     std::string uri = "mongodb://localhost:27017";
     std::string database = "admin";
-    std::string collection = " pallet_buffer";
+    std::string collection = "pallet_buffer";
     std::string collection_queue = "pallet_queue";
     std::string collection_model = "pallet_model";
 
@@ -427,16 +425,7 @@ public:
 
     // int getFastechRear(int index) const;
 
-    /*
- 
-   _                 _         _     _         __                  _   _                 
-  (_)_ ____   _____ | | ____ _| |__ | | ___   / _|_   _ _ __   ___| |_(_) ___  _ __  ___ 
-  | | '_ \ \ / / _ \| |/ / _` | '_ \| |/ _ \ | |_| | | | '_ \ / __| __| |/ _ \| '_ \/ __|
-  | | | | \ V / (_) |   < (_| | |_) | |  __/ |  _| |_| | | | | (__| |_| | (_) | | | \__ \
-  |_|_| |_|\_/ \___/|_|\_\__,_|_.__/|_|\___| |_|  \__,_|_| |_|\___|\__|_|\___/|_| |_|___/
-                                                                                         
- 
-*/
+    // PUBLISHER
     Q_INVOKABLE int getFastechRear(int index);
     Q_INVOKABLE int getFastechFront(int index);
     Q_INVOKABLE void resetError();
@@ -447,8 +436,8 @@ public:
     Q_INVOKABLE void shutdown(int state);
     Q_INVOKABLE void getVolume_on_off(int i);
 
-    Q_INVOKABLE void requestStop();
-    Q_INVOKABLE void requestReset();
+    Q_INVOKABLE void requestStop(const QString &str);
+    Q_INVOKABLE void requestReset(const QString &str);
 
     Q_INVOKABLE void change_to_japan();
     Q_INVOKABLE void change_to_eng();

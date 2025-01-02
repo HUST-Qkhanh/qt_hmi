@@ -12,10 +12,10 @@ Item {
     property alias header_text: header.text
     property alias info_text: _text.text
     property alias icon: headerIcon.source
-
     // property string error_info: qsTr("This is error information")
-
+    
     property alias showCancel: roundButton1.visible
+    
 
     signal confirmPressed
     signal cancelPressed
@@ -65,13 +65,7 @@ Item {
             icon = "qrc:/RosQML2Content/asset/close_round.svg";
             showCancel = true;
             break;
-        case 6:
-            header_text = qsTr("Stopped");
-            info_text = qsTr("AGF has stopped!");
-            // icon = "asset/done_all_alt_round.svg";
-            icon = "qrc:/RosQML2Content/asset/done_all_alt_round.svg";
-            showCancel = true;
-            break;
+
         default:
             break;
         }
@@ -79,9 +73,8 @@ Item {
 
     Component.onCompleted: init()
     onHeader_typeChanged: init()
-
     // onInfo_textChanged: init()
-
+    
 
     Rectangle {
         color: "#ffffff"
@@ -180,7 +173,7 @@ Item {
                     highlighted: true
                     font.pixelSize: 10 * scaleFactor
                     onPressed: {
-                        cancelPressed();
+                        cancelPressed()
                     }
                 }
             }

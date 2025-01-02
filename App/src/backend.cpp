@@ -81,7 +81,7 @@ Backend::Backend(QObject *parent)
     //     ROS_WARN("Cannot get AGV name");
     // }
     // // updateMerchandiseList();
-    // std::vector<std::string> collectionList = {collection_queue, "pallet_buffer"};
+    // std::vector<std::string> collectionList = {collection_queue, collection};
     // TrackDBChanges *trackDbchanges = new TrackDBChanges(dbClient_, collectionList);
     // std::lock_guard<std::mutex> lock(mutex_);
     // threadManager.executeTask(trackDbchanges);
@@ -145,23 +145,24 @@ void Backend::robotStatusCallback(const std_stamped_msgs::StringStamped::ConstPt
         ROS_WARN("Loi chuyen doi json callback /robot_status");
     }
 
-    if (statusValue == keys.paused_status)
+    if (statusValue == "PAUSED")
     {
         getControlStr = QString::fromStdString(statusValue);
         emit getControlChanged();
     }
-    else if (statusValue == keys.running_status)
+    else if (statusValue == "RUNNING")
     {
         getControlStr = QString::fromStdString(statusValue);
+        statusValue = "NORMAL";
         emit getControlChanged();
     }
-    else if (statusValue == keys.waiting_status)
+    else if (statusValue == "WAITING")
     {
-        getControlStr = QString::fromStdString(keys.running_status);
+        getControlStr = QString::fromStdString("RUNNING");
         emit getControlChanged();
     }
 
-    if (robot_mode == keys.auto_mode)
+    if (robot_mode == "AUTO")
     {
         bug_manual_mode = true;
     }
@@ -340,7 +341,7 @@ QString Backend::getModelJson() const
 void Backend::resetError()
 {
     std_stamped_msgs::EmptyStamped msg;
-    if (robotModeStr.toStdString() == keys.auto_mode)
+    if (robotModeStr.toStdString() == "AUTO")
     {
         reset_error_pub.publish(msg);
     }
@@ -363,24 +364,24 @@ void Backend::requestControl(const QString &str)
 {
     std_stamped_msgs::StringStamped request_control_msg;
     request_control_msg.stamp = ros::Time::now();
-    if (robotModeStr.toStdString() == keys.auto_mode)
+    if (robotModeStr.toStdString() == "AUTO")
     {
         if (str.toStdString() == "STOP")
         {
             request_control_msg.data = "STOP";
             request_run_stop_pub.publish(request_control_msg);
         }
-        // else
-        // {
-        //     request_control_msg.data = "RUN";
-        //     request_run_stop_pub.publish(request_control_msg);
-        // }
+        else
+        {
+            request_control_msg.data = "RUN";
+            request_run_stop_pub.publish(request_control_msg);
+        }
     }
-    // else
-    // {
-    //     bug_manual_mode = false;
-    //     // ROS_INFO_STREAM(robotModeStr.toStdString());
-    // }
+    else
+    {
+        bug_manual_mode = false;
+        // ROS_INFO_STREAM(robotModeStr.toStdString());
+    }
 }
 
 int Backend::getVolume()
@@ -631,92 +632,92 @@ std::string Backend::switchColorType(int type)
 }
 void Backend::colorPalletQueue(const std::vector<std::string> &result)
 {
-    // qDebug() << "Now color pallet queue: " << result.size() << "\n";
-    std::string color = "";
-    rootObject = engine->rootObjects().first();
+    // // qDebug() << "Now color pallet queue: " << result.size() << "\n";
+    // std::string color = "";
+    // rootObject = engine->rootObjects().first();
 
-    int index = 1; // start from cell 1
+    // int index = 1; // start from cell 1
 
-    for (auto &&doc : result)
-    {
-        json palletJson = json::parse(doc);
-        if (!(palletJson.contains(keys.palletType) && palletJson[keys.palletType].is_string()))
-        {
-            // qDebug() << "Queue cell has invalid data. \n";
-            ++index;
-            continue;
-        }
+    // for (auto &&doc : result)
+    // {
+    //     json palletJson = json::parse(doc);
+    //     if (!(palletJson.contains(keys.palletType) && palletJson[keys.palletType].is_string()))
+    //     {
+    //         // qDebug() << "Queue cell has invalid data. \n";
+    //         ++index;
+    //         continue;
+    //     }
 
-        int type = std::stoi(palletJson[keys.palletType].get<std::string>());
+    //     int type = std::stoi(palletJson[keys.palletType].get<std::string>());
 
-        // Switch color base on pallet_type
-        color = switchColorType(type);
+    //     // Switch color base on pallet_type
+    //     color = switchColorType(type);
 
-        // create object name
-        std::string obj_ = "zone_" + std::to_string(index) + "_queue";
+    //     // create object name
+    //     std::string obj_ = "zone_" + std::to_string(index) + "_queue";
 
-        QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
-        if (!item)
-        {
-            // qDebug() << "Can't find cell object_name: " << obj_ << "\n";
-            ++index;
-            continue;
-        }
-        // qDebug() << "found " << obj_ << "\n";
-        item->setProperty("color", QColor(QString::fromStdString(color)));
-        ++index;
-    }
-    // set color for the rest of cell
-    int queueCells = 14;
-    for (size_t i = index; i < queueCells + 1; i++)
-    {
-        std::string obj_ = "zone_" + std::to_string(i) + "_queue";
-        QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
-        if (!item)
-        {
-            // qDebug() << "Can't find empty cell object_name: " << obj_ << "\n";
-            continue;
-        }
-        item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
-    }
+    //     QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+    //     if (!item)
+    //     {
+    //         // qDebug() << "Can't find cell object_name: " << obj_ << "\n";
+    //         ++index;
+    //         continue;
+    //     }
+    //     // qDebug() << "found " << obj_ << "\n";
+    //     item->setProperty("color", QColor(QString::fromStdString(color)));
+    //     ++index;
+    // }
+    // // set color for the rest of cell
+    // int queueCells = 14;
+    // for (size_t i = index; i < queueCells + 1; i++)
+    // {
+    //     std::string obj_ = "zone_" + std::to_string(i) + "_queue";
+    //     QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+    //     if (!item)
+    //     {
+    //         // qDebug() << "Can't find empty cell object_name: " << obj_ << "\n";
+    //         continue;
+    //     }
+    //     item->setProperty("color", QColor(QString::fromStdString("#CFD8DC")));
+    // }
 }
 
 void Backend::colorPalletBuffer(const std::vector<std::string> &result)
 {
-    std::string color = "";
-    rootObject = engine->rootObjects().first();
+    // std::string color = "";
+    // rootObject = engine->rootObjects().first();
 
-    int index = 1; // start from cell 1
+    // int index = 1; // start from cell 1
 
-    for (auto &&doc : result)
-    {
-        json palletJson = json::parse(doc);
-        if (!(palletJson.contains("type") && palletJson["type"].is_number_integer()))
-        {
-            qDebug() << "Buffer cell has invalid data. \n";
-            ++index;
-            continue;
-        }
+    // for (auto &&doc : result)
+    // {
+    //     json palletJson = json::parse(doc);
+    //     if (!(palletJson.contains("type") && palletJson["type"].is_number_integer()))
+    //     {
+    //         qDebug() << "Buffer cell has invalid data. \n";
+    //         ++index;
+    //         continue;
+    //     }
 
-        int type = palletJson["type"].get<int>();
+    //     int type = palletJson["type"].get<int>();
 
-        // Switch color base on pallet_type
-        color = switchColorType(type);
+    //     // Switch color base on pallet_type
+    //     color = switchColorType(type);
 
-        // create object name
-        std::string obj_ = "zone_" + std::to_string(index);
+    //     // create object name
+    //     std::string obj_ = "zone_" + std::to_string(index);
 
-        QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
-        if (!item)
-        {
-            // qDebug() << "Can't find cell object_name: " << obj_ << "\n";
-            ++index;
-            continue;
-        }
-        // qDebug() << "found " << obj_ << "\n";
-        item->setProperty("color", QColor(QString::fromStdString(color)));
-        ++index;
-    }
+    //     QObject *item = rootObject->findChild<QObject *>(QString::fromStdString(obj_));
+    //     if (!item)
+    //     {
+    //         // qDebug() << "Can't find cell object_name: " << obj_ << "\n";
+    //         ++index;
+    //         continue;
+    //     }
+    //     // qDebug() << "found " << obj_ << "\n";
+    //     item->setProperty("color", QColor(QString::fromStdString(color)));
+    //     ++index;
+    // }
 }
 
 /**
@@ -728,7 +729,7 @@ void Backend::updateFetchedList()
     connect(&threadManager, &ThreadPoolManager::getAllQueueCompleted, this, &Backend::initQueueListModel, Qt::UniqueConnection);
     connect(&threadManager, &ThreadPoolManager::getAllBufferCompleted, this, &Backend::initBufferListModel, Qt::UniqueConnection);
     std::lock_guard<std::mutex> lock(mutex_);
-    std::vector<std::string> collectionList = {"pallet_queue", "pallet_buffer"};
+    std::vector<std::string> collectionList = {collection_queue, collection};
     GetCellsProperties *getAllQueue = new GetCellsProperties(dbClient_, collectionList);
     threadManager.executeTask(getAllQueue);
 }
@@ -752,7 +753,7 @@ void Backend::getDataQueue(const int &id)
     std::string fetchedQueue = "";
 
     // std::cout << "FILTER: " << filter.dump() << "\n";
-    dbClient_->fetchFromCollection("admin", "pallet_queue", filter.dump(),
+    dbClient_->fetchFromCollection(database, collection_queue, filter.dump(),
                                    fetchedQueue);
     // std::cout << "FETCHED JSON: " << fetchedStr << "\n";
 
@@ -828,21 +829,103 @@ void Backend::addDataQueue(const QString &jsonStr)
 }
 void Backend::saveDataQueue(const QString &jsonstr)
 {
-    connect(&threadManager, &ThreadPoolManager::editQueueTaskCompleted, this, &Backend::queueDbSaved, Qt::UniqueConnection);
     std::lock_guard<std::mutex> lock(mutex_);
-    std::string palletStr = jsonstr.toStdString();
-    // TODO: this only contain Merchandise, Count, queue -> Need to lookup model to add height, width, length
 
-    EditQueueTask *saveQueuePallet = new EditQueueTask(dbClient_, palletStr);
-    threadManager.executeTask(saveQueuePallet);
+    json modelFilter;
+    std::string modelStr = ""; // fetched model
+    json jsonToFilter;
+    json jsonToSave;
+    json filter;
+    json modelJson;
+
+    json editQueueData;
+    try
+    {
+        std::string palletStr = jsonstr.toStdString();
+        editQueueData = json::parse(palletStr);
+    }
+    catch (const std::exception &e)
+    {
+        // qDebug() << e.what() << '\n';
+        emit queueJsonEditFailed("Save data failed.");
+        return;
+    }
+
+    if (!(editQueueData.contains(keys.merchandise) &&
+          editQueueData.contains(keys.count)))
+    {
+        emit queueJsonEditFailed("Save data failed.");
+        return;
+    }
+    // TODO: Look for model of request edit
+    modelFilter[keys.merchandise] = editQueueData[keys.merchandise];
+    modelFilter[keys.count] = editQueueData[keys.count];
+    // Search for model
+    if (false)
+    {
+        try
+        {
+            dbClient_->fetchFromCollection(database, collection_model, modelFilter.dump(), modelStr);
+        }
+        catch (const std::exception &e)
+        {
+            // qDebug() << e.what() << '\n';
+            emit queueJsonEditFailed("Save data failed.");
+            return;
+        }
+        if (modelStr == "")
+        {
+            // qDebug() << "MODEL IS NOT IN DataBase" << '\n';
+            emit queueJsonEditFailed("Save data failed: Model not found.");
+            return;
+        }
+        modelJson = json::parse(modelStr);
+    }
+
+    // TODO: concat request save json and model json to make a json which will be saved
+    jsonToSave["$set"] = {
+        {keys.merchandise, editQueueData[keys.merchandise]},
+        {keys.count, editQueueData[keys.count]},
+        // {keys.height, editQueueData[keys.height]},
+        // {keys.width, editQueueData[keys.width]},
+        // {keys.length, editQueueData[keys.length]},
+        {keys.palletType, editQueueData[keys.palletType]}};
+
+    filter[keys.queueIndex] = std::stoi(editQueueData[keys.queueIndex].get<std::string>());
+    try
+    {
+        dbClient_->editInCollection(database, collection_queue, filter.dump(),
+                                    jsonToSave.dump());
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        // qDebug() << "task failed";
+        emit queueJsonEditFailed("Save data failed.");
+    }
+    QString result = "OK";
+    // qDebug() << "EditQueueTask finishe                                                                                                                                                                                                               d.";
+    emit queueJsonEdited();
 }
+
 void Backend::deleteDataQueue(const int &id)
 {
     ROS_ERROR_STREAM("delete QUEUE for " << id);
-    // ThreadPoolManager threadManager;addDataModelPoolManager::eraseQueueTaskCompleted, this, &Backend::queueDbDeleted, Qt::UniqueConnection);
     std::lock_guard<std::mutex> lock(mutex_);
-    EraseQueueTask *deleteQueuePallet = new EraseQueueTask(dbClient_, id);
-    threadManager.executeTask(deleteQueuePallet);
+    json filter;
+    filter[keys.queueIndex] = id;
+
+    try
+    {
+        dbClient_->removeMidleCollection(database, collection_queue, filter.dump());
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        // qDebug() << "task failed";
+        emit queueJsonDeleteFailed("Delete data failed.");
+    }
+    emit queueJsonDeleted();
 }
 
 /**
@@ -945,7 +1028,7 @@ void Backend::addDataModel(QString jsonstring)
     try
     {
         std::lock_guard<std::mutex> lock(mutex_);
-        dbClient_->writeToCollection("admin", "pallet_model", jsonstring.toStdString());
+        dbClient_->writeToCollection(database, collection_model, jsonstring.toStdString());
     }
     catch (const std::exception &e)
     {
@@ -973,7 +1056,7 @@ void Backend::saveDataModel(QString jsonstring)
             {keys.width, editBufferData[keys.width]},
             {keys.length, editBufferData[keys.length]}};
 
-        dbClient_->editInCollection("admin", "pallet_model", filter.dump(), jsonToSave.dump());
+        dbClient_->editInCollection(database, collection_model, filter.dump(), jsonToSave.dump());
     }
     catch (const std::exception &e)
     {
@@ -989,7 +1072,7 @@ void Backend::deleteDataModel(QString jsonstring)
     {
         std::cout << "filter: " << jsonstring.toStdString() << "\n";
         std::lock_guard<std::mutex> lock(mutex_);
-        dbClient_->eraseFromCollection("admin", "pallet_model", jsonstring.toStdString());
+        dbClient_->eraseFromCollection(database, collection_model, jsonstring.toStdString());
     }
     catch (const std::exception &e)
     {
@@ -1128,14 +1211,12 @@ void Backend::getDataBuffer(const int &id)
     std::string fetchedStr = "";
 
     dbClient_->fetchFromCollection(database, collection, filter.dump(),
-                                   fetchedStr);
-    if (fetchedStr.empty())
+                                 fetchedStr);
+    if (fetchedStr != "")
     {
-        std::cout << "FETCH BUFFER ERROR\n";
-        return;
+        QString result = QString::fromStdString(fetchedStr);
+        emit bufferJsonFetched(result);
     }
-    QString result = QString::fromStdString(fetchedStr);
-    emit bufferJsonFetched(result);
 }
 
 /**
@@ -1167,7 +1248,7 @@ void Backend::addDataBuffer(const QString &jsonStr)
     //     modelFilter[keys.count] = addBufferData[keys.count];
     //     try {
     //         std::lock_guard<std::mutex> lock(mutex_);
-    //         dbClient_->fetchFromCollection("admin", "pallet_model", modelFilter.dump(), modelStr);
+    //         dbClient_->fetchFromCollection(database, collection_model, modelFilter.dump(), modelStr);
     //     } catch (const std::exception &e) {
     //         // qDebug() << e.what() << '\n';
     //         emit bufferJsonAddFail(QString::fromStdString(e.what()));
@@ -1205,7 +1286,7 @@ void Backend::addDataBuffer(const QString &jsonStr)
 
     //     try {
     //         std::lock_guard<std::mutex> lock(mutex_);
-    //         dbClient_->addMidleCollection("admin", "pallet_queue", bufferFilter.dump(), jsonToSave.dump());
+    //         dbClient_->addMidleCollection(database, collection_queue, bufferFilter.dump(), jsonToSave.dump());
     //     } catch (const std::exception &e) {
     //         // qDebug() << e.what() << '\n';
     //         emit bufferJsonAddFail(QString::fromStdString(e.what()));
@@ -1231,7 +1312,7 @@ void Backend::saveDataBuffer(const QString &jsonstring)
     modelFilter[keys.bufferIndex] = editBufferData[keys.bufferIndex];
     try
     {
-        dbClient_->fetchFromCollection("admin", "pallet_buffer", modelFilter.dump(), modelStr);
+        dbClient_->fetchFromCollection(database, collection, modelFilter.dump(), modelStr);
     }
     catch (const std::exception &e)
     {
@@ -1250,6 +1331,7 @@ void Backend::saveDataBuffer(const QString &jsonstring)
     jsonToSave["$set"] = {
         {keys.bufferMerchandise, editBufferData[keys.bufferMerchandise]},
         {keys.bufferStatus, editBufferData[keys.bufferStatus]},
+        {keys.count, editBufferData[keys.count]},
         {keys.zoneId, editBufferData[keys.zoneId]},
         {keys.locationId, editBufferData[keys.locationId]},
         {keys.columnId, editBufferData[keys.columnId]},
@@ -1262,7 +1344,7 @@ void Backend::saveDataBuffer(const QString &jsonstring)
     try
     {
         std::lock_guard<std::mutex> lock(mutex_);
-        dbClient_->editInCollection("admin", "pallet_buffer", filter.dump(),
+        dbClient_->editInCollection(database, collection, filter.dump(),
                                     jsonToSave.dump());
     }
     catch (const std::exception &e)
@@ -1294,7 +1376,7 @@ void Backend::deleteDataBuffer(const QString &id)
     try
     {
         std::lock_guard<std::mutex> lock(mutex_);
-        dbClient_->editInCollection("admin", "pallet_buffer", filter.dump(),
+        dbClient_->editInCollection(database, collection, filter.dump(),
                                     jsonToSave.dump());
     }
     catch (const std::exception &e)
@@ -1420,51 +1502,39 @@ void Backend::switchColorQueue(mongocxx::collection coll, std::string old_id, st
     }
 }
 
-void Backend::requestStop()
+void Backend::requestStop(const QString &str)
 {
-    if (robotModeStr.toStdString() == keys.auto_mode)
+    std_stamped_msgs::StringStamped request_stop_msg;
+    request_stop_msg.stamp = ros::Time::now();
+    std::string data_ = "STOP";
+    request_stop_msg.data = data_;
+    robot_stop_pub.publish(request_stop_msg);
+
+    std_stamped_msgs::StringService::Request req;
+    std_stamped_msgs::StringService::Response res;
+    std_stamped_msgs::StringService srv;
+    req.request = "Hello, this is a request stop_trigger_manager ";
+
+    // Đợi tối đa 2 giây để service sẵn sàng
+    if (ros::service::waitForService("/stop_trigger_manager", ros::Duration(2)))
     {
-        // Stop current running mission
-        std_stamped_msgs::StringStamped request_control_msg;
-        request_control_msg.stamp = ros::Time::now();
-        request_control_msg.data = "STOP";
-        request_run_stop_pub.publish(request_control_msg);
-
-        // Stop trigger manager
-        std_stamped_msgs::StringStamped request_stop_msg;
-        request_stop_msg.stamp = ros::Time::now();
-        std::string data_ = "STOP";
-        request_stop_msg.data = data_;
-        robot_stop_pub.publish(request_stop_msg);
-
-        std_stamped_msgs::StringService::Request req;
-        std_stamped_msgs::StringService::Response res;
-        std_stamped_msgs::StringService srv;
-        req.request = "Hello, this is a request stop_trigger_manager ";
-
-        // Đợi tối đa 2 giây để service sẵn sàng
-        if (ros::service::waitForService("/stop_trigger_manager", ros::Duration(2)))
+        if (stop_error_agf.call(req, res))
         {
-            if (stop_error_agf.call(req, res))
-            {
-                ROS_INFO("Response: %s", res.respond.c_str());
-                emit requestStopSucceeded();
-            }
-            else
-            {
-                ROS_ERROR("Failed to call service string_service");
-                emit serviceTimeout();
-            }
+            ROS_INFO("Response: %s", res.respond.c_str());
         }
         else
         {
-            ROS_ERROR("Service /stop_trigger_manager not available after timeout.");
-            emit serviceTimeout();
+            ROS_ERROR("Failed to call service string_service");
         }
+    }
+    else
+    {
+        ROS_ERROR("Service /stop_trigger_manager not available after timeout.");
+        emit serviceTimeout();
     }
 }
 
-void Backend::requestReset()
+void Backend::requestReset(const QString &str)
 {
     std_stamped_msgs::StringService::Request req;
     std_stamped_msgs::StringService::Response res;
@@ -1472,7 +1542,7 @@ void Backend::requestReset()
     req.request = "Hello, this is a request reset_trigger_manager";
 
     // Đợi tối đa 2 giây để service sẵn sàng
-    if (ros::service::waitForService("/reset_trigger_manager", ros::Duration(2)))
+    if (ros::service::waitForService("/reset_error_agf", ros::Duration(2)))
     {
         if (reset_error_agf.call(req, res))
         {
@@ -1495,7 +1565,7 @@ void Backend::updateMerchandiseList()
     qDebug() << "updapteMerchandiseList\n";
     // Look for all unique merchandise in pallet_model collection
     std::vector<std::string> merchandiseList;
-    dbClient_->getUniqueList(database, collection_model, "Merchandise", merchandiseList);
+    dbClient_->getUniqueList(database, collection_model, keys.merchandise, merchandiseList);
     // convert std::string to QString
     for (const auto &item : merchandiseList)
     {
@@ -1506,7 +1576,7 @@ void Backend::updateCountList()
 {
     // Look for all unique count in pallet_model collection
     std::vector<std::string> countList;
-    dbClient_->getUniqueList(database, collection_model, "Count", countList);
+    dbClient_->getUniqueList(database, collection_model, keys.count, countList);
     // convert std::string to QString
     for (const auto &item : countList)
     {
@@ -1574,9 +1644,9 @@ void Backend::updateComboBox(QString model, QString count)
 
 QString Backend::openFileDialog()
 {
-    // std::string status = "";
-    // updateStatusStr = QString::fromStdString(status);
-    // QString fileName = QFileDialog::getOpenFileName(nullptr, "Chọn file", "", "All Files (*)");
+    std::string status = "";
+    updateStatusStr = QString::fromStdString(status);
+    QString fileName = QFileDialog::getOpenFileName(nullptr, "Chọn file", "", "All Files (*)");
     // if (!fileName.isEmpty()) {
     //     //qDebug() << "Đường dẫn file đã chọn:" << fileName;
     //     auto result = collection_model.delete_many({});
@@ -1680,7 +1750,7 @@ QString Backend::openFileDialog()
     //     file.close();
     // }
 
-    // return fileName;
+    return fileName;
 }
 
 // int Backend::check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line) {

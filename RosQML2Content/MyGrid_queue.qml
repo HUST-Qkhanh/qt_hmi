@@ -82,14 +82,14 @@ Item {
         var jsonObj = JSON.parse(jsonStr); // Parse the JSON string into a JavaScript object
         console.log("jsonObj: " + jsonStr);
         // Update the text fields with parsed data
-        _merchandise = jsonObj.Merchandise || "";
-        _count = jsonObj.Count || "";
-        _height = jsonObj.height || "";
-        _width = jsonObj.width || "";
-        _length = jsonObj.length || "";
-        _palletType = jsonObj.pallet_type || "";
-        _id = jsonObj.queue || "";
-        _palletInfo = jsonObj.PalletInfo || "";
+        _merchandise = jsonObj.Merchandise ?? "";
+        _count = jsonObj.Count ?? "";
+        _height = jsonObj.height ?? "";
+        _width = jsonObj.width ?? "";
+        _length = jsonObj.length ?? "";
+        _palletType = jsonObj.pallet_type ?? "";
+        _id = jsonObj.queue ?? "";
+        _palletInfo = jsonObj.PalletInfo ?? "";
         console.log("queue_id: " + jsonObj.queue);
     }
 
@@ -142,9 +142,17 @@ Item {
     function saveQueuePallet(queueId) {
         if (_merchandise !== "" && _count !== "" && _id !== "") {
             var jsonObject = {
+                "Id": 3,
+                "Model": _merchandise,
                 "Merchandise": _merchandise,
                 "Count": _count,
-                "queue": _id
+                "queue": _id,
+                "PalletInfo": _palletInfo,
+                "NameModel": "",
+                "Destination": "",
+                "ZoneId": 1,
+                "ColumnId": 1,
+                "LocationId": 1
             };
             backend.saveDataQueue(JSON.stringify(jsonObject, null, 2));
         } else {

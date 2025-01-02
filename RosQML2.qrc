@@ -2,6 +2,16 @@
 <RCC>
 <qresource>
 <file>App/include/config.json</file>
+<file>Generated/QtQuick3D/Forklift/Forklift.qml</file>
+<file>Generated/QtQuick3D/Forklift/_importdata.json</file>
+<file>Generated/QtQuick3D/Forklift/meshes/plane_000_mesh.mesh</file>
+<file>Generated/QtQuick3D/Forklift/meshes/plane_001_mesh.mesh</file>
+<file>Generated/QtQuick3D/Forklift/meshes/plane_002_mesh.mesh</file>
+<file>Generated/QtQuick3D/Forklift/meshes/plane_003_mesh.mesh</file>
+<file>Generated/QtQuick3D/Forklift/meshes/plane_008_mesh.mesh</file>
+<file>Generated/QtQuick3D/Forklift/meshes/plane_009_mesh.mesh</file>
+<file>Generated/QtQuick3D/Forklift/meshes/sphere_mesh.mesh</file>
+<file>Generated/QtQuick3D/Forklift/qmldir</file>
 <file>RosQML2.qmlproject</file>
 <file>RosQML2/Constants.qml</file>
 <file>RosQML2/DirectoryFontLoader.qml</file>
