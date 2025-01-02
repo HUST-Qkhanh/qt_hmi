@@ -209,7 +209,7 @@ Window {
                 // icon.source: "qrc:/RosQML2Content/asset/dart-mission-goal-success-svgrepo-com.svg"
                 icon.source: "asset/dart-mission-goal-success-svgrepo-com.svg"
                 display: AbstractButton.IconOnly
-                onClicked: loader.setSource("qrc:/RosQML2Content/component_test.ui.qml")
+                onClicked: loader.setSource("qrc:/RosQML2Content/component_test.qml")
             }
 
             RoundButton {

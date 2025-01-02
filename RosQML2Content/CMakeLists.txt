@@ -14,7 +14,7 @@ qt6_add_qml_module(RosQML2Content
         "KeyboardStyle.qml"
         "App.qml"
         "component_test_2.ui.qml"
-        "component_test.ui.qml"
+        "component_test.qml"
         "Screen01.qml"
         "Mission.qml"
     RESOURCES

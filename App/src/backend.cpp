@@ -144,23 +144,8 @@ void Backend::robotStatusCallback(const std_stamped_msgs::StringStamped::ConstPt
     {
         ROS_WARN("Loi chuyen doi json callback /robot_status");
     }
-
-    if (statusValue == "PAUSED")
-    {
-        getControlStr = QString::fromStdString(statusValue);
-        emit getControlChanged();
-    }
-    else if (statusValue == "RUNNING")
-    {
-        getControlStr = QString::fromStdString(statusValue);
-        statusValue = "NORMAL";
-        emit getControlChanged();
-    }
-    else if (statusValue == "WAITING")
-    {
-        getControlStr = QString::fromStdString("RUNNING");
-        emit getControlChanged();
-    }
+    getControlStr = QString::fromStdString(statusValue);
+    emit getControlChanged();
 
     if (robot_mode == "AUTO")
     {
@@ -179,6 +164,7 @@ void Backend::robotStatusCallback(const std_stamped_msgs::StringStamped::ConstPt
     // emit robotModeChanged();
 }
 
+//trigger mission topic
 void Backend::systemStatusCallback(const std_stamped_msgs::StringStamped::ConstPtr &msg)
 {
     std::string data = msg->data;
@@ -1213,8 +1199,8 @@ void Backend::expandQueue()
 {
     auto queueSize = dbClient_->getCollectionSize(database, collection_queue);
     json fetchedJson;
-    fetchedJson[keys.queueIndex] = queueSize + 1;
-    queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
+    fetchedJson[keys.queueIndex] = 1;
+    emit queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
 }
 
 /**

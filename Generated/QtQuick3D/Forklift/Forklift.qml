@@ -81,28 +81,28 @@ Node {
         PrincipledMaterial {
             id: material_003_material
             objectName: "Material.003"
-            baseColor: "#ff999999"
+            baseColor: "#0fbbe0"
             indexOfRefraction: 1
         }
 
         PrincipledMaterial {
             id: material_material
             objectName: "Material"
-            baseColor: "#ff999999"
+            baseColor: "#000000"
             indexOfRefraction: 1
         }
 
         PrincipledMaterial {
             id: material_002_material
             objectName: "Material.002"
-            baseColor: "#ff999999"
+            baseColor: "#27c471"
             indexOfRefraction: 1
         }
 
         PrincipledMaterial {
             id: material_001_material
             objectName: "Material.001"
-            baseColor: "#ff999999"
+            baseColor: "#af1e1e"
             indexOfRefraction: 1
         }
     }

@@ -98,6 +98,7 @@ public slots:
     void queueJsonFetched(const QString &result)
     {
         fetchedQueueStr = result.toStdString();
+        std::cout << "queueJsonFetched: " << fetchedQueueStr << "\n";
         emit queueJsonChanged();
     };
     void queueSeekModelDone(const QString &result)

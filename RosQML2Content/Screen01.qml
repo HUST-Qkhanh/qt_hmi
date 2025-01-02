@@ -392,7 +392,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: header.bottom
         anchors.leftMargin: 20
-        anchors.rightMargin: parent.width * 0.3
+        anchors.rightMargin: parent.width * 0.30
         anchors.topMargin: 20
         spacing: 10
         height: parent.height * 0.5
@@ -476,56 +476,6 @@ Rectangle {
                 status_header.text = backend.robotDetail;
             }
         }
-        onRobotModeChanged: {
-            mode_mode = backend.robotMode;
-            if (mode_mode === "MANUAL") {
-                mode_button.background.color = "#03A9F4";
-            } else if (mode_mode === "AUTO") {
-                mode_button.background.color = "#4CAF50";
-            } else
-                mode_button.background.color = "#FF9800";
-        }
-        onRobotStatusChanged: {
-            status_mode = backend.robotStatus;
-
-            if ((status_mode === "ERROR") || (status_mode === "EMG")) {
-                status_button.background.color = "#F44336";
-            } else if (status_mode === "WAITING_INIT_POSE") {
-                status_button.background.color = "#FFFFFF";
-            } else if (status_mode === "NORMAL") {
-                status_button.background.color = "#4CAF50";
-            } else if (status_mode === "WAITING") {
-                status_button.background.color = "#FFEB3B";
-            } else {
-                status_button.background.color = "#FF9800";
-            }
-        }
-        onGetControlChanged: {
-            control_mode = backend.getControl;
-            if (mode_mode === "AUTO" && control_mode === "RUNNING") {
-                if (status_mode === "WAITING") {
-                    control_button.background.color = "#2196F3";
-                } else {
-                    control_button.background.color = "#4CAF50";
-                }
-            } else if (mode_mode === "MANUAL" && control_mode === "RUNNING") {
-                control_button.background.color = "#2196F3";
-            } else if (control_mode === "PAUSE") {
-                control_button.background.color = "#FFEB3B";
-            } else
-                control_button.background.color = "#FFEB3B";
-        }
-        onSystemStatusChanged: {
-            state_system = "State AGF: " + backend.getStateSystem();
-
-            status_system = backend.systemStatus;
-            reset_mode = backend.systemStatus;
-            if (backend.systemStatus === "ERROR") {
-                reset_button.background.color = "#F44336";
-            } else if (backend.systemStatus === "NORMAL") {
-                reset_button.background.color = "#4CAF50";
-            }
-        }
     }
 
     Connections {
@@ -548,9 +498,9 @@ Rectangle {
         target: conveyorView
         onAddNew: {
             // console.log("Add newsdsd");
-            backend.expandQueue();
             pop_up_2.open();
             loadPopupType(0);
+            backend.expandQueue();
         }
     }
 
@@ -758,23 +708,23 @@ Rectangle {
 
             PerspectiveCamera {
                 id: perspectiveCamera
-                x: 150
+                x: 125
                 y: 32.599
                 eulerRotation.z: 0
                 eulerRotation.y: 90.00002
                 eulerRotation.x: 0
-                z: -0
+                z: 18
             }
 
             DirectionalLight {
                 id: directionalLight
-                x: 200
-                y: 100
+                x: 133
+                y: 187
                 brightness: 1.44
-                z: 150
-                eulerRotation.z: 68.60193
-                eulerRotation.y: 104.31462
-                eulerRotation.x: -34.65181
+                z: 13
+                eulerRotation.z: 76.0437
+                eulerRotation.y: 120.67021
+                eulerRotation.x: -59.35477
             }
 
             Forklift {
@@ -784,14 +734,14 @@ Rectangle {
                 scale.x: 30
 
                 NumberAnimation on eulerRotation.y {
-                    from: 0
-                    to: 360
-                    duration: 10000
-                    loops: Animation.Infinite
-                    running: true
-                }
+                    loops: 1
+                    from: 90
+                    to: 0
+                    duration: 500
+    }
             }
         }
+
     }
 
 }
@@ -799,6 +749,6 @@ Rectangle {
 /*##^##
 Designer {
     D{i:0;matPrevEnvDoc:"SkyBox";matPrevEnvValueDoc:"preview_landscape";matPrevModelDoc:"#Cube"}
-D{i:57}D{i:58;cameraSpeed3d:25;cameraSpeed3dMultiplier:1}
+D{i:57}D{i:58;cameraSpeed3d:55;cameraSpeed3dMultiplier:1}
 }
 ##^##*/

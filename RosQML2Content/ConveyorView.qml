@@ -92,6 +92,7 @@ Item {
                         height: listView.height
                         color: "#ffffff"
                         radius: Constants.borderRadiusSmall
+                        clip: true
 
                         ColumnLayout {
                             anchors.fill: parent
@@ -100,12 +101,14 @@ Item {
                             Text {
                                 text: modelData["Merchandise"]
                                 horizontalAlignment: Text.AlignHCenter
+                                clip: true
                                 font.pointSize: 45 * listView.height / 425
                                 Layout.fillWidth: true
                             }
                             Text {
                                 text: modelData["queue"]
                                 horizontalAlignment: Text.AlignHCenter
+                                clip: true
                                 font.pointSize: 45 * listView.height / 425
                                 Layout.fillWidth: true
                             }
