@@ -164,7 +164,7 @@ void Backend::robotStatusCallback(const std_stamped_msgs::StringStamped::ConstPt
     // emit robotModeChanged();
 }
 
-//trigger mission topic
+// trigger mission topic
 void Backend::systemStatusCallback(const std_stamped_msgs::StringStamped::ConstPtr &msg)
 {
     std::string data = msg->data;
@@ -1698,129 +1698,153 @@ void Backend::updateComboBox(QString model, QString count)
     // std::cout << model_string << std::endl;
     // //updateFetchedList();
 }
-
+void Backend::deleteModelImport()
+{
+    dbClient_->eraseFromCollection(database, collection_model, "{}");
+    emit modelDbClear();
+}
 QString Backend::openFileDialog()
 {
     std::string status = "";
     updateStatusStr = QString::fromStdString(status);
     QString fileName = QFileDialog::getOpenFileName(nullptr, "Chọn file", "", "All Files (*)");
-    // if (!fileName.isEmpty()) {
-    //     //qDebug() << "Đường dẫn file đã chọn:" << fileName;
-    //     auto result = collection_model.delete_many({});
-    //     if (result) {
-    //         status = "Đã xóa " + std::to_string(result->deleted_count()) + " model.";
-    //     } else {
-    //         status = "Không có model nào được xóa.";
-    //     }
-    //     updateStatusStr = QString::fromStdString(status);
-    //     emit updateStatusChanged();
+    if (!fileName.isEmpty())
+    {
+        int result = dbClient_->eraseFromCollection(database, collection_model, "{}");
+        if (result)
+        {
+            std::ostringstream oss;
+            oss << "Đã xóa " << result << " model. \n";
+            status = oss.str();
+        }
+        else
+        {
+            status = "Không có model nào được xóa. \n";
+        }
+        updateStatusStr = QString::fromStdString(status);
+        emit updateStatusChanged();
 
-    //     // update model tu file
+        // update model tu file
 
-    //     // Mở file CSV
-    //     std::ifstream file(fileName.toStdString());
-    //     if (!file.is_open()) {
-    //         status = "Không thể mở file";
-    //         updateStatusStr = QString::fromStdString(status);
-    //         emit updateStatusChanged();
-    //         return fileName;
-    //     }
+        // Mở file CSV
+        std::ifstream file(fileName.toStdString());
+        if (!file.is_open())
+        {
+            status = "Không thể mở file \n";
+            updateStatusStr = QString::fromStdString(status);
+            emit updateStatusChanged();
+            return fileName;
+        }
 
-    //     // Đọc file dòng theo dòng
-    //     std::vector<std::string> current_line;
-    //     std::vector<std::string> pre_line;
-    //     std::vector<std::string> next_line;
+        // Đọc file dòng theo dòng
+        std::vector<std::string> current_line;
+        std::vector<std::string> pre_line;
+        std::vector<std::string> next_line;
 
-    //     std::string line;
-    //     int line_count = 0;
-    //     while (std::getline(file, line)) {
-    //         line_count++;
-    //         // std::cout << line << std::endl;
-    //         json row_json;
-    //         int pallet_type;
+        std::string line;
+        int line_count = 0;
+        while (std::getline(file, line))
+        {
+            line_count++;
+            // std::cout << line << std::endl;
+            json row_json;
+            int pallet_type;
 
-    //         // Tách các giá trị theo dấu phẩy
-    //         std::stringstream ss(line);
-    //         std::string value;
-    //         std::vector<std::string> row;
+            // Tách các giá trị theo dấu phẩy
+            std::stringstream ss(line);
+            std::string value;
+            std::vector<std::string> row;
 
-    //         while (std::getline(ss, value, ',')) {
-    //             // Thêm giá trị vào vector
-    //             row.push_back(value);
-    //         }
-    //         if (line_count >= 3) {
-    //             pre_line = current_line;
-    //             current_line = next_line;
-    //             next_line = row;
-    //         } else if (line_count == 2) {
-    //             current_line = next_line;
-    //             next_line = row;
-    //             continue;
-    //         } else if (line_count == 1) {
-    //             next_line = row;
-    //             continue;
-    //         }
-    //         row_json[keys.merchandise] = current_line[1];
-    //         row_json[keys.count] = current_line[8];
-    //         row_json[keys.palletType] = std::to_string(check_line(current_line, pre_line, next_line));
-    //         row_json[keys.length] = current_line[5];
-    //         row_json[keys.width] = current_line[6];
-    //         row_json[keys.height] = std::to_string(stringToFloat(current_line[7]) * 1000);
+            while (std::getline(ss, value, ','))
+            {
+                // Thêm giá trị vào vector
+                row.push_back(value);
+            }
+            if (line_count >= 3)
+            {
+                pre_line = current_line;
+                current_line = next_line;
+                next_line = row;
+            }
+            else if (line_count == 2)
+            {
+                current_line = next_line;
+                next_line = row;
+                continue;
+            }
+            else if (line_count == 1)
+            {
+                next_line = row;
+                continue;
+            }
+            row_json[keys.merchandise] = current_line[1];
+            row_json[keys.count] = current_line[8];
+            row_json[keys.palletType] = std::to_string(check_line(current_line, pre_line, next_line));
+            row_json[keys.length] = current_line[5];
+            row_json[keys.width] = current_line[6];
+            row_json[keys.height] = std::to_string(stringToFloat(current_line[7]) * 1000);
 
-    //         ModelPallet modelupdate(row_json);
-    //         int result = modelupdate.insert(collection_model);
+            int result = dbClient_->writeToCollection(database, collection_model, row_json.dump());
 
-    //         if (result == 1) {
-    //             status = " import success - " + std::to_string(line_count) + " - " + current_line[1];
+            if (result == 0)
+            {
+                std::ostringstream oss;
+                oss << " import success - " << line_count << " - " << current_line[1] << "\n";
+                status = oss.str();
+                updateStatusStr = QString::fromStdString(status);
+                emit updateStatusChanged();
+            }
+            else
+            {
+                std::ostringstream oss;
+                oss << " import false - " << line_count << " - " << current_line[1] << "\n";
+                status = oss.str();
+                updateStatusStr = QString::fromStdString(status);
+                emit updateStatusChanged();
+            }
+        }
+        json row_j;
+        row_j[keys.merchandise] = next_line[1];
+        row_j[keys.count] = next_line[8];
+        row_j[keys.palletType] = std::to_string(check_line(next_line, pre_line, pre_line));
+        row_j[keys.length] = next_line[5];
+        row_j[keys.width] = next_line[6];
+        row_j[keys.height] = std::to_string(stringToFloat(next_line[7]) * 1000);
 
-    //             updateStatusStr = QString::fromStdString(status);
-    //             emit updateStatusChanged();
-    //         } else {
-    //             status = " import false - " + std::to_string(line_count) + " - " + current_line[1];
-    //             updateStatusStr = QString::fromStdString(status);
-    //             emit updateStatusChanged();
-    //         }
-    //     }
-    //     json row_j;
-    //     row_j[keys.merchandise] = next_line[1];
-    //     row_j[keys.count] = next_line[8];
-    //     row_j[keys.palletType] = std::to_string(check_line(next_line, pre_line, pre_line));
-    //     row_j[keys.length] = next_line[5];
-    //     row_j[keys.width] = next_line[6];
-    //     row_j[keys.height] = std::to_string(stringToFloat(next_line[7]) * 1000);
+        int result1 = dbClient_->writeToCollection(database, collection_model, row_j.dump());
 
-    //     ModelPallet modelupdate_(row_j);
-    //     int result_ = modelupdate_.insert(collection_model);
+        if (result1 == 0)
+        {
+            status = " import success - " + next_line[1] + "\n";
 
-    //     if (result_ == 1) {
-    //         status = " import success - " + next_line[1];
+            updateStatusStr = QString::fromStdString(status);
+            emit updateStatusChanged();
+        }
+        else
+        {
+            status = " import false - " + next_line[1] ;
+            updateStatusStr = QString::fromStdString(status);
+            emit updateStatusChanged();
+        }
 
-    //         updateStatusStr = QString::fromStdString(status);
-    //         emit updateStatusChanged();
-    //     } else {
-    //         status = " import false - " + next_line[1];
-    //         updateStatusStr = QString::fromStdString(status);
-    //         emit updateStatusChanged();
-    //     }
-
-    //     // Đóng file Excel
-    //     file.close();
-    // }
+        // Đóng file Excel
+        file.close();
+    }
 
     return fileName;
 }
 
-// int Backend::check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line) {
-//     if (current_line[1] == pre_line[1]) {
-//         if (stringToFloat(current_line[8]) > stringToFloat(pre_line[8])) {
-//             return 1;
-//         } else
-//             return 0;
-//     } else if (current_line[1] == next_line[1]) {
-//         if (stringToFloat(current_line[8]) > stringToFloat(next_line[8])) {
-//             return 1;
-//         } else
-//             return 0;
-//     } else
-//         return 3;
-// }
+int Backend::check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line) {
+    if (current_line[1] == pre_line[1]) {
+        if (stringToFloat(current_line[8]) > stringToFloat(pre_line[8])) {
+            return 1;
+        } else
+            return 0;
+    } else if (current_line[1] == next_line[1]) {
+        if (stringToFloat(current_line[8]) > stringToFloat(next_line[8])) {
+            return 1;
+        } else
+            return 0;
+    } else
+        return 3;
+}

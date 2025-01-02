@@ -32,7 +32,9 @@
 <file>RosQML2Content/MyBuffer_item.qml</file>
 <file>RosQML2Content/MyGrid_queue.qml</file>
 <file>RosQML2Content/MyModel_pallet.qml</file>
+<file>RosQML2Content/MyUpdate_model_page.qml</file>
 <file>RosQML2Content/MyUserPopup.qml</file>
+<file>RosQML2Content/MyVolume_page.qml</file>
 <file>RosQML2Content/Screen01.qml</file>
 <file>RosQML2Content/Screen02.qml</file>
 <file>RosQML2Content/Screen03.qml</file>

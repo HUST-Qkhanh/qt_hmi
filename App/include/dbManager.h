@@ -32,11 +32,11 @@ class MongoDBClient {
 
     mongocxx::database getDatabase(const std::string &dbName);
 
-    void writeToCollection(const std::string &dbName, const std::string &collectionName, const std::string &doc);
+    int writeToCollection(const std::string &dbName, const std::string &collectionName, const std::string &doc);
 
     void editInCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter, const std::string &update);
 
-    void eraseFromCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter);
+    int eraseFromCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter);
 
     void fetchFromCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter, std::string &fetchedStr);
 

@@ -3,10 +3,12 @@
 MongoDBClient *MongoDBClient::pinstance_{nullptr};
 std::mutex MongoDBClient::mutex_;
 
-MongoDBClient *MongoDBClient::getInstance() {
+MongoDBClient *MongoDBClient::getInstance()
+{
     std::lock_guard<std::mutex> lock(mutex_);
 
-    if (pinstance_ == nullptr) {
+    if (pinstance_ == nullptr)
+    {
         pinstance_ = new MongoDBClient();
     }
     return pinstance_;
@@ -18,58 +20,82 @@ MongoDBClient *MongoDBClient::getInstance() {
 //     }
 // }
 
-MongoDBClient::MongoDBClient() {
+MongoDBClient::MongoDBClient()
+{
     std::cout << "Created new MongoDB Client.\n";
 }
 
-void MongoDBClient::initialize(const std::string &uri) {
-    if (!isInitialized_) {
-        try {
+void MongoDBClient::initialize(const std::string &uri)
+{
+    if (!isInitialized_)
+    {
+        try
+        {
             pool_ = std::make_shared<mongocxx::pool>(mongocxx::uri{uri});
             // dbClient_ = mongocxx::client(mongocxx::uri{uri});
-        } catch (const std::exception &e) {
+        }
+        catch (const std::exception &e)
+        {
             std::cerr << "mongoDb init error: " << e.what() << '\n';
             return;
         }
 
         isInitialized_ = true;
         std::cout << "MongoDB pool initialized with URI: " << uri << "\n";
-    } else {
+    }
+    else
+    {
         std::cerr
             << "MongoDB client already initialized. Initialization skipped.\n";
     }
 }
 
-mongocxx::pool::entry MongoDBClient::getClient() {  // Synchronize pool access
-    if (!isInitialized_) {
+mongocxx::pool::entry MongoDBClient::getClient()
+{ // Synchronize pool access
+    if (!isInitialized_)
+    {
         throw std::runtime_error("MongoDB pool not initialized.");
     }
     auto client = pool_->acquire();
     return client;
 }
 
-mongocxx::database MongoDBClient::getDatabase(const std::string &dbName) {
+mongocxx::database MongoDBClient::getDatabase(const std::string &dbName)
+{
     auto client = getClient();
     return client->database(dbName);
 }
 
-void MongoDBClient::writeToCollection(const std::string &dbName,
-                                      const std::string &collectionName,
-                                      const std::string &doc) {
-    auto client = getClient();
-    auto db = client->database(dbName);
-    auto collection = db[collectionName];
-    auto bsonDoc = bsoncxx::from_json(doc);
-    collection.insert_one(bsonDoc.view());
-    std::cout << "Document inserted into " << dbName << "." << collectionName
-              << "\n";
+int MongoDBClient::writeToCollection(const std::string &dbName,
+                                     const std::string &collectionName,
+                                     const std::string &doc)
+{
+    try
+    {
+        auto client = getClient();
+        auto db = client->database(dbName);
+        auto collection = db[collectionName];
+        auto bsonDoc = bsoncxx::from_json(doc);
+        collection.insert_one(bsonDoc.view());
+        // std::cout << "Document inserted into " << dbName << "." << collectionName
+        //           << "\n";
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        return 1;
+    }
+
+    return 0;
 }
 
 void MongoDBClient::editInCollection(const std::string &dbName,
                                      const std::string &collectionName,
                                      const std::string &filter,
-                                     const std::string &update) {
-    try {
+                                     const std::string &update)
+{
+    try
+    {
         auto client = getClient();
         auto db = client->database(dbName);
         auto collection = db[collectionName];
@@ -77,23 +103,29 @@ void MongoDBClient::editInCollection(const std::string &dbName,
         auto bsonDoc = bsoncxx::from_json(update);
 
         // Check if the update document starts with an operator (i.e., '$')
-        if (std::string(bsonDoc.view().begin()->key())[0] != '$') {
+        if (std::string(bsonDoc.view().begin()->key())[0] != '$')
+        {
             // If not, add $set to the document
             bsoncxx::builder::basic::document newDoc;
             newDoc.append(bsoncxx::builder::basic::kvp("$set", bsonDoc.view()));
 
             // Extract the BSON document value
-            bsonDoc = newDoc.extract();  // Now bsonDoc is a proper BSON document value
+            bsonDoc = newDoc.extract(); // Now bsonDoc is a proper BSON document value
         }
 
         // Execute the update
         auto result = collection.update_one(bsonFilter.view(), bsonDoc.view());
-        if (result && result->matched_count() > 0) {
+        if (result && result->matched_count() > 0)
+        {
             std::cout << "Document updated successfully.\n";
-        } else {
+        }
+        else
+        {
             // std::cerr << "No document matched the given filter.\n";
         }
-    } catch (const std::exception &e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cerr << "Error updating document: " << e.what() << std::endl;
     }
 }
@@ -101,20 +133,24 @@ void MongoDBClient::editInCollection(const std::string &dbName,
 void MongoDBClient::fetchFromCollection(const std::string &dbName,
                                         const std::string &collectionName,
                                         const std::string &filter,
-                                        std::string &fetchedStr) {
+                                        std::string &fetchedStr)
+{
     auto client = getClient();
     auto db = client->database(dbName);
     auto collection = db[collectionName];
     auto bsonFilter = bsoncxx::from_json(filter);
     // std::cout << "fetch filter: " << filter << "\n";
     auto result = collection.find_one(bsonFilter.view());
-    if (result) {
+    if (result)
+    {
         // Chuyển đổi tài liệu thành JSON
         bsoncxx::document::view view = result->view();
         fetchedStr = bsoncxx::to_json(view);
         // std::cout << "Fetch document successfully: " << fetchedStr << "\n";
         // std::cout << "Fetch document successfully: \n";
-    } else {
+    }
+    else
+    {
         // std::cerr << "No document matched the given filter.\n";
     }
 }
@@ -122,29 +158,33 @@ void MongoDBClient::fetchFromCollection(const std::string &dbName,
 void MongoDBClient::fetchAllCollection(const std::string &dbName,
                                        const std::string &collectionName,
                                        const std::string &indexKey,
-                                       std::vector<std::string> &fetchedDocs) {
+                                       std::vector<std::string> &fetchedDocs)
+{
     auto client = getClient();
     auto db = client->database(dbName);
     auto collection = db[collectionName];
     auto sizeOfCollection = collection.count_documents({});
     // std::cout << "collection: " << collectionName << " - size: " << sizeOfCollection << "\n";
-    for (size_t i = 0; i < sizeOfCollection; i++) {
+    for (size_t i = 0; i < sizeOfCollection; i++)
+    {
         json filter;
         filter[indexKey] = i + 1;
         std::string cellProperties = "";
         fetchFromCollection(dbName, collectionName, filter.dump(), cellProperties);
         // std::cout << "cell properties: " << cellProperties << "\n";
-        if (cellProperties == "") {
-            fetchedDocs.clear();  // if error empty the result
+        if (cellProperties == "")
+        {
+            fetchedDocs.clear(); // if error empty the result
             break;
         };
         fetchedDocs.push_back(cellProperties);
     }
 }
 
-void MongoDBClient::eraseFromCollection(const std::string &dbName,
-                                        const std::string &collectionName,
-                                        const std::string &filter) {
+int MongoDBClient::eraseFromCollection(const std::string &dbName,
+                                       const std::string &collectionName,
+                                       const std::string &filter)
+{
     auto client = getClient();
     auto db = client->database(dbName);
     auto collection = db[collectionName];
@@ -153,15 +193,21 @@ void MongoDBClient::eraseFromCollection(const std::string &dbName,
     // Use delete_many to remove all documents matching the filter
     auto result = collection.delete_many(bsonFilter.view());
 
-    if (result) {
+    if (result)
+    {
         std::cout << "Deleted " << result->deleted_count() << " documents from "
                   << dbName << "." << collectionName << "\n";
-    } else {
+        return result->deleted_count();
+    }
+    else
+    {
         std::cerr << "No documents matched the filter.\n";
+        return 0;
     }
 }
 
-void MongoDBClient::addMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter, const std::string &doc) {
+void MongoDBClient::addMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter, const std::string &doc)
+{
     auto client = getClient();
     auto db = client->database(dbName);
     auto collection = db[collectionName];
@@ -184,17 +230,21 @@ void MongoDBClient::addMidleCollection(const std::string &dbName, const std::str
                    << bsoncxx::builder::stream::close_document;
 
     auto result = collection.update_many(filter_builder.view(), update_builder.view());
-    if (result) {
+    if (result)
+    {
         std::cout << "Matched documents: " << result->matched_count() << std::endl;
         std::cout << "Modified documents: " << result->modified_count() << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "Update operation failed." << std::endl;
         return;
     }
     writeToCollection(dbName, collectionName, doc);
 }
 
-void MongoDBClient::removeMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter) {
+void MongoDBClient::removeMidleCollection(const std::string &dbName, const std::string &collectionName, const std::string &filter)
+{
     auto client = getClient();
     auto db = client->database(dbName);
     auto collection = db[collectionName];
@@ -218,34 +268,42 @@ void MongoDBClient::removeMidleCollection(const std::string &dbName, const std::
                    << bsoncxx::builder::stream::close_document;
 
     auto result = collection.update_many(filter_builder.view(), update_builder.view());
-    if (result) {
+    if (result)
+    {
         std::cout << "Matched documents: " << result->matched_count() << std::endl;
         std::cout << "Modified documents: " << result->modified_count() << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "Update operation failed." << std::endl;
         return;
     }
 }
 
-bool MongoDBClient::checkChangeStream(const std::string &dbName, const std::string &collectionName) {
+bool MongoDBClient::checkChangeStream(const std::string &dbName, const std::string &collectionName)
+{
     auto client = getClient();
     auto db = client->database(dbName);
     auto collection = db[collectionName];
-    try {
+    try
+    {
         auto changeStream = collection.watch();
-        if (auto change = changeStream.begin(); change != changeStream.end()) {
+        if (auto change = changeStream.begin(); change != changeStream.end())
+        {
             std::cout << "changes detected in" << dbName << "." << collectionName << "\n";
             return true;
         }
         return false;
-
-    } catch (const std::exception &e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cerr << "Error in change stream " << e.what() << '\n';
         return false;
     }
 }
 
-int MongoDBClient::getCollectionSize(const std::string &dbName, const std::string &collectionName) {
+int MongoDBClient::getCollectionSize(const std::string &dbName, const std::string &collectionName)
+{
     // Count all documents in the collection
     auto client = getClient();
     auto db = client->database(dbName);
@@ -259,7 +317,8 @@ int MongoDBClient::getCollectionSize(const std::string &dbName, const std::strin
 void MongoDBClient::getUniqueList(const std::string &dbName,
                                   const std::string &collectionName,
                                   const std::string &key,
-                                  std::vector<std::string> &uniqueList) {
+                                  std::vector<std::string> &uniqueList)
+{
     auto client = getClient();
     auto db = client->database(dbName);
     auto collection = db[collectionName];
@@ -268,11 +327,14 @@ void MongoDBClient::getUniqueList(const std::string &dbName,
     auto cursor = collection.distinct(key, {});
 
     // The cursor will contain one BSON document
-    for (const auto& doc : cursor) {
+    for (const auto &doc : cursor)
+    {
         // Parse the document to find the "values" field
-        if (doc["values"]) {
+        if (doc["values"])
+        {
             auto values_array = doc["values"].get_array().value;
-            for (const auto& value : values_array) {
+            for (const auto &value : values_array)
+            {
                 // Convert each value to a string and add to the vector
                 std::string std_string = value.get_string().value.data();
                 uniqueList.push_back(std_string);

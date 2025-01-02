@@ -212,6 +212,8 @@ signals:
     void pModelMerchandiseListChanged();
     void pModelCountListChanged();
 
+    void modelDbClear();
+
     // TODO: create a Tableview of pallet_model collection
     //  void pListModelChanged();
 
@@ -481,7 +483,7 @@ public:
         updateFetchedList();
     }
     Q_INVOKABLE QString openFileDialog();
-
+    Q_INVOKABLE void deleteModelImport();
     Q_INVOKABLE void initQueueListModel(const std::vector<std::string> &result);
     Q_INVOKABLE void searchModel(const QString &merchandise, const QString &count);
     Q_INVOKABLE void initBufferListModel(const std::vector<std::string> &result);
