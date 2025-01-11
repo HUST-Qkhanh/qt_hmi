@@ -121,12 +121,13 @@ void MongoDBClient::editInCollection(const std::string &dbName,
         }
         else
         {
-            // std::cerr << "No document matched the given filter.\n";
+            // throw "No document matched the given filter.";
         }
     }
     catch (const std::exception &e)
     {
         std::cerr << "Error updating document: " << e.what() << std::endl;
+        // throw;
     }
 }
 
@@ -151,7 +152,7 @@ void MongoDBClient::fetchFromCollection(const std::string &dbName,
     }
     else
     {
-        // std::cerr << "No document matched the given filter.\n";
+        // throw "No document matched the given filter.";
     }
 }
 

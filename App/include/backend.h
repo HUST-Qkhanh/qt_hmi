@@ -288,7 +288,7 @@ private:
     QString statusValueSystemStr;
     QString stateValueSystemStr;
     // std::string uri = "mongodb://localhost:27017";
-    std::string uri = "mongodb://localhost:27017";
+    std::string uri = "mongodb://localhost:27017/?maxPoolSize=3&minPoolSize=3";
     std::string database = "admin";
     std::string collection = "pallet_buffer";
     std::string collection_queue = "pallet_queue";

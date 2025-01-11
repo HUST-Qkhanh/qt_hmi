@@ -13,7 +13,7 @@ Item {
 
     Rectangle {
         id: rectangle
-        color: "lightblue"
+        color: Constants.secondaryLightColor
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.leftMargin: 0

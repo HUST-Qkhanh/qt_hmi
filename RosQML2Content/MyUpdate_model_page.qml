@@ -1,10 +1,11 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts
-
-Page {
+import RosQML2
+Rectangle {
     id: update_model_page
     property string status_update_info: ""
+    radius: Constants.borderRadiusMedium
 
     Connections {
         target: backend
@@ -40,8 +41,8 @@ Page {
 
         Text {
             id: status
-            // text: status_update_info
-            text: "asdasdasdasd"
+            text: status_update_info
+            // text: "asdasdasdasd"
             anchors.fill: parent
             font.pixelSize: 10
             horizontalAlignment: Text.AlignHCenter
@@ -59,10 +60,11 @@ Page {
         anchors.rightMargin: 0
         anchors.bottomMargin: 0
 
-        Button {
+        RoundButton {
             id: update_model_button
             text: qsTr("Upload models")
             highlighted: true
+            radius: Constants.borderRadiusMedium
             Layout.margins: 10
             Layout.fillHeight: true
             Layout.preferredWidth: 0.3 * parent.width
@@ -78,9 +80,10 @@ Page {
             }
         }
 
-        Button {
+        RoundButton {
             id: deleteAllModel
             text: qsTr("Clear models data")
+            radius: Constants.borderRadiusMedium
             flat: false
             highlighted: false
             Layout.margins: 10

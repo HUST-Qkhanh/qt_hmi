@@ -8,8 +8,9 @@ RowLayout {
 
     property bool wasResetButtonPressed: false
     property bool wasModeButtonPressed: false
-    property bool wasPauseButtonPressed: false
+    property bool wasStatusButtonPressed: false
     property bool wasStopButtonPressed: false
+    property string stop_mode: "PAUSE"
 
     property real buttonWidth: (width - (spacing * (children.length - 1))) / children.length
     height: parent.height * 0.1
@@ -93,6 +94,7 @@ RowLayout {
         Layout.preferredWidth: actionButtonLayout.buttonWidth
         Layout.fillHeight: true
         onClicked: {
+            wasStatusButtonPressed = true;
             confirmShow.header_type = 5;
             confirmShow.info_text = qsTr("Pause robot");
             statusIndicate.open();
@@ -137,35 +139,39 @@ RowLayout {
                 wasModeButtonPressed = false;
             }
             if (wasStopButtonPressed) {
-                if (stop_mode === "STOP") {
+                if (backend.robotMode === "AUTO") {
                     backend.requestStop("RUN");
-                    stop_mode = "PAUSED";
-                } else if (stop_mode === "PAUSED") {
-                    backend.requestStop("STOP");
-                    stop_mode = "STOP";
                 }
                 wasStopButtonPressed = false;
+            }
+            if (wasStatusButtonPressed) {
+                if (backend.robotMode === "AUTO" && backend.robotStatus === "RUNNING") {
+                    backend.requestControl("STOP");
+                } else if (backend.robotMode === "AUTO" && backend.robotStatus === "PAUSE") {
+                    backend.requestControl("RUN");
+                }
+                wasStatusButtonPressed = false;
             }
         }
     }
 
     Timer {
-    id: delayTimer
-    interval: 1000 // Delay in milliseconds (1000ms = 1 second)
-    repeat: false // Run only once
-    onTriggered: {
-        console.log("Performing delayed action");
-        confirmShow.header_type = 5;
-        confirmShow.info_text = qsTr("Request timeout");
-        statusIndicate.open();
+        id: delayTimer
+        interval: 1000 // Delay in milliseconds (1000ms = 1 second)
+        repeat: false // Run only once
+        onTriggered: {
+            console.log("Performing delayed action");
+            confirmShow.header_type = 5;
+            confirmShow.info_text = qsTr("Request timeout");
+            statusIndicate.open();
+        }
     }
-}
 
     Connections {
         target: backend
         onServiceTimeout: {
-        // Start the timer
-        delayTimer.start();
+            // Start the timer
+            delayTimer.start();
         }
         onRobotModeChanged: {
             if (backend.robotMode === "MANUAL") {
@@ -189,19 +195,21 @@ RowLayout {
         //     }
         // }
         onGetControlChanged: {
+            console.log("robotStatus: " + backend.robotStatus);
+            console.log("robotMode: " + backend.robotMode);
             if (backend.robotMode === "AUTO") {
                 if (backend.robotStatus === "WAITING") {
                     status_button.text = qsTr("WAITING");
                     status_button.background.color = "#2196F3";
                     mode_button.background.color = "#2196F3";
                 }
-                if (backend.robotStatus == "RUNNING") {
+                if (backend.robotStatus === "RUNNING") {
                     status_button.text = qsTr("RUNNING");
                     status_button.background.color = "#4CAF50";
                     mode_button.background.color = "#4CAF50";
                 }
-                if (backend.robotStatus === "PAUSED") {
-                    status_button.text = qsTr("PAUSED");
+                if (backend.robotStatus === "PAUSE") {
+                    status_button.text = qsTr("PAUSE");
                     status_button.background.color = "#FFEB3B";
                     mode_button.background.color = "#2196F3";
                 }

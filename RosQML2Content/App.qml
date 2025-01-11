@@ -13,7 +13,7 @@ Window {
     width: 900
     height: 600
     visible: true
-    color: Constants.backgroundColor
+    color: Constants.surfaceColor
     // flags: Qt.FramelessWindowHint
     // visibility: Window.FullScreen
     title: "HMI_appication"
@@ -414,8 +414,8 @@ Window {
         id: loader
         x: 82
         y: 71
-        anchors.topMargin: 10
-        anchors.bottomMargin: 10
+        anchors.topMargin: 0
+        anchors.bottomMargin: 0
         source: "qrc:/RosQML2Content/Screen01.qml"
         onLoaded: {
             fadeIn.start(); // Start fade-in animation after content is loaded
@@ -428,8 +428,8 @@ Window {
         anchors.right: parent.right
         anchors.top: rowLayout3.bottom
         anchors.bottom: parent.bottom
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
     }
 
 

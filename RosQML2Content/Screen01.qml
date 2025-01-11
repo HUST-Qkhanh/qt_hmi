@@ -112,6 +112,44 @@ Rectangle {
     //         saveConfig()
     //     }
 
+    Rectangle {
+        id: rectangle2
+        radius: Constants.borderRadiusMedium
+        height: parent.height * 0.1
+        color: "#ffffff"
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 6
+        anchors.rightMargin: 6
+        anchors.bottomMargin: 6
+
+        MyActionButtonLayout {
+            id: actionButtonLayout
+            visible: true
+            anchors.fill: parent
+            anchors.leftMargin: 6
+            anchors.rightMargin: 6
+            anchors.topMargin: 6
+            anchors.bottomMargin: 6
+            spacing: 10
+        }
+    }
+
+    Rectangle {
+        id: rectangle1
+        color: "#ffffff"
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: header.bottom
+        anchors.bottom: rectangle2.top
+        radius: Constants.borderRadiusMedium
+        anchors.leftMargin: 6
+        anchors.rightMargin: 6
+        anchors.topMargin: 6
+        anchors.bottomMargin: 6
+    }
+
     Popup {
         id: statusIndicate
         // x: page1.width * 0.15
@@ -349,12 +387,13 @@ Rectangle {
     RoundButton {
         id: header
         height: parent.height * 0.07
+        radius: Constants.borderRadiusMedium
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        anchors.topMargin: 10
+        anchors.leftMargin: 6
+        anchors.rightMargin: 6
+        anchors.topMargin: 6
         rightInset: 0
         leftInset: 0
         bottomInset: 0
@@ -371,7 +410,7 @@ Rectangle {
         Layout.preferredHeight: parent.height * 0.1
         background: Rectangle {
 
-            color: "#90CAF9"
+            color: Constants.secondaryColor
             radius: Constants.borderRadiusSmall
         }
 
@@ -386,67 +425,6 @@ Rectangle {
         }
     }
 
-    ColumnLayout {
-        id: columnLayout
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: header.bottom
-        anchors.leftMargin: 20
-        anchors.rightMargin: parent.width * 0.30
-        anchors.topMargin: 20
-        spacing: 10
-        height: parent.height * 0.5
-
-        ConveyorView {
-            id: conveyorView
-            Layout.fillHeight: true
-            Layout.rightMargin: 0
-            Layout.leftMargin: 0
-            Layout.bottomMargin: 0
-            Layout.topMargin: 5
-            Layout.margins: 0
-            clip: true
-            Layout.fillWidth: true
-            Layout.preferredHeight: parent.height * 0.2
-        }
-
-        // Rectangle {
-        //     id: rectangle
-        //     width: 200
-        //     height: 200
-        //     color: "#00ffffff"
-        //     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-        //     Layout.fillWidth: true
-        //     Layout.preferredHeight: parent.height * 0.2
-        // }
-
-        BufferView {
-            id: bufferView
-            Layout.fillHeight: true
-
-            Layout.rightMargin: 0
-            Layout.leftMargin: 0
-            Layout.bottomMargin: 0
-            Layout.topMargin: 0
-            Layout.fillWidth: true
-            Layout.margins: 0
-            Layout.preferredHeight: parent.height * 0.2
-            // Layout.preferredWidth: parent.width * 0.7
-        }
-    }
-
-    MyActionButtonLayout {
-        id: actionButtonLayout
-        anchors.bottom: parent.bottom
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        anchors.bottomMargin: 10
-        spacing: 10
-        visible: true
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: parent.height * 0.1
-    }
 
     /*
 
@@ -470,10 +448,10 @@ Rectangle {
             batteryCurrent = backend.batteryCurrent;
         }
         onRobotDetailChanged: {
-            if (status_mode === "ERROR") {
-                status_header.text = backend.robotError;
+            if (backend.robotStatus === "ERROR") {
+                status_header.text = qsTr(backend.robotError);
             } else {
-                status_header.text = backend.robotDetail;
+                status_header.text = qsTr(backend.robotDetail);
             }
         }
     }
@@ -504,29 +482,13 @@ Rectangle {
         }
     }
 
-    Image {
-        id: pngegg
-        visible: false
-        anchors.left: columnLayout.right
-        anchors.right: parent.right
-        anchors.top: columnLayout.top
-        anchors.bottom: columnLayout.bottom
-        anchors.leftMargin: 5
-        anchors.rightMargin: 10
-        anchors.topMargin: 0
-        anchors.bottomMargin: 0
-        source: "asset/pngegg.png"
-        mirror: false
-        sourceSize.width: 2000
-        fillMode: Image.PreserveAspectFit
-    }
 
     GridLayout {
         id: note
         width: parent.width * 0.1
+        height: parent.height * 0.2
         anchors.left: columnLayout.left
         anchors.top: columnLayout.bottom
-        anchors.bottom: actionButtonLayout.top
         anchors.leftMargin: 0
         anchors.topMargin: parent.height * 0.05
         anchors.bottomMargin: parent.height * 0.05
@@ -565,6 +527,13 @@ Rectangle {
                 color: "#2196f3"
                 Layout.fillWidth: true
                 Layout.preferredWidth: height
+                Layout.fillHeight: true
+            }
+
+            Rectangle {
+                color: "#f32121"
+                Layout.preferredWidth: height
+                Layout.fillWidth: true
                 Layout.fillHeight: true
             }
             Layout.maximumWidth: 100
@@ -625,6 +594,16 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
+
+            Text {
+                height: 50
+                text: "Pallet chưa lưu trong database"
+                font.pixelSize: note.height * 0.1
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
         }
     }
 
@@ -637,58 +616,59 @@ Rectangle {
         }
     }
 
-    // RowLayout {
-    //     id: rowLayout
-    //     y: 71
-    //     height: parent.height * 0.07
-    //     anchors.left: columnLayout.right
-    //     anchors.right: pngegg.right
-    //     anchors.bottom: columnLayout.bottom
-    //     anchors.leftMargin: 5
-    //     anchors.rightMargin: 0
-    //     anchors.bottomMargin: 0
+    RowLayout {
+        id: rowLayout
+        y: 71
+        height: parent.height * 0.05
+        anchors.left: columnLayout.right
+        anchors.right: pngegg.right
+        anchors.bottom: columnLayout.bottom
+        anchors.leftMargin: 5
+        anchors.rightMargin: 0
+        anchors.bottomMargin: 0
 
-    //     TextField {
-    //         id: textField1
-    //         text: "BF1"
-    //         horizontalAlignment: Text.AlignHCenter
-    //         rightInset: 5
-    //         leftInset: 5
-    //         font.bold: false
-    //         font.pointSize: parent.height * 0.2
-    //         Layout.fillHeight: true
-    //         Layout.fillWidth: true
-    //         placeholderText: qsTr("Departure")
-    //     }
-    //     Image {
-    //         id: transfer_long_right_light
-    //         source: "asset/transfer_long_right_light.svg"
-    //         sourceSize.height: 50
+        TextField {
+            id: textField1
+            text: "BF1"
+            horizontalAlignment: Text.AlignHCenter
+            rightInset: 5
+            leftInset: 5
+            font.bold: false
+            font.pointSize: parent.height * 0.2
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            placeholderText: qsTr("Departure")
+        }
+        Image {
+            id: transfer_long_right_light
+            source: "asset/transfer_long_right_light.svg"
+            sourceSize.height: 50
 
-    //         sourceSize.width: 50
-    //         Layout.fillHeight: true
-    //         Layout.fillWidth: true
-    //         fillMode: Image.PreserveAspectFit
-    //     }
+            sourceSize.width: 50
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            fillMode: Image.PreserveAspectFit
+        }
 
-    //     TextField {
-    //         id: textField
-    //         text: "Zone_1"
-    //         horizontalAlignment: Text.AlignHCenter
-    //         rightInset: 5
-    //         leftInset: 5
-    //         font.bold: false
-    //         font.pointSize: parent.height * 0.2
-    //         Layout.fillHeight: true
-    //         Layout.fillWidth: true
-    //         placeholderText: qsTr("Destination")
-    //     }
+        TextField {
+            id: textField
+            text: "Zone_1"
+            horizontalAlignment: Text.AlignHCenter
+            rightInset: 5
+            leftInset: 5
+            font.bold: false
+            font.pointSize: parent.height * 0.2
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            placeholderText: qsTr("Destination")
+        }
 
-    // }
+    }
 
     Rectangle {
         id: rectangle
-        color: "#ffffff"
+        visible: false
+        color: "#00ffffff"
         radius: 10
         anchors.left: columnLayout.right
         anchors.right: header.right
@@ -738,17 +718,85 @@ Rectangle {
                     from: 90
                     to: 0
                     duration: 500
-    }
+                }
             }
         }
 
     }
 
+
+
+
+
+    ColumnLayout {
+        id: columnLayout
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: header.bottom
+        anchors.leftMargin: 20
+        anchors.rightMargin: parent.width * 0.30
+        anchors.topMargin: 20
+        spacing: 10
+        height: parent.height * 0.5
+
+        ConveyorView {
+            id: conveyorView
+            Layout.fillHeight: true
+            Layout.rightMargin: 0
+            Layout.leftMargin: 0
+            Layout.bottomMargin: 0
+            Layout.topMargin: 5
+            Layout.margins: 0
+            clip: true
+            Layout.fillWidth: true
+            Layout.preferredHeight: parent.height * 0.2
+        }
+
+        // Rectangle {
+        //     id: rectangle
+        //     width: 200
+        //     height: 200
+        //     color: "#00ffffff"
+        //     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+        //     Layout.fillWidth: true
+        //     Layout.preferredHeight: parent.height * 0.2
+        // }
+
+        BufferView {
+            id: bufferView
+            Layout.fillHeight: true
+
+            Layout.rightMargin: 0
+            Layout.leftMargin: 0
+            Layout.bottomMargin: 0
+            Layout.topMargin: 0
+            Layout.fillWidth: true
+            Layout.margins: 0
+            Layout.preferredHeight: parent.height * 0.2
+            // Layout.preferredWidth: parent.width * 0.7
+        }
+    }
+    Image {
+        id: pngegg
+        visible: true
+        anchors.left: columnLayout.right
+        anchors.right: parent.right
+        anchors.top: columnLayout.top
+        anchors.bottom: columnLayout.bottom
+        anchors.leftMargin: 5
+        anchors.rightMargin: 10
+        anchors.topMargin: 0
+        anchors.bottomMargin: 0
+        source: "asset/pngegg.png"
+        mirror: false
+        sourceSize.width: 2000
+        fillMode: Image.PreserveAspectFit
+    }
 }
 
 /*##^##
 Designer {
     D{i:0;matPrevEnvDoc:"SkyBox";matPrevEnvValueDoc:"preview_landscape";matPrevModelDoc:"#Cube"}
-D{i:57}D{i:58;cameraSpeed3d:55;cameraSpeed3dMultiplier:1}
+D{i:2}D{i:3}D{i:47}D{i:54}D{i:62;cameraSpeed3d:55;cameraSpeed3dMultiplier:1}
 }
 ##^##*/

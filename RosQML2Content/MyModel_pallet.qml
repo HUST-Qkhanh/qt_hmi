@@ -9,7 +9,9 @@ Item {
     width: 600
 
     property alias _merchandise: list_model.currentText
+    property alias _merchandiseChanged: list_model.editText
     property alias _count: list_count.currentText
+    property alias _countChanged: list_count.editText
     property alias _height: _height__.text
     property alias _width: _width__.text
     property alias _length: _length__.text
@@ -39,15 +41,18 @@ Item {
     }
 
     function addModelPallet() {
-        if (_merchandise !== "" && _count !== "" && _height !== "" && _width !== "" && _length !== "" && _pallet_type !== "") {
+        if (_merchandiseChanged !== "" && _countChanged !== "" && _height !== "" && _width !== "" && _length !== "" && _pallet_type !== "") {
             var jsonObject = {
-                "Merchandise": _merchandise,
-                "Count": _count,
+                "Merchandise": _merchandiseChanged,
+                "Count": _countChanged,
                 "height": _height,
                 "width": _width,
                 "length": _length,
                 "pallet_type": _pallet_type
             };
+
+            console.log("jsonObject: " + JSON.stringify(jsonObject));
+            
             backend.addDataModel(JSON.stringify(jsonObject, null, 2));
         } else {
             confirmShow.info_text = qsTr("Please input required fields");
@@ -58,18 +63,18 @@ Item {
 
     function deleteModelPallet() {
         var jsonObject = {
-            "Merchandise": _merchandise,
-            "Count": _count
+            "Merchandise": _merchandiseChanged,
+            "Count": _countChanged
         };
         clearTextFields();
         backend.deleteDataModel(JSON.stringify(jsonObject, null, 2));
     }
 
     function saveModelPallet() {
-        if (_merchandise !== "" && _count !== "" && _height !== "" && _width !== "" && _length !== "" && _pallet_type !== "") {
+        if (_merchandiseChanged !== "" && _count !== "" && _height !== "" && _width !== "" && _length !== "" && _pallet_type !== "") {
             var jsonObject = {
-                "Merchandise": _merchandise,
-                "Count": _count,
+                "Merchandise": _merchandiseChanged,
+                "Count": _countChanged,
                 "height": _height,
                 "width": _width,
                 "length": _length,
@@ -96,8 +101,8 @@ Item {
     Connections {
         target: roundButton
         onClicked: {
-            console.log("search for model:" + list_model.currentText + " <>" + list_count.currentText);
-            backend.searchModel(list_model.currentText, list_count.currentText);
+            console.log("search for model:" + list_model.editText + " <>" + list_count.editText);
+            backend.searchModel(list_model.editText, list_count.editText);
         }
     }
     //TODO: connection for updating dataview when cell is pressed
@@ -113,14 +118,29 @@ Item {
             confirmShow.header_type = 4;
             statusIndicate.open();
         }
+        onModelJsonAddFailed: {
+            confirmShow.info_text = qsTr("Failed to add to collection");
+            confirmShow.header_type = 3;
+            statusIndicate.open();
+        }
         onModelJsonDeleted: {
             confirmShow.info_text = qsTr("Removed from collection");
             confirmShow.header_type = 4;
             statusIndicate.open();
         }
+        onModelJsonDeleteFailed: {
+            confirmShow.info_text = qsTr("Failed to remove from collection");
+            confirmShow.header_type = 3;
+            statusIndicate.open();
+        }
         onModelJsonEdited: {
             confirmShow.info_text = qsTr("Saved to collection");
             confirmShow.header_type = 4;
+            statusIndicate.open();
+        }
+        onModelJsonEditFailed: {
+            confirmShow.info_text = qsTr("Failed to save to collection");
+            confirmShow.header_type = 3;
             statusIndicate.open();
         }
         //TODO: update curent popup view when data is changed
@@ -221,12 +241,10 @@ Item {
             ComboBox {
                 id: list_count
                 editable: true
-                font.pixelSize: parent.height * 0.07
+                font.pixelSize: Math.round(parent.height * 0.07)
                 flat: false
                 Layout.fillWidth: true
                 Layout.fillHeight: false
-                // Layout.preferredHeight: 31
-                // Layout.fillHeight: true
                 Layout.row: 1
                 Layout.column: 1
                 currentIndex: 0
@@ -235,48 +253,94 @@ Item {
                 Component.onCompleted: {
                     backend.updateCountList();
                 }
-                onEditTextChanged: {
-                    count_data = editText;
 
-                    // __id__.text = "-----";
+                function resetUI() {
                     _height__.text = "-----";
                     _width__.text = "-----";
                     _length__.text = "-----";
                     _pallet_type__.text = "-----";
-                    console.log("Selected fruit: " + editText);
-                    backend.updateComboBox(model_data, count_data);
+                }
+
+                Timer {
+                    id: updateTimer
+                    interval: 500 // Debounce interval
+                    repeat: false
+                    onTriggered: backend.updateComboBox(model_data, count_data)
+                }
+
+                onEditTextChanged: {
+                    if (editText.trim() === "") {
+                        console.log("Empty input ignored.");
+                        return;
+                    }
+                    count_data = editText;
+                    resetUI();
+                    updateTimer.restart();
+                }
+
+                Connections {
+                    target: inputPanel
+                    onVisibleChanged: {
+                        if (!inputPanel.visible) {
+                            count_data = editText;
+                            resetUI();
+                            backend.updateComboBox(model_data, count_data);
+                        }
+                    }
                 }
             }
 
             ComboBox {
                 id: list_model
                 editable: true
-                font.pixelSize: parent.height * 0.07
+                font.pixelSize: Math.round(parent.height * 0.07)
                 flat: false
                 Layout.fillWidth: true
                 Layout.fillHeight: false
                 Layout.row: 0
                 Layout.column: 1
                 currentIndex: 0
-                /* background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }*/
-
-                // property var model_pallet_: backend.getListModel()
                 model: backend.pModelMerchandiseList
 
                 Component.onCompleted: backend.updateMerchandiseList()
-                onEditTextChanged: {
-                    model_data = editText;
-                    // __id__.text = "-----";
+
+                // Reusable function to reset related UI elements
+                function resetUI() {
                     _height__.text = "-----";
                     _width__.text = "-----";
                     _length__.text = "-----";
                     _pallet_type__.text = "-----";
-                    backend.updateComboBox(model_data, count_data);
+                }
+
+                // Debouncing updates for better performance
+                Timer {
+                    id: updateTimer2
+                    interval: 500 // Adjust debounce time as needed
+                    repeat: false
+                    onTriggered: backend.updateComboBox(model_data, count_data)
+                }
+
+                onEditTextChanged: {
+                    if (editText.trim() === "") {
+                        console.log("Empty input ignored.");
+                        return;
+                    }
+                    model_data = editText;
+                    resetUI();
+                    updateTimer.restart();
                     console.log("Selected fruit: " + editText);
+                }
+
+                Connections {
+                    target: inputPanel
+                    onVisibleChanged: {
+                        if (!inputPanel.visible) {
+                            model_data = editText;
+                            resetUI();
+                            backend.updateComboBox(model_data, count_data);
+                            console.log("Selected box: " + editText);
+                        }
+                    }
                 }
             }
 

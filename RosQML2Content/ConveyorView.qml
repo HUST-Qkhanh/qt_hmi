@@ -11,7 +11,7 @@ Item {
 
     Rectangle {
         id: rectangle
-        color: "lightblue"
+        color: Constants.secondaryLightColor
         anchors.left: parent.left
         anchors.right: parent.right
         height: parent.height * 0.3
@@ -33,10 +33,11 @@ Item {
         anchors.bottom: horizontalScrollBar.top
         anchors.margins: 10
 
-        RoundButton {
+        Button {
             id: button
-            radius: 5
+            // radius: 5
             text: qsTr("Add")
+            flat: false
             font.pointSize: height * 0.1
             display: AbstractButton.TextUnderIcon
             icon.height: height * 0.5
@@ -55,6 +56,12 @@ Item {
             Layout.preferredWidth: height
             Layout.fillHeight: true
             onClicked: root.addNew()
+            background: Rectangle {
+                radius: Constants.borderRadiusSmall
+                color: Constants.primaryLightColor
+                border.width: 0
+
+            }
         }
 
         ScrollView {
@@ -115,13 +122,17 @@ Item {
                         }
 
                         Component.onCompleted: {
+                            console.log("model data: " + modelData);
+                            
                             var type = modelData["pallet_type"] !== null ? +modelData["pallet_type"] : null;
+                            
+                            console.log("type pallet view : " + type);
                             
                             switch (type) {
                                 case 0: boxItem.color = "#ffeb3b"; break;
                                 case 1: boxItem.color = "#ff9800"; break;
-                                case 4: boxItem.color = "#2196f3"; break;
-                                case 3: boxItem.color = "#4caf50"; break;
+                                case 3: boxItem.color = "#2196f3"; break;
+                                case 2: boxItem.color = "#4caf50"; break;
                                 default: boxItem.color = "#EA4335"; break;
                             }
                         }

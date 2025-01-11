@@ -712,6 +712,7 @@ void Backend::colorPalletBuffer(const std::vector<std::string> &result)
  */
 void Backend::updateFetchedList()
 {
+    // std::cout << " update init\n";
     connect(&threadManager, &ThreadPoolManager::getAllQueueCompleted, this, &Backend::initQueueListModel, Qt::UniqueConnection);
     connect(&threadManager, &ThreadPoolManager::getAllBufferCompleted, this, &Backend::initBufferListModel, Qt::UniqueConnection);
     std::lock_guard<std::mutex> lock(mutex_);
@@ -1008,6 +1009,7 @@ QVariantList Backend::getQueueListModel() const
  */
 void Backend::initQueueListModel(const std::vector<std::string> &result)
 {
+    // std::cout << "updateQueueModel\n";
     pQueueListModel_.clear();
 
     for (const auto &jsonString : result)
@@ -1087,9 +1089,42 @@ void Backend::initQueueListModel(const std::vector<std::string> &result)
 void Backend::addDataModel(QString jsonstring)
 {
     // TODO: check fields
+    json fetchedQueueJson;
     try
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        fetchedQueueJson = json::parse(jsonstring.toStdString());
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        emit modelJsonAddFailed(QString::fromStdString(e.what()));
+        return;
+    }
+    std::string merchandise, count;
+    merchandise = fetchedQueueJson.at(keys.merchandise).get<std::string>();
+    count = fetchedQueueJson.at(keys.count).get<std::string>();
+    json filterModel;
+    if (merchandise == "" || count == "")
+    {
+        emit modelJsonAddFailed(QString::fromStdString("Filter error"));
+    }
+    filterModel[keys.merchandise] = merchandise;
+    filterModel[keys.count] = count;
+    std::string fetchedModel = "";
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::cout << "fetch: " << merchandise << " - " << count <<"\n";
+    dbClient_->fetchFromCollection(database, collection_model, filterModel.dump(),
+                                   fetchedModel);
+
+    // TODO: Do not add if model and count is existed
+    if (fetchedModel != "")
+    {
+        emit modelJsonAddFailed(QString::fromStdString("Model is already existed"));
+        return;
+    }
+
+    try
+    {
         dbClient_->writeToCollection(database, collection_model, jsonstring.toStdString());
     }
     catch (const std::exception &e)
@@ -1102,6 +1137,39 @@ void Backend::addDataModel(QString jsonstring)
 }
 void Backend::saveDataModel(QString jsonstring)
 {
+    // TODO: check fields
+    json fetchedQueueJson;
+    try
+    {
+        fetchedQueueJson = json::parse(jsonstring.toStdString());
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        emit modelJsonEditFailed(QString::fromStdString(e.what()));
+        return;
+    }
+    std::string merchandise, count;
+    merchandise = fetchedQueueJson.at(keys.merchandise).get<std::string>();
+    count = fetchedQueueJson.at(keys.count).get<std::string>();
+    json filterModel;
+    if (merchandise == "" || count == "")
+    {
+        emit modelJsonEditFailed(QString::fromStdString("Filter error"));
+    }
+    filterModel[keys.merchandise] = merchandise;
+    filterModel[keys.count] = count;
+    std::string fetchedModel = "";
+    std::lock_guard<std::mutex> lock(mutex_);
+    dbClient_->fetchFromCollection(database, collection_model, filterModel.dump(),
+                                   fetchedModel);
+
+    // TODO: Do not save if model and count is not existed
+    if (fetchedModel == "")
+    {
+        emit modelJsonEditFailed(QString::fromStdString("No saved model"));
+        return;
+    }
     try
     {
         json filter, jsonToSave;
@@ -1169,7 +1237,7 @@ void Backend::searchModel(const QString &merchandise, const QString &count)
     json fetchedJson;
     if (fetchedStr == "")
     {
-        // std::cerr << "Can not find model\n";
+        std::cerr << "Can not find model\n";
         queueSeekModelDone(QString::fromStdString(fetchedJson.dump()));
         modelJsonFetched(QString::fromStdString(fetchedJson.dump()));
         return;
@@ -1822,7 +1890,7 @@ QString Backend::openFileDialog()
         }
         else
         {
-            status = " import false - " + next_line[1] ;
+            status = " import false - " + next_line[1];
             updateStatusStr = QString::fromStdString(status);
             emit updateStatusChanged();
         }
@@ -1834,17 +1902,26 @@ QString Backend::openFileDialog()
     return fileName;
 }
 
-int Backend::check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line) {
-    if (current_line[1] == pre_line[1]) {
-        if (stringToFloat(current_line[8]) > stringToFloat(pre_line[8])) {
+int Backend::check_line(std::vector<std::string> &current_line, std::vector<std::string> &pre_line, std::vector<std::string> &next_line)
+{
+    if (current_line[1] == pre_line[1])
+    {
+        if (stringToFloat(current_line[8]) > stringToFloat(pre_line[8]))
+        {
             return 1;
-        } else
+        }
+        else
             return 0;
-    } else if (current_line[1] == next_line[1]) {
-        if (stringToFloat(current_line[8]) > stringToFloat(next_line[8])) {
+    }
+    else if (current_line[1] == next_line[1])
+    {
+        if (stringToFloat(current_line[8]) > stringToFloat(next_line[8]))
+        {
             return 1;
-        } else
+        }
+        else
             return 0;
-    } else
+    }
+    else
         return 3;
 }
