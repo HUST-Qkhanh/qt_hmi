@@ -1,62 +1,36 @@
 #include "model_buffer.h"
 
 // Constructor to initialize from nlohmann::json
-ModelBuffer::ModelBuffer(const nlohmann::json& json, int queue_size) {
-    id = json.at("id").get<std::string>();
-    id_hang = json.at("id_hang").get<std::string>();
-    status = json.at("status").get<std::string>();
-    stt = json.at("stt").get<int32_t>();
-    type = json.at("type").get<int32_t>();
-    height = json.at("height").get<double>();
-    width = json.at("width").get<double>();
-    length = json.at("length").get<double>();
-    zone_id = json.at("zone_id").get<int32_t>();
-    column_id = json.at("column_id").get<int32_t>();
-    location_id = json.at("location_id").get<int32_t>();
-}
-
-// Method to convert the object to BSON
-bsoncxx::document::value ModelBuffer::to_bson() const {
-    return bsoncxx::builder::stream::document{} 
-        << "id" << id
-        << "id_hang" << id_hang
-        << "status" << status
-        << "stt" << stt
-        << "type" << type
-        << "height" << height
-        << "width" << width
-        << "length" << length
-        << "zone_id" << zone_id
-        << "column_id" << column_id
-        << "location_id" << location_id
-        << bsoncxx::builder::stream::finalize;
-}
-
-// Method to insert the object into MongoDB
-int ModelBuffer::insert(mongocxx::collection& collection) const {
-    auto result = collection.insert_one(to_bson().view());
-    if (result) {
-        std::cout << "Inserted with id: " << result->inserted_id().get_oid().value.to_string() << std::endl;
-        return 1;
-    } else {
-        std::cerr << "Insert failed" << std::endl;
-        return 0;
+ModelBuffer::ModelBuffer(const nlohmann::json& json) {
+    try {
+        id = json.at("id").get<std::string>();
+        id_hang = json.at(keys.bufferMerchandise).get<std::string>();
+        status = json.at(keys.bufferStatus).get<std::string>();
+        stt = json.at("stt").get<int>();
+        type = json.at(keys.bufferType).get<int>();
+        height = json.at(keys.height).get<double>();
+        width = json.at(keys.width).get<double>();
+        length = json.at(keys.length).get<double>();
+        zone_id = json.at(keys.zoneId).get<int>();
+        column_id = json.at(keys.columnId).get<int>();
+        location_id = json.at(keys.columnId).get<int>();
+    } catch (nlohmann::json::exception& e) {
+        throw std::runtime_error("Missing key in JSON: " + std::string(e.what()));
     }
 }
 
-// Method to update the object in MongoDB
-int ModelBuffer::update(mongocxx::collection& collection, const bsoncxx::document::view_or_value& filter) const {
-    bsoncxx::document::value update_document = bsoncxx::builder::stream::document{}
-        << "$set" << to_bson().view()
-        << bsoncxx::builder::stream::finalize;
-
-    auto result = collection.update_one(filter, update_document.view());
-    if (result && result->matched_count() > 0) {
-        std::cout << "Document updated, matched count: " << result->matched_count()
-                  << ", modified count: " << result->modified_count() << std::endl;
-        return 1;
-    } else {
-        std::cerr << "Update failed or no document matched the filter" << std::endl;
-        return 0;
-    }
+std::string ModelBuffer::getDoc() const {
+    nlohmann::json json;
+    json["id"] = id;
+    json[keys.bufferMerchandise] = id_hang;
+    json[keys.bufferStatus] = status;
+    json["stt"] = stt;
+    json[keys.bufferType] = type;
+    json[keys.height] = height;
+    json[keys.width] = width;
+    json[keys.length] = length;
+    json[keys.zoneId] = zone_id;
+    json[keys.columnId] = column_id;
+    json[keys.columnId] = location_id;
+    return json.dump();
 }

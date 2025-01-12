@@ -8,25 +8,25 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <string>
+#include "ultis.h"
 
-class ModelBuffer {
+class ModelBuffer
+{
 public:
     // Constructor to initialize from nlohmann::json
-    ModelBuffer(const nlohmann::json& json, int queue_size = 8);
+    ModelBuffer(const nlohmann::json &json);
 
-    // Method to convert the object to BSON
-    bsoncxx::document::value to_bson() const;
-
-    // Method to insert the object into MongoDB
-    int insert(mongocxx::collection& collection) const;
-
-    // Method to update the object in MongoDB
-    int update(mongocxx::collection& collection, const bsoncxx::document::view_or_value& filter) const;
+    /**
+     * @brief Converts the pallet bufer to a BSON document string.
+     * @return A string representing the BSON document.
+     */
+    std::string getDoc() const;
 
 private:
     std::string id;
     std::string id_hang;
     std::string status;
+    JsonKeys keys;
     int stt;
     int type;
     double height;
@@ -35,6 +35,7 @@ private:
     int zone_id;
     int column_id;
     int location_id;
+    std::string outputDoc;
 };
 
 #endif

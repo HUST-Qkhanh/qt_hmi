@@ -1,11 +1,13 @@
+#ifndef ULTIS_H
+#define ULTIS_H
 #include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
 using json = nlohmann::json;
-class jsonKeys {
+class JsonKeys {
    public:
-    jsonKeys(/* args */){}
-    ~jsonKeys(){}
+    JsonKeys(/* args */){}
+    ~JsonKeys(){}
     std::string queueIndex = "queue";
     std::string bufferIndex = "id";
     std::string merchandise = "Merchandise";
@@ -32,9 +34,11 @@ class jsonKeys {
     }
 };
 
-// jsonKeys::jsonKeys(/* args */) {
+#endif
+
+// JsonKeys::JsonKeys(/* args */) {
 // }
-// jsonKeys::~jsonKeys() {
+// JsonKeys::~JsonKeys() {
 // }
 
 // class BackendVar {

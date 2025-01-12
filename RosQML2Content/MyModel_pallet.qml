@@ -170,14 +170,15 @@ Item {
     Rectangle {
         id: rectangle
         height: 0.15 * parent.height
-        color: "#add8e6"
+        color: Constants.secondaryColor
+        radius: Constants.borderRadiusMedium
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.leftMargin: 0
         anchors.rightMargin: 0
 
         Text {
-            text: qsTr("PALLET MODEL")
+            text: qsTr("Pallet Model")
             anchors.fill: parent
             font.pixelSize: parent.height * 0.3
             horizontalAlignment: Text.AlignHCenter
@@ -198,17 +199,22 @@ Item {
         anchors.right: parent.right
         anchors.top: rectangle.bottom
         anchors.bottom: parent.bottom
-        anchors.leftMargin: 5
-        anchors.rightMargin: 5
-        anchors.topMargin: 10
-        anchors.bottomMargin: 5
+        anchors.leftMargin: 6
+        anchors.rightMargin: 6
+        anchors.topMargin: 6
+        anchors.bottomMargin: 6
         spacing: 50
 
         GridLayout {
             id: gridLayout
-            Layout.fillHeight: true
-            Layout.margins: 20
-            Layout.maximumWidth: 0.5 * parent.width
+            // Layout.fillWidth: true
+            Layout.margins: 5
+            Layout.leftMargin: 5
+            Layout.fillWidth: true
+            Layout.bottomMargin: 0
+            Layout.maximumHeight: parent.height * 0.8
+            Layout.preferredWidth: parent.width * 0.7
+            layoutDirection: Qt.LeftToRight
 
             // Text {
 
@@ -242,23 +248,26 @@ Item {
                 id: list_count
                 editable: true
                 font.pixelSize: Math.round(parent.height * 0.07)
-                flat: false
+                Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.fillHeight: false
+                flat: false
+                Layout.preferredWidth: 300 * grid_queue.width / 1000
+                Layout.preferredHeight: 50 * grid_queue.height / 600
                 Layout.row: 1
                 Layout.column: 1
                 currentIndex: 0
                 model: backend.pModelCountList
+                inputMethodHints: Qt.ImhDigitsOnly
 
                 Component.onCompleted: {
                     backend.updateCountList();
                 }
 
                 function resetUI() {
-                    _height__.text = "-----";
-                    _width__.text = "-----";
-                    _length__.text = "-----";
-                    _pallet_type__.text = "-----";
+                    _height__.text = "";
+                    _width__.text = "";
+                    _length__.text = "";
+                    _pallet_type__.text = "";
                 }
 
                 Timer {
@@ -294,22 +303,25 @@ Item {
                 id: list_model
                 editable: true
                 font.pixelSize: Math.round(parent.height * 0.07)
+                Layout.preferredWidth: 300 * grid_queue.width / 1000
+                Layout.preferredHeight: 50 * grid_queue.height / 600
                 flat: false
                 Layout.fillWidth: true
-                Layout.fillHeight: false
+                Layout.fillHeight: true
                 Layout.row: 0
                 Layout.column: 1
                 currentIndex: 0
                 model: backend.pModelMerchandiseList
+                inputMethodHints: Qt.ImhPreferUppercase
 
                 Component.onCompleted: backend.updateMerchandiseList()
 
                 // Reusable function to reset related UI elements
                 function resetUI() {
-                    _height__.text = "-----";
-                    _width__.text = "-----";
-                    _length__.text = "-----";
-                    _pallet_type__.text = "-----";
+                    _height__.text = "";
+                    _width__.text = "";
+                    _length__.text = "";
+                    _pallet_type__.text = "";
                 }
 
                 // Debouncing updates for better performance
@@ -353,7 +365,7 @@ Item {
                 font.family: "Ubuntu"
                 font.bold: false
                 Layout.fillWidth: false
-                Layout.fillHeight: false
+                Layout.fillHeight: true
                 Layout.row: 0
                 Layout.column: 0
             }
@@ -368,7 +380,7 @@ Item {
                 font.bold: false
 
                 Layout.fillWidth: false
-                Layout.fillHeight: false
+                Layout.fillHeight: true
                 Layout.row: 1
                 Layout.column: 0
             }
@@ -383,7 +395,7 @@ Item {
                 Layout.preferredWidth: 300 * grid_queue.width / 1000
                 Layout.preferredHeight: 50 * grid_queue.height / 600
                 Layout.fillWidth: true
-                Layout.fillHeight: false
+                Layout.fillHeight: true
                 Layout.column: 1
             }
 
@@ -391,15 +403,20 @@ Item {
                 id: _height__
                 property real radius: 5
                 font.pixelSize: parent.height * 0.07
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.preferredWidth: 300 * grid_queue.width / 1000
+                Layout.preferredHeight: 50 * grid_queue.height / 600
                 placeholderTextColor: Constants.textColorSecondary
                 placeholderText: qsTr("Height")
                 objectName: "_height__"
                 property bool isBold: false
                 focus: true
                 Layout.row: 0
-                Layout.fillWidth: true
-                Layout.fillHeight: false
+                // Layout.fillWidth: true
+                // Layout.fillHeight: false
                 Layout.column: 2
+                inputMethodHints: Qt.ImhDigitsOnly
             }
 
             TextField {
@@ -413,8 +430,9 @@ Item {
                 focus: true
                 Layout.row: 1
                 Layout.fillWidth: true
-                Layout.fillHeight: false
+                Layout.fillHeight: true
                 Layout.column: 2
+                inputMethodHints: Qt.ImhDigitsOnly
             }
 
             TextField {
@@ -422,14 +440,17 @@ Item {
                 property real radius: 5
                 font.pixelSize: parent.height * 0.07
                 placeholderTextColor: Constants.textColorSecondary
+                Layout.preferredWidth: 300 * grid_queue.width / 1000
+                Layout.preferredHeight: 50 * grid_queue.height / 600
                 placeholderText: qsTr("Length")
                 objectName: "_length__"
                 property bool isBold: false
                 focus: true
                 Layout.row: 2
                 Layout.fillWidth: true
-                Layout.fillHeight: false
+                Layout.fillHeight: true
                 Layout.column: 2
+                inputMethodHints: Qt.ImhDigitsOnly
             }
 
             TextField {
@@ -437,14 +458,17 @@ Item {
                 property real radius: 5
                 font.pixelSize: parent.height * 0.07
                 placeholderTextColor: Constants.textColorSecondary
+                Layout.preferredWidth: 300 * grid_queue.width / 1000
+                Layout.preferredHeight: 50 * grid_queue.height / 600
                 placeholderText: qsTr("Pallet Type")
                 objectName: "_pallet_type__"
                 property bool isBold: false
                 focus: true
                 Layout.row: 3
                 Layout.fillWidth: true
-                Layout.fillHeight: false
+                Layout.fillHeight: true
                 Layout.column: 2
+                inputMethodHints: Qt.ImhDigitsOnly
             }
         }
 

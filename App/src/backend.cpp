@@ -541,26 +541,15 @@ bool Backend::serviceLookupPalletCallback(std_stamped_msgs::StringService::Reque
 }
 bool Backend::serviceAppendPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res)
 {
-    arrangeQueue();
-    json data_obj = json::parse(req.request);
-    ROS_INFO_STREAM("call service append success");
-    // ModelQueue model(data_obj);
-    std::string model_pallet = data_obj[keys.merchandise];
-    std::string count_pallet = data_obj[keys.count];
-
-    json result_pallet = lookupPalletModel(model_pallet, count_pallet);
-    // Kiểm tra và in ra kết quả
-    if (result_pallet.empty())
-    {
-        res.respond = " CAN NOT FIND Merchandise OR COUNT";
-        ROS_ERROR(" CAN NOT FIND Merchandise OR COUNT");
-        return false;
-    }
 
     // Chèn vào MongoDB
     try
     {
-        dbClient_->writeToCollection(database, collection_queue, req.request);
+        ROS_INFO_STREAM("call service append success");
+        json data_obj = json::parse(req.request);
+
+        ModelQueue model_queue(data_obj);
+        dbClient_->writeToCollection(database, collection_queue, model_queue.getDoc());
     }
     catch (const std::exception &e)
     {
@@ -1112,7 +1101,7 @@ void Backend::addDataModel(QString jsonstring)
     filterModel[keys.count] = count;
     std::string fetchedModel = "";
     std::lock_guard<std::mutex> lock(mutex_);
-    std::cout << "fetch: " << merchandise << " - " << count <<"\n";
+    std::cout << "fetch: " << merchandise << " - " << count << "\n";
     dbClient_->fetchFromCollection(database, collection_model, filterModel.dump(),
                                    fetchedModel);
 
@@ -1125,7 +1114,9 @@ void Backend::addDataModel(QString jsonstring)
 
     try
     {
-        dbClient_->writeToCollection(database, collection_model, jsonstring.toStdString());
+        json modelJson = json::parse(jsonstring.toStdString());
+        ModelPallet modelPallet(modelJson);
+        dbClient_->writeToCollection(database, collection_model, modelPallet.getDoc());
     }
     catch (const std::exception &e)
     {
@@ -1852,7 +1843,8 @@ QString Backend::openFileDialog()
             row_json[keys.width] = current_line[6];
             row_json[keys.height] = std::to_string(stringToFloat(current_line[7]) * 1000);
 
-            int result = dbClient_->writeToCollection(database, collection_model, row_json.dump());
+            ModelPallet modelPallet(row_json);
+            int result = dbClient_->writeToCollection(database, collection_model, modelPallet.getDoc());
 
             if (result == 0)
             {
@@ -1879,7 +1871,8 @@ QString Backend::openFileDialog()
         row_j[keys.width] = next_line[6];
         row_j[keys.height] = std::to_string(stringToFloat(next_line[7]) * 1000);
 
-        int result1 = dbClient_->writeToCollection(database, collection_model, row_j.dump());
+        ModelPallet modelPallet(row_j);
+        int result1 = dbClient_->writeToCollection(database, collection_model, modelPallet.getDoc());
 
         if (result1 == 0)
         {

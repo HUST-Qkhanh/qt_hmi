@@ -25,13 +25,13 @@ void threadFoo() {
 
     // Define JSON data to insert
     json jsonData = {{"Id", "0630C001AA"},
-                     {"Time", "-----"},
+                     {"Time", ""},
                      {"Barcode", "0630C001AA"},
-                     {"PalletInfo", "-----"},
-                     {"Model", "-----"},
+                     {"PalletInfo", ""},
+                     {"Model", ""},
                      {"Merchandise", "0630C001AA"},
                      {"NameModel", "F36"},
-                     {"Destination", "-----"},
+                     {"Destination", ""},
                      {"Count", "16"},
                      {"ZoneId", "1"},
                      {"ColumnId", "1"},
@@ -57,18 +57,18 @@ void threadBar() {
     std::cout << "BAR: " << client->value() << "\n";
 
     // Define JSON data to insert
-    json jsonData = {{"Id", "-----"},
-                     {"Time", "-----"},
-                     {"Barcode", "-----"},
-                     {"PalletInfo", "-----"},
-                     {"Model", "-----"},
+    json jsonData = {{"Id", ""},
+                     {"Time", ""},
+                     {"Barcode", ""},
+                     {"PalletInfo", ""},
+                     {"Model", ""},
                      {"Merchandise", "0630C001AA"},
-                     {"NameModel", "-----"},
-                     {"Destination", "-----"},
+                     {"NameModel", ""},
+                     {"Destination", ""},
                      {"Count", "16"},
-                     {"ZoneId", "-----"},
-                     {"ColumnId", "-----"},
-                     {"LocationId", "-----"},
+                     {"ZoneId", ""},
+                     {"ColumnId", ""},
+                     {"LocationId", ""},
                      {"queue", 5}};
 
     // Convert JSON data to BSON document and insert into MongoDB
@@ -85,18 +85,18 @@ void threadBone() {
     std::cout << "BAR: " << client->value() << "\n";
 
     // Define JSON data to insert
-    json jsonData = {{"Id", "-----"},
-                     {"Time", "-----"},
-                     {"Barcode", "-----"},
-                     {"PalletInfo", "-----"},
-                     {"Model", "-----"},
+    json jsonData = {{"Id", ""},
+                     {"Time", ""},
+                     {"Barcode", ""},
+                     {"PalletInfo", ""},
+                     {"Model", ""},
                      {"Merchandise", "0630C001AA"},
-                     {"NameModel", "-----"},
-                     {"Destination", "-----"},
+                     {"NameModel", ""},
+                     {"Destination", ""},
                      {"Count", "16"},
-                     {"ZoneId", "-----"},
-                     {"ColumnId", "-----"},
-                     {"LocationId", "-----"},
+                     {"ZoneId", ""},
+                     {"ColumnId", ""},
+                     {"LocationId", ""},
                      {"queue", 5}};
 
     // Convert JSON data to BSON document and insert into MongoDB

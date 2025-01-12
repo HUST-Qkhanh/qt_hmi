@@ -386,7 +386,7 @@ private:
     QStringList modelCountList_;
     QStringList modelMerchandiseList_;
     // bool m_isQueueListModelLoaded;
-    jsonKeys keys;
+    JsonKeys keys;
 
 public:
     explicit Backend(QObject *parent = nullptr);

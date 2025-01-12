@@ -106,21 +106,6 @@ Rectangle {
         anchors.topMargin: 10
         anchors.bottomMargin: 10
 
-        RowLayout {
-            id: header_layout
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            Layout.maximumHeight: parent.height * 0.08
-            Text {
-                color: Constants.textColorPrimary
-                text: qsTr(_headerLayoutText)
-                // text: " Trạng thái"
-                anchors.fill: parent
-                font.pointSize: 30 * parent.height / 50
-            }
-        }
-
         Loader {
             id: popupLoader
             Layout.bottomMargin: 10

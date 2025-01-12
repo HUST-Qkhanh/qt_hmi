@@ -38,7 +38,7 @@ RowLayout {
         onClicked: {
             wasStopButtonPressed = true;
             console.log("mode button: " + wasModeButtonPressed);
-            confirmShow.header_type = 5;
+            confirmShow.header_type = 6;
             confirmShow.info_text = qsTr("Stop Sequence ?");
             statusIndicate.open();
         }
@@ -65,7 +65,7 @@ RowLayout {
 
             console.log("reset button: " + wasResetButtonPressed);
 
-            confirmShow.header_type = 5;
+            confirmShow.header_type = 6;
             confirmShow.info_text = qsTr("Reset sequence");
             statusIndicate.open();
         }
@@ -95,7 +95,7 @@ RowLayout {
         Layout.fillHeight: true
         onClicked: {
             wasStatusButtonPressed = true;
-            confirmShow.header_type = 5;
+            confirmShow.header_type = 6;
             confirmShow.info_text = qsTr("Pause robot");
             statusIndicate.open();
         }
@@ -113,7 +113,7 @@ RowLayout {
         onClicked: {
             wasModeButtonPressed = true;
             console.log("mode button: " + wasModeButtonPressed);
-            confirmShow.header_type = 5;
+            confirmShow.header_type = 6;
             confirmShow.info_text = qsTr("Change mode ?");
             statusIndicate.open();
         }
@@ -161,7 +161,7 @@ RowLayout {
         repeat: false // Run only once
         onTriggered: {
             console.log("Performing delayed action");
-            confirmShow.header_type = 5;
+            confirmShow.header_type = 6;
             confirmShow.info_text = qsTr("Request timeout");
             statusIndicate.open();
         }

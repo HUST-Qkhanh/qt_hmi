@@ -259,11 +259,14 @@ Item {
 */
     RowLayout {
         id: rowLayout
-        anchors.fill: parent
-        anchors.leftMargin: 5
-        anchors.rightMargin: 5
-        anchors.topMargin: 5
-        anchors.bottomMargin: 10
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: rectangle.bottom
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 6
+        anchors.rightMargin: 6
+        anchors.topMargin: 6
+        anchors.bottomMargin: 6
         spacing: 50
         clip: false
 
@@ -274,6 +277,7 @@ Item {
             Layout.fillWidth: true
             Layout.bottomMargin: 0
             Layout.maximumHeight: parent.height * 0.8
+            Layout.preferredWidth: parent.width * 0.7
             layoutDirection: Qt.LeftToRight
             flow: GridLayout.TopToBottom
             rowSpacing: 20
@@ -296,7 +300,7 @@ Item {
                 Layout.row: 1
                 Layout.column: 0
                 onEditingFinished: console.log("Editing finished. Final text:", text)
-
+                inputMethodHints: Qt.ImhPreferUppercase
                 /* background: Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -323,6 +327,7 @@ Item {
                 Layout.fillHeight: true
                 Layout.row: 3
                 Layout.column: 0
+                inputMethodHints: Qt.ImhDigitsOnly
 
                 /* background: Rectangle {
                     anchors.fill: parent
@@ -461,13 +466,15 @@ Item {
                 id: roundButton
                 radius: Constants.borderRadiusSmall
                 text: qsTr("Search")
+                font.pointSize: parent.height * 0.05
                 icon.source: "asset/search_light.svg"
-                Layout.fillWidth: true
+
                 Layout.preferredWidth: 300 * grid_queue.width / 1000
                 Layout.preferredHeight: 50 * grid_queue.height / 600
+                Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.row: 5
                 Layout.column: 0
+                Layout.row: 5
                 onClicked: backend.searchModel(_Merchandise_.text, _Count_.text)
             }
 
@@ -487,6 +494,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.column: 0
+                inputMethodHints: Qt.ImhPreferUppercase
             }
         }
 
@@ -495,7 +503,7 @@ Item {
             Layout.margins: 5
             Layout.rightMargin: 5
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            // Layout.fillWidth: true
+            Layout.fillWidth: true
             Layout.maximumHeight: parent.height * 0.8
             Layout.preferredWidth: parent.width * 0.3
 
@@ -535,7 +543,33 @@ Item {
                 Layout.row: 1
                 // Layout.fillHeight: true
                 Layout.column: 0
+                inputMethodHints: Qt.ImhDigitsOnly
             }
+        }
+    }
+
+    Rectangle {
+        id: rectangle
+        height: 0.15 * parent.height
+        color: Constants.secondaryColor
+        radius: Constants.borderRadiusMedium
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
+        Text {
+            text: qsTr("Pallet Queue")
+            anchors.fill: parent
+            font.pixelSize: parent.height * 0.3
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.family: "Ubuntu"
+            font.bold: false
+            clip: true
+            Layout.row: 0
+            Layout.fillWidth: false
+            Layout.fillHeight: false
+            Layout.column: 0
         }
     }
 }

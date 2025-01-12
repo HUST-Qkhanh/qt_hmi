@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Studio.DesignEffects
+import RosQML2 1.0
 
 Item {
     id: root
@@ -63,6 +64,11 @@ Item {
             // info_text = qsTr("Request Timeout!");
             // icon = "asset/done_all_alt_round.svg";
             icon = "qrc:/RosQML2Content/asset/close_round.svg";
+            showCancel = true;
+            break;
+        case 6:
+            header_text = qsTr("Confirmation");
+            icon = "qrc:/RosQML2Content/asset/done_all_alt_round.svg";
             showCancel = true;
             break;
 

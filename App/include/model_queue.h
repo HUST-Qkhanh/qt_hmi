@@ -12,16 +12,13 @@
 class ModelQueue {
 public:
     // Constructor to initialize from nlohmann::json
-    ModelQueue(const nlohmann::json& json, int queue_size = 15);
+    ModelQueue(const nlohmann::json& json);
 
-    // Method to convert the object to BSON
-    bsoncxx::document::value to_bson() const;
-
-    // Method to insert the object into MongoDB
-    int insert(mongocxx::collection& collection) const;
-
-    // Method to update the object in MongoDB
-    int update(mongocxx::collection& collection, const bsoncxx::document::view_or_value& filter) const;
+    /**
+     * @brief Converts the pallet queue to a BSON document string.
+     * @return A string representing the BSON document.
+     */
+    std::string getDoc() const;
 
 private:
     std::string Id;
@@ -34,7 +31,6 @@ private:
     std::string ZoneId;
     std::string ColumnId;
     std::string LocationId;
-    std::string Time;
     std::string Barcode;
     int queue;
 };
