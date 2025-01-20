@@ -52,7 +52,7 @@ Item {
             };
 
             console.log("jsonObject: " + JSON.stringify(jsonObject));
-            
+
             backend.addDataModel(JSON.stringify(jsonObject, null, 2));
         } else {
             confirmShow.info_text = qsTr("Please input required fields");
@@ -193,56 +193,71 @@ Item {
         }
     }
 
-    RowLayout {
-        id: rowLayout
+    MouseArea {
+        anchors.fill: parent
+        z: -1 // Ensure it is above the Flickable
+        onClicked: {
+            
+            console.log("out: ")
+            
+            list_model.focus = false;
+            list_count.focus = false;
+            _height__.focus = false;
+            _width__.focus = false;
+            _length__.focus = false;
+            _pallet_type__.focus = false;
+        }
+        propagateComposedEvents: true
+    }
+
+    Flickable {
+        id: flickable
+        y: 65
         anchors.left: parent.left
         anchors.right: parent.right
+        Layout.margins: 5
+        Layout.leftMargin: 5
+        Layout.fillWidth: true
+        Layout.bottomMargin: 5
+
         anchors.top: rectangle.bottom
-        anchors.bottom: parent.bottom
-        anchors.leftMargin: 6
-        anchors.rightMargin: 6
-        anchors.topMargin: 6
-        anchors.bottomMargin: 6
-        spacing: 50
+        anchors.leftMargin: 11
+        anchors.rightMargin: 169
+        anchors.topMargin: 20
+
+        height: Qt.inputMethod.visible ? 0.5 * gridLayout.height : gridLayout.heigh
+
+        contentHeight: gridLayout.height
+        contentWidth: gridLayout.width
+        ScrollBar.vertical: ScrollBar {}
+
+        // Timer {
+        //     id: focusTimer
+        //     interval: 100 // 100 ms delay
+        //     repeat: false
+        //     onTriggered: {
+        //         if (Qt.inputMethod.visible) {
+
+        //         }
+        //     }
+        // }
 
         GridLayout {
             id: gridLayout
+            x: 0
+            y: 0
+            width: 0.7 * model_pallet.width
+            height: 0.7 * model_pallet.height
+            // x: -528
+            // y: -97
+            // // Layout.fillWidth: true
+            // Layout.margins: 5
+            // Layout.leftMargin: 5
             // Layout.fillWidth: true
-            Layout.margins: 5
-            Layout.leftMargin: 5
-            Layout.fillWidth: true
-            Layout.bottomMargin: 0
-            Layout.maximumHeight: parent.height * 0.8
-            Layout.preferredWidth: parent.width * 0.7
+            // Layout.bottomMargin: 0
+            // Layout.maximumHeight: parent.height * 0.8
+            // Layout.preferredWidth: parent.width * 0.7
             layoutDirection: Qt.LeftToRight
-
-            // Text {
-
-            //     text: qsTr("Merchandise :")
-            //     verticalAlignment: Text.AlignVCenter
-            //     clip: true
-            //     font.pointSize: 12 * model_pallet.height / 364
-            //     font.family: "Ubuntu"
-            //     font.bold: false
-            //     Layout.fillWidth: true
-            //     Layout.fillHeight: true
-            //     Layout.row: 0
-            //     Layout.column: 0
-            // }
-
-            // Text {
-            //     id: modelCount
-            //     text: qsTr("Count :")
-            //     verticalAlignment: Text.AlignVCenter
-            //     Layout.fillHeight: true
-            //     clip: true
-            //     font.pointSize: 12 * model_pallet.height / 364
-            //     font.family: "Ubuntu"
-            //     font.bold: false
-            //     Layout.fillWidth: true
-            //     Layout.row: 1
-            //     Layout.column: 0
-            // }
 
             ComboBox {
                 id: list_count
@@ -261,6 +276,10 @@ Item {
 
                 Component.onCompleted: {
                     backend.updateCountList();
+                }
+
+                onFocusChanged: if (focus) {
+                    flickable.contentY = Math.max(0, y - 20);
                 }
 
                 function resetUI() {
@@ -315,6 +334,15 @@ Item {
                 inputMethodHints: Qt.ImhPreferUppercase
 
                 Component.onCompleted: backend.updateMerchandiseList()
+                onFocusChanged: if (focus) {
+                    flickable.interactive = true;
+                    flickable.clip = true;
+                    flickable.contentY = Math.max(0, y - 20);
+                } else {
+                    flickable.interactive = false;
+                    flickable.clip = false;
+                    flickable.contentY = 0;
+                }
 
                 // Reusable function to reset related UI elements
                 function resetUI() {
@@ -417,6 +445,15 @@ Item {
                 // Layout.fillHeight: false
                 Layout.column: 2
                 inputMethodHints: Qt.ImhDigitsOnly
+                onFocusChanged: if (focus) {
+                    flickable.interactive = true;
+                    flickable.clip = true;
+                    flickable.contentY = Math.max(0, y - 20);
+                } else {
+                    flickable.interactive = false;
+                    flickable.clip = false;
+                    flickable.contentY = 0;
+                }
             }
 
             TextField {
@@ -433,6 +470,15 @@ Item {
                 Layout.fillHeight: true
                 Layout.column: 2
                 inputMethodHints: Qt.ImhDigitsOnly
+                onFocusChanged: if (focus) {
+                    flickable.interactive = true;
+                    flickable.clip = true;
+                    flickable.contentY = Math.max(0, y - 20);
+                } else {
+                    flickable.interactive = false;
+                    flickable.clip = false;
+                    flickable.contentY = 0;
+                }
             }
 
             TextField {
@@ -451,6 +497,15 @@ Item {
                 Layout.fillHeight: true
                 Layout.column: 2
                 inputMethodHints: Qt.ImhDigitsOnly
+                onFocusChanged: if (focus) {
+                    flickable.interactive = true;
+                    flickable.clip = true;
+                    flickable.contentY = Math.max(0, y - 20);
+                } else {
+                    flickable.interactive = false;
+                    flickable.clip = false;
+                    flickable.contentY = 0;
+                }
             }
 
             TextField {
@@ -469,19 +524,24 @@ Item {
                 Layout.fillHeight: true
                 Layout.column: 2
                 inputMethodHints: Qt.ImhDigitsOnly
+                onFocusChanged: if (focus)
+                    flickable.contentY = Math.max(0, y - 20)
             }
         }
+    }
 
-        Image {
-            id: favpng_boxPalletLogistics
-            source: "asset/favpng_box-pallet-logistics.png"
-            Layout.fillHeight: true
-            Layout.margins: 20
-            sourceSize.height: 1000
-            sourceSize.width: 1000
-            Layout.preferredHeight: width
-            Layout.preferredWidth: 0.4 * parent.width
-            fillMode: Image.PreserveAspectFit
-        }
+    Image {
+        id: favpng_boxPalletLogistics
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: flickable.right
+        anchors.right: parent.right
+        anchors.leftMargin: 6
+        anchors.rightMargin: 6
+        source: "asset/favpng_box-pallet-logistics.png"
+        anchors.verticalCenterOffset: 0
+        Layout.margins: 20
+        sourceSize.height: 1000
+        sourceSize.width: 1000
+        fillMode: Image.PreserveAspectFit
     }
 }
