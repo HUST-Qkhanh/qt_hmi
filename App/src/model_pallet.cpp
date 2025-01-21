@@ -10,7 +10,7 @@ ModelPallet::ModelPallet(const nlohmann::json& json) {
         width = json.at("width").get<std::string>();
         pallet_type = json.at("pallet_type").get<std::string>();
     } catch (nlohmann::json::exception& e) {
-        throw std::runtime_error("Missing key in JSON: " + std::string(e.what()));
+        throw std::runtime_error("Missing key in model JSON: " + std::string(e.what()));
     }
 }
 

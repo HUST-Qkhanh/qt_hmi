@@ -257,256 +257,35 @@ Item {
 
 
 */
-    RowLayout {
-        id: rowLayout
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: rectangle.bottom
-        anchors.bottom: parent.bottom
-        anchors.leftMargin: 6
-        anchors.rightMargin: 6
-        anchors.topMargin: 6
-        anchors.bottomMargin: 6
-        spacing: 50
-        clip: false
 
-        GridLayout {
-            id: parent_queue
-            Layout.margins: 5
-            Layout.leftMargin: 5
-            Layout.fillWidth: true
-            Layout.bottomMargin: 0
-            Layout.maximumHeight: parent.height * 0.8
-            Layout.preferredWidth: parent.width * 0.7
-            layoutDirection: Qt.LeftToRight
-            flow: GridLayout.TopToBottom
-            rowSpacing: 20
-            columnSpacing: 20
-            rows: 5
-            columns: 2
-            TextField {
-                id: _Merchandise_
-                objectName: "_Merchandise__"
-                font.pixelSize: 10 * _Merchandise_.height / 35
-                Layout.fillHeight: true
-                Layout.fillWidth: true
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        propagateComposedEvents: false
+        preventStealing: true
+        onClicked: {
+            console.log("out: ");
 
-                placeholderText: qsTr("Merchandise")
-                placeholderTextColor: Constants.textColorSecondary
-                property bool isBold: false
-                property real radius: 5
-                Layout.preferredWidth: 300 * grid_queue.width / 1000
-                Layout.preferredHeight: 50 * grid_queue.height / 600
-                Layout.row: 1
-                Layout.column: 0
-                onEditingFinished: console.log("Editing finished. Final text:", text)
-                inputMethodHints: Qt.ImhPreferUppercase
-                /* background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }*/
-            }
+            _Merchandise_.focus = false;
+            _Count_.focus = false;
+            _pallet_info_.focus = false;
 
-            TextField {
-                id: _Count_
-                objectName: "_Count__"
-                font.pixelSize: 10 * _Merchandise_.height / 35
-                verticalAlignment: Text.AlignVCenter
-                Layout.fillWidth: true
-
-                placeholderText: qsTr("Count")
-                placeholderTextColor: Constants.textColorSecondary
-
-                text: qsTr("")
-                Layout.preferredWidth: 300 * grid_queue.width / 1000
-                Layout.preferredHeight: 50 * grid_queue.height / 600
-
-                property bool isBold: false
-                property real radius: 5
-                Layout.fillHeight: true
-                Layout.row: 3
-                Layout.column: 0
-                inputMethodHints: Qt.ImhDigitsOnly
-
-                /* background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }*/
-            }
-            // TextField {
-            //     id: _palletInfo_
-            //     objectName: "_palletInfo__"
-            //     font.pixelSize: 10 * _Merchandise_.height / 35
-            //     verticalAlignment: Text.AlignVCenter
-            //     Layout.fillWidth: true
-
-            //     placeholderText: qsTr("Pallet Info")
-            //     placeholderTextColor: Constants.textColorSecondary
-
-            //     text: qsTr("")
-            //     Layout.preferredWidth: 300 * grid_queue.width / 1000
-            //     Layout.preferredHeight: 50 * grid_queue.height / 600
-
-            //     property bool isBold: false
-            //     property real radius: 5
-            //     Layout.fillHeight: true
-            //     Layout.row: 4
-            //     Layout.column: 0
-
-            //     /* background: Rectangle {
-            //         anchors.fill: parent
-            //         radius: 5
-            //         border.color: "#3850ff"
-            //     }*/
-            // }
-            TextField {
-                id: _height_
-                objectName: "_height__"
-                font.pixelSize: 10 * _Merchandise_.height / 35
-                Layout.fillWidth: true
-
-                placeholderText: qsTr("Height")
-                placeholderTextColor: Constants.textColorSecondary
-                text: qsTr("")
-                Layout.preferredWidth: 300 * grid_queue.width / 1000
-                Layout.preferredHeight: 50 * grid_queue.height / 600
-
-                property bool isBold: false
-                property real radius: 5
-                Layout.fillHeight: true
-                Layout.row: 1
-                Layout.column: 1
-
-                readOnly: true
-                /* background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }*/
-            }
-            TextField {
-                id: _width_
-                objectName: "_width__"
-                font.pixelSize: 10 * _Merchandise_.height / 35
-                Layout.fillWidth: true
-
-                placeholderText: qsTr("Width")
-                placeholderTextColor: Constants.textColorSecondary
-                text: qsTr("")
-                Layout.preferredWidth: 300 * grid_queue.width / 1000
-                Layout.preferredHeight: 50 * grid_queue.height / 600
-
-                property bool isBold: false
-                property real radius: 5
-                Layout.fillHeight: true
-                Layout.row: 3
-                Layout.column: 1
-
-                readOnly: true
-                /* background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }*/
-            }
-            TextField {
-                id: _length_
-                objectName: "_length__"
-                font.pixelSize: 10 * _Merchandise_.height / 35
-                Layout.fillWidth: true
-
-                placeholderText: qsTr("Length")
-                placeholderTextColor: Constants.textColorSecondary
-                text: qsTr("")
-                Layout.preferredWidth: 300 * grid_queue.width / 1000
-                Layout.preferredHeight: 50 * grid_queue.height / 600
-
-                readOnly: true
-                property bool isBold: false
-                property real radius: 5
-                Layout.fillHeight: true
-                Layout.row: 4
-                Layout.column: 1
-
-                /* background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }*/
-            }
-            TextField {
-                id: _pallet_type_
-                objectName: "_pallet_type"
-                font.pixelSize: 10 * _Merchandise_.height / 35
-                Layout.fillWidth: true
-
-                placeholderText: qsTr("Pallet type")
-                placeholderTextColor: Constants.textColorSecondary
-                text: qsTr("")
-                Layout.preferredWidth: 300 * grid_queue.width / 1000
-                Layout.preferredHeight: 50 * grid_queue.height / 600
-
-                readOnly: true
-                property bool isBold: false
-                property real radius: 5
-                Layout.fillHeight: true
-                Layout.row: 5
-                Layout.column: 1
-
-                /* background: Rectangle {
-                    anchors.fill: parent
-                    radius: 5
-                    border.color: "#3850ff"
-                }*/
-            }
-
-            RoundButton {
-                id: roundButton
-                radius: Constants.borderRadiusSmall
-                text: qsTr("Search")
-                font.pointSize: parent.height * 0.05
-                icon.source: "asset/search_light.svg"
-
-                Layout.preferredWidth: 300 * grid_queue.width / 1000
-                Layout.preferredHeight: 50 * grid_queue.height / 600
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Layout.column: 0
-                Layout.row: 5
-                onClicked: backend.searchModel(_Merchandise_.text, _Count_.text)
-            }
-
-            TextField {
-                id: _pallet_info_
-                property real radius: 5
-                text: qsTr("")
-                font.pixelSize: 10 * _Merchandise_.height / 35
-                verticalAlignment: Text.AlignVCenter
-                placeholderTextColor: Constants.textColorSecondary
-                placeholderText: qsTr("Pallet Info")
-                objectName: "_pallet_info__"
-                property bool isBold: false
-                Layout.row: 4
-                Layout.preferredWidth: 300 * grid_queue.width / 1000
-                Layout.preferredHeight: 50 * grid_queue.height / 600
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Layout.column: 0
-                inputMethodHints: Qt.ImhPreferUppercase
-            }
+            flickable.interactive = false;
+            flickable.clip = false;
+            flickable.contentY = 0;
+            Qt.inputMethod.hide()
         }
 
         ColumnLayout {
             id: columnLayout
-            Layout.margins: 5
-            Layout.rightMargin: 5
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            Layout.fillWidth: true
-            Layout.maximumHeight: parent.height * 0.8
-            Layout.preferredWidth: parent.width * 0.3
-
+            anchors.left: flickable.right
+            anchors.right: parent.right
+            anchors.top: flickable.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 6
+            anchors.rightMargin: 6
+            anchors.topMargin: 0
+            anchors.bottomMargin: 25
             Image {
                 id: conveyorBelt
                 visible: true
@@ -529,47 +308,302 @@ Item {
                 id: _Id_
                 property real radius: 5
                 text: qsTr("")
-                font.pixelSize: 10 * _Merchandise_.height / 35
-                horizontalAlignment: Text.AlignHCenter
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                Layout.fillHeight: true
-                Layout.preferredWidth: parent.width * 0.5
-                Layout.maximumHeight: _Merchandise_.height
-
-                placeholderTextColor: Constants.textColorSecondary
-                placeholderText: qsTr("Position")
-                objectName: "_Id__"
-                property bool isBold: false
-                Layout.row: 1
+                // font.pixelSize: 10 * _Merchandise_.height / 35
+                // horizontalAlignment: Text.AlignHCenter
+                // Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                 // Layout.fillHeight: true
-                Layout.column: 0
+                // Layout.preferredWidth: parent.width * 0.5
+                // Layout.maximumHeight: _Merchandise_.height
+
+                // placeholderTextColor: Constants.textColorSecondary
+                // placeholderText: qsTr("Position")
+                // objectName: "_Id__"
+                // property bool isBold: false
+                // Layout.row: 1
+                // // Layout.fillHeight: true
+                // Layout.column: 0
+
+                font.pixelSize: _pallet_type_.font.pixelSize
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.preferredHeight: _pallet_type_.height
+                Layout.preferredWidth: 0.6 * _pallet_type_.width
+                visible: true
+                placeholderText: qsTr("Position")
+                placeholderTextColor: Constants.textColorSecondary
                 inputMethodHints: Qt.ImhDigitsOnly
             }
         }
-    }
 
-    Rectangle {
-        id: rectangle
-        height: 0.15 * parent.height
-        color: Constants.secondaryColor
-        radius: Constants.borderRadiusMedium
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.leftMargin: 0
-        anchors.rightMargin: 0
-        Text {
-            text: qsTr("Pallet Queue")
-            anchors.fill: parent
-            font.pixelSize: parent.height * 0.3
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font.family: "Ubuntu"
-            font.bold: false
-            clip: true
-            Layout.row: 0
-            Layout.fillWidth: false
-            Layout.fillHeight: false
-            Layout.column: 0
+        Rectangle {
+            id: rectangle
+            height: 0.15 * parent.height
+            color: Constants.secondaryColor
+            radius: Constants.borderRadiusMedium
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
+            Text {
+                text: qsTr("Pallet Queue")
+                anchors.fill: parent
+                font.pixelSize: parent.height * 0.3
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.family: "Ubuntu"
+                font.bold: false
+                clip: true
+                Layout.row: 0
+                Layout.fillWidth: false
+                Layout.fillHeight: false
+                Layout.column: 0
+            }
+        }
+
+        Flickable {
+            id: flickable
+            x: 6
+            y: 187
+            anchors.left: parent.left
+            anchors.top: rectangle.bottom
+            anchors.leftMargin: 6
+            anchors.topMargin: 30
+            interactive: false
+            flickableDirection: Flickable.VerticalFlick
+            bottomMargin: 0
+            topMargin: 0
+            rightMargin: 10
+            leftMargin: 10
+            width: parent_queue.width + 20
+            height: Qt.inputMethod.visible ? 0.5 * parent_queue.height : parent_queue.height
+            contentHeight: parent_queue.height
+            contentWidth: parent_queue.width
+            ScrollBar.vertical: ScrollBar {}
+
+            GridLayout {
+                id: parent_queue
+                x: flickable.x
+                y: 0
+                width: 0.6 * grid_queue.width
+                height: 0.6 * grid_queue.height
+                layoutDirection: Qt.LeftToRight
+                TextField {
+                    id: _Merchandise_
+                    objectName: "_Merchandise__"
+                    font.pixelSize: 10 * _Merchandise_.height / 35
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+
+                    placeholderText: qsTr("Merchandise")
+                    placeholderTextColor: Constants.textColorSecondary
+                    property bool isBold: false
+                    property real radius: 5
+                    Layout.preferredWidth: 300 * grid_queue.width / 1000
+                    Layout.preferredHeight: 50 * grid_queue.height / 600
+                    Layout.row: 1
+                    Layout.column: 0
+                    onEditingFinished: console.log("Editing finished. Final text:", text)
+                    inputMethodHints: Qt.ImhPreferUppercase
+                    onFocusChanged: if (focus) {
+                                        flickable.interactive = true;
+                                        flickable.clip = true;
+                                        flickable.contentY = Math.max(0, y - 20);
+                                    }
+                }
+
+                TextField {
+                    id: _Count_
+                    objectName: "_Count__"
+                    font.pixelSize: 10 * _Merchandise_.height / 35
+                    verticalAlignment: Text.AlignVCenter
+                    Layout.fillWidth: true
+
+                    placeholderText: qsTr("Count")
+                    placeholderTextColor: Constants.textColorSecondary
+
+                    text: qsTr("")
+                    Layout.preferredWidth: 300 * grid_queue.width / 1000
+                    Layout.preferredHeight: 50 * grid_queue.height / 600
+
+                    property bool isBold: false
+                    property real radius: 5
+                    Layout.fillHeight: true
+                    Layout.row: 3
+                    Layout.column: 0
+                    inputMethodHints: Qt.ImhDigitsOnly
+
+                    onFocusChanged: if (focus) {
+                                        flickable.interactive = true;
+                                        flickable.clip = true;
+                                        flickable.contentY = Math.max(0, y - 20);
+                                    }
+                }
+                // TextField {
+                //     id: _palletInfo_
+                //     objectName: "_palletInfo__"
+                //     font.pixelSize: 10 * _Merchandise_.height / 35
+                //     verticalAlignment: Text.AlignVCenter
+                //     Layout.fillWidth: true
+
+                //     placeholderText: qsTr("Pallet Info")
+                //     placeholderTextColor: Constants.textColorSecondary
+
+                //     text: qsTr("")
+                //     Layout.preferredWidth: 300 * grid_queue.width / 1000
+                //     Layout.preferredHeight: 50 * grid_queue.height / 600
+
+                //     property bool isBold: false
+                //     property real radius: 5
+                //     Layout.fillHeight: true
+                //     Layout.row: 4
+                //     Layout.column: 0
+
+                //     /* background: Rectangle {
+                //         anchors.fill: parent
+                //         radius: 5
+                //         border.color: "#3850ff"
+                //     }*/
+                // }
+                TextField {
+                    id: _height_
+                    objectName: "_height__"
+                    font.pixelSize: 10 * _Merchandise_.height / 35
+                    Layout.fillWidth: true
+
+                    placeholderText: qsTr("Height")
+                    placeholderTextColor: Constants.textColorSecondary
+                    text: qsTr("")
+                    Layout.preferredWidth: 300 * grid_queue.width / 1000
+                    Layout.preferredHeight: 50 * grid_queue.height / 600
+
+                    property bool isBold: false
+                    property real radius: 5
+                    Layout.fillHeight: true
+                    Layout.row: 1
+                    Layout.column: 1
+
+                    readOnly: true
+                    /* background: Rectangle {
+                    anchors.fill: parent
+                    radius: 5
+                    border.color: "#3850ff"
+                }*/
+                }
+                TextField {
+                    id: _width_
+                    objectName: "_width__"
+                    font.pixelSize: 10 * _Merchandise_.height / 35
+                    Layout.fillWidth: true
+
+                    placeholderText: qsTr("Width")
+                    placeholderTextColor: Constants.textColorSecondary
+                    text: qsTr("")
+                    Layout.preferredWidth: 300 * grid_queue.width / 1000
+                    Layout.preferredHeight: 50 * grid_queue.height / 600
+
+                    property bool isBold: false
+                    property real radius: 5
+                    Layout.fillHeight: true
+                    Layout.row: 3
+                    Layout.column: 1
+
+                    readOnly: true
+                    /* background: Rectangle {
+                    anchors.fill: parent
+                    radius: 5
+                    border.color: "#3850ff"
+                }*/
+                }
+                TextField {
+                    id: _length_
+                    objectName: "_length__"
+                    font.pixelSize: 10 * _Merchandise_.height / 35
+                    Layout.fillWidth: true
+
+                    placeholderText: qsTr("Length")
+                    placeholderTextColor: Constants.textColorSecondary
+                    text: qsTr("")
+                    Layout.preferredWidth: 300 * grid_queue.width / 1000
+                    Layout.preferredHeight: 50 * grid_queue.height / 600
+
+                    readOnly: true
+                    property bool isBold: false
+                    property real radius: 5
+                    Layout.fillHeight: true
+                    Layout.row: 4
+                    Layout.column: 1
+
+                    /* background: Rectangle {
+                    anchors.fill: parent
+                    radius: 5
+                    border.color: "#3850ff"
+                }*/
+                }
+                TextField {
+                    id: _pallet_type_
+                    objectName: "_pallet_type"
+                    font.pixelSize: 10 * _Merchandise_.height / 35
+                    Layout.fillWidth: true
+
+                    placeholderText: qsTr("Pallet type")
+                    placeholderTextColor: Constants.textColorSecondary
+                    text: qsTr("")
+                    Layout.preferredWidth: 300 * grid_queue.width / 1000
+                    Layout.preferredHeight: 50 * grid_queue.height / 600
+
+                    readOnly: true
+                    property bool isBold: false
+                    property real radius: 5
+                    Layout.fillHeight: true
+                    Layout.row: 5
+                    Layout.column: 1
+
+                    /* background: Rectangle {
+                    anchors.fill: parent
+                    radius: 5
+                    border.color: "#3850ff"
+                }*/
+                }
+
+                RoundButton {
+                    id: roundButton
+                    radius: Constants.borderRadiusSmall
+                    text: qsTr("Search")
+                    font.pointSize: parent.height * 0.05
+                    icon.source: "asset/search_light.svg"
+
+                    Layout.preferredWidth: 300 * grid_queue.width / 1000
+                    Layout.preferredHeight: 50 * grid_queue.height / 600
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.column: 0
+                    Layout.row: 5
+                    onClicked: backend.searchModel(_Merchandise_.text, _Count_.text)
+                }
+
+                TextField {
+                    id: _pallet_info_
+                    property real radius: 5
+                    text: qsTr("")
+                    font.pixelSize: 10 * _Merchandise_.height / 35
+                    verticalAlignment: Text.AlignVCenter
+                    placeholderTextColor: Constants.textColorSecondary
+                    placeholderText: qsTr("Pallet Info")
+                    objectName: "_pallet_info__"
+                    property bool isBold: false
+                    Layout.row: 4
+                    Layout.preferredWidth: 300 * grid_queue.width / 1000
+                    Layout.preferredHeight: 50 * grid_queue.height / 600
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.column: 0
+                    inputMethodHints: Qt.ImhPreferUppercase
+                    onFocusChanged: if (focus) {
+                                        flickable.interactive = true;
+                                        flickable.clip = true;
+                                        flickable.contentY = Math.max(0, y - 20);
+                                    }
+                }
+            }
         }
     }
 }

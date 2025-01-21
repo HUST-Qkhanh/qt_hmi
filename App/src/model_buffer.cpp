@@ -15,7 +15,7 @@ ModelBuffer::ModelBuffer(const nlohmann::json& json) {
         column_id = json.at(keys.columnId).get<int>();
         location_id = json.at(keys.columnId).get<int>();
     } catch (nlohmann::json::exception& e) {
-        throw std::runtime_error("Missing key in JSON: " + std::string(e.what()));
+        throw std::runtime_error("Missing key in buffer JSON: " + std::string(e.what()));
     }
 }
 

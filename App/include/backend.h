@@ -57,6 +57,7 @@
 #include "model_buffer.h"
 #include "model_pallet.h"
 #include "model_queue.h"
+#include "responseFormat.h"
 
 #include <ultis.h>
 

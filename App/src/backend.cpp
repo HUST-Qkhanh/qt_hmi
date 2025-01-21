@@ -494,10 +494,18 @@ json Backend::lookupPalletModel(std::string model, std::string count)
 }
 bool Backend::servicePopPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res)
 {
-    // arrangeQueue();
-    // json delete_result = deleteObjQueue(1);
-    // res.respond = delete_result.dump();
-    // // updateFetchedList();
+    std::lock_guard<std::mutex> lock(mutex_);
+    json filter;
+    filter[keys.queueIndex] = 1;
+
+    try
+    {
+        dbClient_->removeMidleCollection(database, collection_queue, filter.dump());
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+    }
     return 1;
 }
 bool Backend::serviceLookupPalletCallback(std_stamped_msgs::StringService::Request &req, std_stamped_msgs::StringService::Response &res)
@@ -510,32 +518,40 @@ bool Backend::serviceLookupPalletCallback(std_stamped_msgs::StringService::Reque
     std::lock_guard<std::mutex> lock(mutex_);
     dbClient_->fetchFromCollection(database, collection_queue, filter.dump(), result);
 
-    if (!result.empty())
+    if (result.empty())
     {
-        // Chuyển đổi tài liệu thành JSON
-        json object_ = json::parse(result);
-        object_.erase("_id");
-        object_.erase(keys.queueIndex);
-
-        // Update collection_model
-        std::string model_pallet = object_[keys.merchandise];
-        std::string count_pallet = object_[keys.count];
-
-        json result_pallet = lookupPalletModel(model_pallet, count_pallet);
-        // Kiểm tra và in ra kết quả
-        if (!result_pallet.empty())
-        {
-            result_pallet.erase("_id");
-            object_.merge_patch(result_pallet);
-        }
-        else
-            ROS_ERROR("Can't find Model");
-
-        res.respond = object_.dump();
-    }
-    else
         res.respond = empty.dump();
-    ;
+        return 1;
+    }
+    // Chuyển đổi tài liệu thành JSON
+    json object_ = json::parse(result);
+    object_.erase("_id");
+    object_.erase(keys.queueIndex);
+
+    // Update collection_model
+    std::string model_pallet = object_[keys.merchandise];
+    std::string count_pallet = object_[keys.count];
+
+    json filter_pallet;
+    std::string result_pallet;
+
+    filter_pallet[keys.merchandise] = model_pallet;
+    filter_pallet[keys.count] = count_pallet;
+
+    dbClient_->fetchFromCollection(database, collection_model, filter_pallet.dump(), result_pallet);
+    if (result_pallet.empty())
+    {
+        res.respond = empty.dump();
+        return 1;
+    }
+    json object_pallet = json::parse(result_pallet);
+    // Kiểm tra và in ra kết quả
+    object_pallet.erase("_id");
+    object_.merge_patch(object_pallet);
+
+    ResponseFormat respData(object_);
+
+    res.respond = respData.getDoc();
 
     return 1;
 }
@@ -547,6 +563,8 @@ bool Backend::serviceAppendPalletCallback(std_stamped_msgs::StringService::Reque
     {
         ROS_INFO_STREAM("call service append success");
         json data_obj = json::parse(req.request);
+        std::lock_guard<std::mutex> lock(mutex_);
+        data_obj["queue"] = dbClient_->getCollectionSize(database, collection_queue) + 1;
 
         ModelQueue model_queue(data_obj);
         dbClient_->writeToCollection(database, collection_queue, model_queue.getDoc());
@@ -1258,7 +1276,7 @@ void Backend::expandQueue()
 {
     auto queueSize = dbClient_->getCollectionSize(database, collection_queue);
     json fetchedJson;
-    fetchedJson[keys.queueIndex] = 1;
+    fetchedJson[keys.queueIndex] = queueSize + 1;
     emit queueJsonFetched(QString::fromStdString(fetchedJson.dump()));
 }
 
@@ -1444,17 +1462,19 @@ void Backend::saveDataBuffer(const QString &jsonstring)
     }
 
     json modelJson = json::parse(modelStr);
-    jsonToSave["$set"] = {
+    json jsonToSaveSet = {
         {keys.bufferMerchandise, editBufferData[keys.bufferMerchandise]},
         {keys.bufferStatus, editBufferData[keys.bufferStatus]},
         {keys.count, editBufferData[keys.count]},
-        {keys.zoneId, editBufferData[keys.zoneId]},
-        {keys.locationId, editBufferData[keys.locationId]},
-        {keys.columnId, editBufferData[keys.columnId]},
-        {keys.bufferType, editBufferData[keys.bufferType]},
-        {keys.height, editBufferData[keys.height]},
-        {keys.width, editBufferData[keys.width]},
-        {keys.length, editBufferData[keys.length]}};
+        {keys.zoneId, std::stoi(editBufferData.at(keys.zoneId).get<std::string>())},
+        {keys.locationId, std::stoi(editBufferData.at(keys.locationId).get<std::string>())},
+        {keys.columnId, std::stoi(editBufferData.at(keys.columnId).get<std::string>())},
+        {keys.bufferType, std::stoi(editBufferData.at(keys.bufferType).get<std::string>())},
+        {keys.height, std::stod(editBufferData.at(keys.height).get<std::string>())},
+        {keys.width, std::stod(editBufferData.at(keys.width).get<std::string>())},
+        {keys.length, std::stod(editBufferData.at(keys.length).get<std::string>())}};
+
+    jsonToSave["$set"] = jsonToSaveSet;
 
     filter[keys.bufferIndex] = editBufferData[keys.bufferIndex];
     try

@@ -82,6 +82,9 @@ Item {
                 Layout.fillHeight: true
 
                 property real savedPosition: 0
+                snapMode: ListView.SnapOneItem
+                pixelAligned: true
+                layoutDirection: Qt.LeftToRight
                 clip: true
 
                 function saveScrollPosition() {
