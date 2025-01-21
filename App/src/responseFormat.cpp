@@ -1,10 +1,11 @@
-#include "model_queue.h"
+#include "responseFormat.h"
 
 // Constructor to initialize from nlohmann::json
-ModelQueue::ModelQueue(const nlohmann::json& json) {
-    try {
-        Id = "3";
-        Barcode = json.at("Barcode").get<std::string>();
+ResponseFormat::ResponseFormat(const nlohmann::json &json)
+{
+    try
+    {
+        // Barcode = json.at("Barcode").get<std::string>();
         PalletInfo = json.at("PalletInfo").get<std::string>();
         Model = json.at("Model").get<std::string>();
         Merchandise = json.at("Merchandise").get<std::string>();
@@ -14,17 +15,22 @@ ModelQueue::ModelQueue(const nlohmann::json& json) {
         ZoneId = json.at("ZoneId").get<std::string>();
         ColumnId = json.at("ColumnId").get<std::string>();
         LocationId = json.at("LocationId").get<std::string>();
-        queue = json.at("queue").get<int>();
-    } catch (nlohmann::json::exception& e) {
-        throw std::runtime_error("Missing key in queue JSON: " + std::string(e.what()));
+        length = json.at("length").get<std::string>();
+        height = json.at("height").get<std::string>();
+        width = json.at("width").get<std::string>();
+        pallet_type = json.at("pallet_type").get<std::string>();
+    }
+    catch (nlohmann::json::exception &e)
+    {
+        throw std::runtime_error("Missing key in response JSON: " + std::string(e.what()));
     }
 }
 
 // Method to convert the object to JSON
-std::string ModelQueue::getDoc() const {
+std::string ResponseFormat::getDoc() const
+{
     nlohmann::json json;
-    json["Id"] = Id;
-    json["Barcode"] = Barcode;
+    // json["Barcode"] = Barcode;
     json["PalletInfo"] = PalletInfo;
     json["Model"] = Model;
     json["Merchandise"] = Merchandise;
@@ -34,6 +40,9 @@ std::string ModelQueue::getDoc() const {
     json["ZoneId"] = ZoneId;
     json["ColumnId"] = ColumnId;
     json["LocationId"] = LocationId;
-    json["queue"] = queue;
+    json["length"] = length;
+    json["height"] = height;
+    json["width"] = width;
+    json["pallet_type"] = pallet_type;
     return json.dump();
 }

@@ -13,7 +13,7 @@ message(STATUS "BUILDING PROJECT: ${CMAKE_PROJECT_NAME}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_PREFIX_PATH "/opt/ros/noetic")
-list(APPEND CMAKE_PREFIX_PATH "/home/khanh/ros_ws/devel" "/usr/local/lib" "/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6")
+list(APPEND CMAKE_PREFIX_PATH "/home/mkac/agf_app_ws/devel" "/usr/local/lib" "/home/khanh/Qt/6.8.0/gcc_64/lib/cmake/Qt6")
 # list(APPEND CMAKE_PREFIX_PATH "/home/khanh/ros_ws/devel" "/usr/local/lib")
 
 
