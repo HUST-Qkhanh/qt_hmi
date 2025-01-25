@@ -21,6 +21,7 @@
 #include <nlohmann/json.hpp>
 #include <thread>
 #include <vector>
+#include <model_buffer.h>
 
 /*
 

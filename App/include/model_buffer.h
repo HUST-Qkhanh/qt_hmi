@@ -22,6 +22,13 @@ public:
      */
     std::string getDoc() const;
 
+    /**
+     * @brief convert float to string to fix the display issue
+     * 
+     * @return std::string 
+     */
+    std::string stringFormat() const;
+
 private:
     std::string id;
     std::string id_hang;
@@ -32,6 +39,9 @@ private:
     double height;
     double width;
     double length;
+    std::string heightStr;
+    std::string widthStr;
+    std::string lengthStr;
     int zone_id;
     int column_id;
     int location_id;

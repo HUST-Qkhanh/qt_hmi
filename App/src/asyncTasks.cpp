@@ -1,6 +1,7 @@
 #include "asyncTasks.h"
 
-void GetQueueTask::run() {
+void GetQueueTask::run()
+{
     std::lock_guard<std::mutex> lock(mtx_);
     // qDebug() << "GetQueueTask started on thread:" << QThread::currentThread();
     json filter;
@@ -11,22 +12,26 @@ void GetQueueTask::run() {
     client_->fetchFromCollection("admin", "pallet_queue", filter.dump(),
                                  fetchedStr);
     // std::cout << "FETCHED JSON: " << fetchedStr << "\n";
-    if (fetchedStr != "") {
+    if (fetchedStr != "")
+    {
         QString result = QString::fromStdString(fetchedStr);
         QThread::msleep(200);
         // qDebug() << "GetQueueTask Task finished.";
         emit taskFinished(PALLET_QUEUE_GET, result);
-    } else {
+    }
+    else
+    {
         // qDebug() << "task failed";
         emit taskFailed(PALLET_QUEUE_GET, "GetQueueTask failed.");
     }
 }
-void EditQueueTask::run() {
+void EditQueueTask::run()
+{
     std::lock_guard<std::mutex> lock(mtx_);
     // qDebug() << "Model Query Task started on thread:" << QThread::currentThread();
 
     json modelFilter;
-    std::string modelStr = "";  // fetched model
+    std::string modelStr = ""; // fetched model
     json jsonToFilter;
     json jsonToSave;
     json filter;
@@ -35,7 +40,8 @@ void EditQueueTask::run() {
 
     json editQueueData = json::parse(editStr_);
     if (!(editQueueData.contains("Merchandise") &&
-          editQueueData.contains("Count"))) {
+          editQueueData.contains("Count")))
+    {
         emit taskFailed(PALLET_QUEUE_EDIT, "AddQueueTask failed.");
         return;
     }
@@ -43,14 +49,18 @@ void EditQueueTask::run() {
     modelFilter["Merchandise"] = editQueueData["Merchandise"];
     modelFilter["Count"] = editQueueData["Count"];
     // Search for model
-    try {
+    try
+    {
         client_->fetchFromCollection("admin", "pallet_model", modelFilter.dump(), modelStr);
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         // qDebug() << e.what() << '\n';
         emit taskFailed(PALLET_QUEUE_EDIT, "AddQueueTask failed.");
         return;
     }
-    if (modelStr == "") {
+    if (modelStr == "")
+    {
         // qDebug() << "MODEL IS NOT IN DataBase" << '\n';
         emit taskFailed(PALLET_QUEUE_EDIT, "AddQueueTask failed.");
         return;
@@ -67,10 +77,13 @@ void EditQueueTask::run() {
         {"pallet_type", modelJson["pallet_type"]}};
 
     filter["queue"] = std::stoi(editQueueData["queue"].get<std::string>());
-    try {
+    try
+    {
         client_->editInCollection("admin", "pallet_queue", filter.dump(),
                                   jsonToSave.dump());
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cerr << e.what() << '\n';
         // qDebug() << "task failed";
         emit taskFailed(PALLET_QUEUE_EDIT, "EditQueueTask failed.");
@@ -80,19 +93,21 @@ void EditQueueTask::run() {
     emit taskFinished(PALLET_QUEUE_EDIT, result);
 }
 // TODO: add queue_id for added document
-void AddQueueTask::run() {
+void AddQueueTask::run()
+{
     std::lock_guard<std::mutex> lock(mtx_);
     // qDebug() << "AddQueueTask started on thread:" << QThread::currentThread();
 
     json modelFilter;
-    std::string modelStr = "";  // fetched model
+    std::string modelStr = ""; // fetched model
     json jsonToSave;
     json queueFilter;
 
     // qDebug() << "request save: " << editStr_ << "\n";
     json editQueueData = json::parse(editStr_);
     if (!(editQueueData.contains("Merchandise") &&
-          editQueueData.contains("Count"))) {
+          editQueueData.contains("Count")))
+    {
         // qDebug() << "No input merchandise and count to add";
         emit taskFailed(PALLET_QUEUE_ADD, "AddQueueTask failed.");
         return;
@@ -102,14 +117,18 @@ void AddQueueTask::run() {
     modelFilter["Merchandise"] = editQueueData["Merchandise"];
     modelFilter["Count"] = editQueueData["Count"];
     // Search for model
-    try {
+    try
+    {
         client_->fetchFromCollection("admin", "pallet_model", modelFilter.dump(), modelStr);
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         // qDebug() << e.what() << '\n';
         emit taskFailed(PALLET_QUEUE_ADD, "AddQueueTask failed.");
         return;
     }
-    if (modelStr == "") {
+    if (modelStr == "")
+    {
         // qDebug() << "MODEL IS NOT IN DataBase" << '\n';
         emit taskFailed(PALLET_QUEUE_ADD, "AddQueueTask failed.");
         return;
@@ -129,9 +148,12 @@ void AddQueueTask::run() {
     // TODO: when add to queue -> check the size of collection -> insert new doc to collection -> increase the queue of doc which queue > inserted doc's queue
     queueFilter["queue"] = std::stoi(editQueueData["queue"].get<std::string>());
 
-    try {
+    try
+    {
         client_->addMidleCollection("admin", "pallet_queue", queueFilter.dump(), jsonToSave.dump());
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         // qDebug() << e.what() << '\n';
         emit taskFailed(PALLET_QUEUE_ADD, "AddQueueTask failed.");
         return;
@@ -141,15 +163,19 @@ void AddQueueTask::run() {
     // qDebug() << "AddQueueTask finished.";
     emit taskFinished(PALLET_QUEUE_ADD, result);
 }
-void EraseQueueTask::run() {
+void EraseQueueTask::run()
+{
     std::lock_guard<std::mutex> lock(mtx_);
     // qDebug() << "EraseQueueTask started on thread:" << QThread::currentThread();
     json filter;
     filter["queue"] = id_;
 
-    try {
+    try
+    {
         client_->removeMidleCollection("admin", "pallet_queue", filter.dump());
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cerr << e.what() << '\n';
         // qDebug() << "task failed";
         emit taskFailed(PALLET_QUEUE_ERASE, "EraseQueueTask failed.");
@@ -159,7 +185,8 @@ void EraseQueueTask::run() {
     emit taskFinished(PALLET_QUEUE_ERASE, result);
 }
 
-void GetBufferTask::run() {
+void GetBufferTask::run()
+{
     std::lock_guard<std::mutex> lock(mtx_);
     // qDebug() << "GetBufferTask started on thread:" << QThread::currentThread();
     json filter;
@@ -168,17 +195,21 @@ void GetBufferTask::run() {
 
     client_->fetchFromCollection("admin", "pallet_buffer", filter.dump(),
                                  fetchedStr);
-    if (fetchedStr != "") {
+    if (fetchedStr != "")
+    {
         QString result = QString::fromStdString(fetchedStr);
         QThread::msleep(200);
         // qDebug() << "GetBufferTask finished.";
         emit taskFinished(PALLET_BUFFER_GET, result);
-    } else {
+    }
+    else
+    {
         // qDebug() << "task failed";
         emit taskFailed(PALLET_BUFFER_GET, "GetBufferTask failed.");
     }
 }
-void EditBufferTask::run() {
+void EditBufferTask::run()
+{
     // //qDebug() << "Model Query Task started on thread:"
     //          << QThread::currentThread();
     // json filter;
@@ -197,7 +228,8 @@ void EditBufferTask::run() {
     // //qDebug() << "EditBufferTask finished.";
     // emit taskFinished(PALLET_BUFFER_EDIT, result);
 }
-void AddBufferTask::run() {
+void AddBufferTask::run()
+{
     // //qDebug() << "AddBufferTask started on thread:"
     //          << QThread::currentThread();
     // std::string fetchedStr = "";
@@ -213,7 +245,8 @@ void AddBufferTask::run() {
     // //qDebug() << "AddBufferTask finished.";
     // emit taskFinished(PALLET_BUFFER_ERASE, result);
 }
-void EraseBufferTask::run() {
+void EraseBufferTask::run()
+{
     // //qDebug() << "EraseBufferTask started on thread:"
     //          << QThread::currentThread();
     // std::string fetchedStr = "";
@@ -230,7 +263,8 @@ void EraseBufferTask::run() {
     // emit taskFinished(PALLET_BUFFER_ERASE, result);
 }
 
-void GetModelTask::run() {
+void GetModelTask::run()
+{
     // //qDebug() << "GetModelTask started on thread:" << QThread::currentThread();
     // json filter;
     // filter["Merchandise"] = merchandise_;
@@ -251,7 +285,8 @@ void GetModelTask::run() {
     //     //qDebug() << "Model taskFailed signal emitted.";
     // }
 }
-void EditModelTask::run() {
+void EditModelTask::run()
+{
     // //qDebug() << "EditModelTask started on thread:";
     // json filter;
     // filter["Merchandise"] = merchandise_;
@@ -270,7 +305,8 @@ void EditModelTask::run() {
     // //qDebug() << "EditModelTask finished.";
     // emit taskFinished(PALLET_MODEL_EDIT, result);
 }
-void EraseModelTask::run() {
+void EraseModelTask::run()
+{
     // //qDebug() << "EraseModelTask started on thread:"
     //          << QThread::currentThread();
     // std::string fetchedStr = "";
@@ -286,7 +322,8 @@ void EraseModelTask::run() {
     // //qDebug() << "EraseModelTask finished.";
     // emit taskFinished(PALLET_MODEL_ERASE, result);
 }
-void AddModelTask::run() {
+void AddModelTask::run()
+{
     // //qDebug() << "AddModelTask started on thread:"
     //          << QThread::currentThread();
     // std::string fetchedStr = "";
@@ -314,7 +351,8 @@ void AddModelTask::run() {
 
 */
 
-void TrackDBChanges::run() {
+void TrackDBChanges::run()
+{
     // std::lock_guard<std::mutex> lock(mtx_);
     // while (true) {
     //     for (auto collectionName : collectionList_) {
@@ -334,40 +372,59 @@ void TrackDBChanges::run() {
     // }
 }
 
-void GetCellsProperties::run() {
+void GetCellsProperties::run()
+{
     // std::lock_guard<std::mutex> lock(mtx_);  // lock MongoDBClient
     // qDebug() << "Start get cell properties \n";
     // TODO: get each query of collection and create json result "collection_name"
-    for (auto&& collection : collectionList_) {
-        if (collection == "pallet_queue") {
+    for (auto &&collection : collectionList_)
+    {
+        if (collection == "pallet_queue")
+        {
             std::string indexKey = "queue";
             std::vector<std::string> cellsProperties;
-            try {
+            try
+            {
                 client_->fetchAllCollection("admin", collection, indexKey, cellsProperties);
-
-            } catch (const std::exception& e) {
+            }
+            catch (const std::exception &e)
+            {
                 std::cerr << e.what() << '\n';
             }
 
-            if (cellsProperties.empty()) {
+            if (cellsProperties.empty())
+            {
                 // qDebug() << "task failed" << "\n";
                 emit taskFailed(PALLET_QUEUE_GET_ALL, "GetCellsProperties failed.");
                 return;
             }
             // qDebug() << "vectortask finished: " << collection << "\n";
             emit vectorTaskFinished(PALLET_QUEUE_GET_ALL, cellsProperties);
-        } else if (collection == "pallet_buffer") {
+        }
+        else if (collection == "pallet_buffer")
+        {
             // qDebug() << "fetch buffer\n";
             std::string indexKey = "stt";
             std::vector<std::string> cellsProperties;
             client_->fetchAllCollection("admin", collection, indexKey, cellsProperties);
-            if (cellsProperties.empty()) {
+            if (cellsProperties.empty())
+            {
                 qDebug() << "task failed" << "\n";
                 emit taskFailed(PALLET_BUFFER_GET_ALL, "GetCellsProperties failed.");
                 return;
             }
-            // qDebug() << "vectortask finished: " << collection << "\n";
-            emit vectorTaskFinished(PALLET_BUFFER_GET_ALL, cellsProperties);
+            std::vector<std ::string> cellsProperties2;
+            for (std::string doc : cellsProperties)
+            {
+                ModelBuffer mb(json::parse(doc));
+                cellsProperties2.push_back(mb.stringFormat());
+                // std::cout << "buffer string: " << mb.stringFormat() << "\n";
+            }
+
+            // get correct display format
+            // TODO: change the db format to string to avoid floating number issue
+            //  qDebug() << "vectortask finished: " << collection << "\n";
+            emit vectorTaskFinished(PALLET_BUFFER_GET_ALL, cellsProperties2);
         }
     }
 }
